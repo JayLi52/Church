@@ -10,7 +10,7 @@ export default function AuthNavigator() {
     <Stack.Navigator>
       <Stack.Screen
         name="Login"
-        component={Logining}
+        component={LoginScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

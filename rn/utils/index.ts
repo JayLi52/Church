@@ -1,4 +1,4 @@
-import { Animated, Dimensions, StyleSheet } from 'react-native';
+import { Animated, Dimensions, ImageStyle, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 // 获取当前屏幕宽度
 const { width: screenWidth } = Dimensions.get('window');
@@ -8,22 +8,17 @@ const DESIGN_SCREEN_WIDTH = 390; // 假设设计稿的宽度是375
 
 /**
  * 转换样式的数值单位函数，仅转换指定样式属性。
- * @param {object} styles 样式对象
- * @returns {object} 转换后的样式对象
+ * @param styles 样式对象，键为样式类名，值为样式属性的对象。
+ * @returns 转换后的样式对象，适配不同屏幕尺寸。
  */
-export function transformStyles(styles: Record<string, any>) {
-    const transformedStyles: Record<string, any> = {};
-
+export function transformStyles<
+    T extends Record<string, ViewStyle | TextStyle | ImageStyle>
+>(styles: T): T {
     // 需要转换的样式属性
-    const propertiesToTransform = [
-        'width',
-        'height',
-        'fontSize',
-        // 'borderWidth',
-    ];
+    const propertiesToTransform: string[] = ['width', 'height', 'fontSize'];
 
     // padding 和 margin 子属性匹配规则
-    const propertiesToTransformSub = [
+    const propertiesToTransformSub: string[] = [
         'padding',
         'paddingLeft',
         'paddingRight',
@@ -37,27 +32,28 @@ export function transformStyles(styles: Record<string, any>) {
         'marginHorizontal',
         'paddingHorizontal',
         'paddingVertical',
-        'marginVertical'
+        'marginVertical',
     ];
 
+    const transformedStyles: Record<string, Record<string, any>> = {};
+
     Object.keys(styles).forEach((cls) => {
-        transformedStyles[cls] = {}
+        transformedStyles[cls] = {};
         Object.keys(styles[cls]).forEach((key) => {
             if (propertiesToTransform.includes(key) && typeof styles[cls][key] === 'number') {
-                // 转换 width, height, fontSize, borderWidth
+                // 转换宽度、高度、字体大小
                 transformedStyles[cls][key] = (styles[cls][key] / DESIGN_SCREEN_WIDTH) * screenWidth;
             } else if (propertiesToTransformSub.includes(key) && typeof styles[cls][key] === 'number') {
-                // 转换 margin 和 padding 相关属性
+                // 转换 padding 和 margin 相关属性
                 transformedStyles[cls][key] = (styles[cls][key] / DESIGN_SCREEN_WIDTH) * screenWidth;
             } else {
                 // 保持其他样式值不变
                 transformedStyles[cls][key] = styles[cls][key];
             }
-        })
-
+        });
     });
 
-    return StyleSheet.create(transformedStyles);
+    return StyleSheet.create(transformedStyles) as T;
 }
 
 
