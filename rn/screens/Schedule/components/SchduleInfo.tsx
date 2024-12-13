@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import CustomModal from '@components/CustomModal';
 import { transformStyles } from '@utils/index';
 
@@ -45,7 +45,7 @@ const SchduleInfo = forwardRef<SchduleInfoRef, SchduleInfoProps>(
             >
                 <View style={styles.popup}>
                     <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-                        <Text style={styles.closeButtonText}>X</Text>
+                        <Image source={require('@assets/images/schedule/close.png')} />
                     </TouchableOpacity>
                     <Text style={styles.title}>{title}</Text>
                     <View style={styles.section}>
@@ -82,12 +82,15 @@ const styles = transformStyles({
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,
+        alignItems: 'center'
     },
     closeButton: {
         position: 'absolute',
         top: 10,
-        right: 10,
+        left: 14,
         zIndex: 1,
+        width: 44,
+        height: 44
     },
     closeButtonText: {
         fontSize: 16,
@@ -116,13 +119,15 @@ const styles = transformStyles({
         backgroundColor: '#FFA500',
         paddingVertical: 10,
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 22,
         marginTop: 20,
+        width: 300,
+        height: 44
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 14,
+        alignItems: 'center'
     },
 });
 

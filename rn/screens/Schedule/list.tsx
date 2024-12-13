@@ -4,7 +4,7 @@ import { View, Text, FlatList, StyleSheet, BackHandler, ActivityIndicator } from
 import dayjs from 'dayjs'; // 引入dayjs库
 import DateHeader from './components/DateHeader';
 import ScheduleForm from './components/ScheduleForm';
-import { ListItem1 } from './components/ListItem';
+import { ListItem1, ListItem2, ListItem3 } from './components/ListItem';
 import SchduleInfo, { SchduleInfoRef } from './components/SchduleInfo';
 
 // 模拟API请求
@@ -18,15 +18,14 @@ const fetchData = () => {
                     time: "14:23 – 15:20",
                     location: "中国.四川成都.牛王庙A口",
                     image: 'https://picx.zhimg.com/v2-833b9089b397266bca8fb16457781500_qhd.jpg?source=57bbeac9',
-                    chineseCalendar: '十月初四'
+                    chineseCalendar: '十月初四',
+                    type: "normal", // 标准活动类型
                 },
                 {
-                    date: "2024-09-08",
-                    content: "线下联合榜告",
-                    time: "14:23 – 15:20",
-                    location: "中国.四川成都.牛王庙A口",
-                    image: 'https://picx.zhimg.com/v2-833b9089b397266bca8fb16457781500_qhd.jpg?source=57bbeac9',
-                    chineseCalendar: '十月初四'
+                    date: "2024-09-09",
+                    content: "全天活动",
+                    chineseCalendar: '十月初三',
+                    type: "allDay", // 全天类型
                 },
                 {
                     date: "2024-09-06",
@@ -34,7 +33,8 @@ const fetchData = () => {
                     time: "14:23 – 15:20",
                     location: "中国.四川成都.牛王庙A口",
                     image: 'https://pic1.zhimg.com/v2-411e5bb482b06abfa0687004f00fab10_1440w.png',
-                    chineseCalendar: '十月初四'
+                    chineseCalendar: '十月初四',
+                    type: "special", // 特殊类型
                 },
             ]);
         }, 2000);
@@ -45,10 +45,11 @@ const fetchData = () => {
 type ScheduleItem = {
     date: string;
     content: string;
-    time: string;
-    location: string;
-    image: string;
     chineseCalendar: string;
+    time?: string;
+    location?: string;
+    image?: string;
+    type: "normal" | "allDay" | "special"; // 新增活动类型
 };
 
 const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -94,6 +95,33 @@ const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
         schduleInfoRef.current?.open(); // 打开 SchduleInfo
     };
 
+    const renderItem = ({ item }: { item: ScheduleItem }) => {
+        switch (item.type) {
+            case "allDay":
+                return (
+                    <ListItem2
+                        item={item}
+                        itemClick={() => openSchduleInfo(item)}
+                    />
+                );
+            case "special":
+                return (
+                    <ListItem3
+                        item={item}
+                        itemClick={() => openSchduleInfo(item)}
+                    />
+                );
+            case "normal":
+            default:
+                return (
+                    <ListItem1
+                        item={item}
+                        itemClick={() => openSchduleInfo(item)}
+                    />
+                );
+        }
+    };
+
     return (
         <View style={{ backgroundColor: '#F6F6F6', flex: 1 }}>
             <DateHeader
@@ -116,12 +144,7 @@ const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
                 ) : (
                     <FlatList
                         data={data}
-                        renderItem={({ item }) => (
-                            <ListItem1
-                                item={item}
-                                itemClick={() => openSchduleInfo(item)}
-                            />
-                        )}
+                        renderItem={renderItem} // 动态渲染不同类型的列表项
                         keyExtractor={(item, index) => index.toString()}
                         style={styles.list}
                         refreshing={loading}
@@ -135,8 +158,8 @@ const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
                 <SchduleInfo
                     ref={schduleInfoRef}
                     title={selectedItem.content}
-                    time={selectedItem.time}
-                    location={selectedItem.location}
+                    time={selectedItem.time || ""}
+                    location={selectedItem.location || ""}
                     description={`农历: ${selectedItem.chineseCalendar}`}
                     callback={() => {
                         console.log('计划调整回调');
