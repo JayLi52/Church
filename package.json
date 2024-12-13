@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "stop-8081": "npx kill-port 8081",
-    "restart": "npm run stop-8081 && yarn start --reset-cache"
+    "restart": "npm run stop-8081 && yarn start --reset-cache",
+    "push": "git push gitee main:0.76.0"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",
