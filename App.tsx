@@ -15,11 +15,11 @@ function App(): React.JSX.Element {
     globalStore.init()
   }, [])
   return (
-    <Provider globalStore={globalStore}>
-      <GestureHandlerRootView>
-      <AppNavigator />
-      </GestureHandlerRootView>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider globalStore={globalStore}>
+        <AppNavigator />
+      </Provider>
+    </GestureHandlerRootView>
   )
 }
 
