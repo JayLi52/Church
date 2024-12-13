@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import CustomSelect from "@components/CustomSelect";
 
 // 使用 forwardRef 暴露内部方法
-const BottomActionForm = forwardRef((props, ref) => {
+const ScheduleForm = forwardRef((props, ref) => {
     const [isVisible, setIsVisible] = useState(false); // 控制弹框显示
     const [isAllDay, setIsAllDay] = useState(false); // 全天开关
     const [startDate, setStartDate] = useState(new Date());
@@ -338,4 +338,4 @@ const styles = transformStyles({
     }
 });
 
-export default BottomActionForm;
+export default ScheduleForm;

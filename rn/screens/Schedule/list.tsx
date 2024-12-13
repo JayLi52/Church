@@ -1,32 +1,17 @@
 import { transformStyles } from '@utils/index';
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, FlatList, StyleSheet, BackHandler, ActivityIndicator } from 'react-native';
 import dayjs from 'dayjs'; // 引入dayjs库
 import DateHeader from './components/DateHeader';
-import BottomActionForm from './components/BottomActionForm';
+import ScheduleForm from './components/ScheduleForm';
 import { ListItem1 } from './components/ListItem';
+import SchduleInfo, { SchduleInfoRef } from './components/SchduleInfo';
 
-// Simulate an API call
+// 模拟API请求
 const fetchData = () => {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve([
-                {
-                    date: "2024-09-11",
-                    content: "线下联合祷告",
-                    time: "14:23 – 15:20",
-                    location: "中国.四川成都.牛王庙A口",
-                    image: 'https://picx.zhimg.com/v2-833b9089b397266bca8fb16457781500_qhd.jpg?source=57bbeac9',
-                    chineseCalendar: '十月初四'
-                },
-                {
-                    date: "2024-09-11",
-                    content: "线下联合祷告",
-                    time: "14:23 – 15:20",
-                    location: "中国.四川成都.牛王庙A口",
-                    image: 'https://picx.zhimg.com/v2-833b9089b397266bca8fb16457781500_qhd.jpg?source=57bbeac9',
-                    chineseCalendar: '十月初四'
-                },
                 {
                     date: "2024-09-11",
                     content: "线下联合祷告",
@@ -52,23 +37,37 @@ const fetchData = () => {
                     chineseCalendar: '十月初四'
                 },
             ]);
-        }, 2000); // Simulating a 2-second delay
+        }, 2000);
     });
 };
 
-const ScheduleList = ({ navigation }) => {
-    const [data, setData] = useState([]);
+// TypeScript 类型定义
+type ScheduleItem = {
+    date: string;
+    content: string;
+    time: string;
+    location: string;
+    image: string;
+    chineseCalendar: string;
+};
+
+const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
+    const [data, setData] = useState<ScheduleItem[]>([]);
     const [loading, setLoading] = useState(true);
-    const bottomFormRef = useRef();
+    const bottomFormRef = useRef<any>();
+    const schduleInfoRef = useRef<SchduleInfoRef>(null);
+    const [selectedItem, setSelectedItem] = useState<ScheduleItem | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
             try {
-                const result = await fetchData(); // Fetching data from simulated API
-                setData(result.map(item => ({
-                    ...item,
-                    date: dayjs(item.date).format('MM月DD日 dddd'), // 使用dayjs格式化日期
-                })));
+                const result = await fetchData();
+                setData(
+                    (result as ScheduleItem[]).map((item) => ({
+                        ...item,
+                        date: dayjs(item.date).format('MM月DD日 dddd'),
+                    }))
+                );
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -81,43 +80,69 @@ const ScheduleList = ({ navigation }) => {
 
     useEffect(() => {
         const backAction = () => {
-            navigation.navigate('ScheduleIndex')
+            navigation.navigate('ScheduleIndex');
             return true; // 阻止默认返回行为
         };
 
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
-        return () => backHandler.remove(); // 清理事件
+        return () => backHandler.remove();
     }, [navigation]);
 
+    const openSchduleInfo = (item: ScheduleItem) => {
+        setSelectedItem(item); // 设置选中的条目信息
+        schduleInfoRef.current?.open(); // 打开 SchduleInfo
+    };
+
     return (
-        <View style={{
-            backgroundColor: '#F6F6F6'
-        }}>
+        <View style={{ backgroundColor: '#F6F6F6', flex: 1 }}>
             <DateHeader
                 date={[2024, 9]}
                 navigation={navigation}
                 add={() => {
-                    bottomFormRef.current!.open()
+                    bottomFormRef.current!.open();
                 }}
             />
-            <View style={{
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                borderBottomRightRadius: 0,
-                borderBottomLeftRadius: 0,
-                backgroundColor: '#fff'
-            }}>
-                <FlatList
-                    data={data}
-                    renderItem={ListItem1}
-                    keyExtractor={(item, index) => index.toString()}
-                    style={styles.list}
-                    refreshing={loading}
-                    onRefresh={() => { }}
-                />
+            <View
+                style={{
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    backgroundColor: '#fff',
+                    flex: 1,
+                }}
+            >
+                {loading ? (
+                    <ActivityIndicator size="large" color="#FFA500" style={{ marginTop: 20 }} />
+                ) : (
+                    <FlatList
+                        data={data}
+                        renderItem={({ item }) => (
+                            <ListItem1
+                                item={item}
+                                itemClick={() => openSchduleInfo(item)}
+                            />
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        style={styles.list}
+                        refreshing={loading}
+                        onRefresh={() => { }} // 可实现刷新逻辑
+                    />
+                )}
             </View>
-            <BottomActionForm ref={bottomFormRef} />
+            <ScheduleForm ref={bottomFormRef} />
+            {/* SchduleInfo 实现动态数据传递 */}
+            {selectedItem && (
+                <SchduleInfo
+                    ref={schduleInfoRef}
+                    title={selectedItem.content}
+                    time={selectedItem.time}
+                    location={selectedItem.location}
+                    description={`农历: ${selectedItem.chineseCalendar}`}
+                    callback={() => {
+                        console.log('计划调整回调');
+                    }}
+                />
+            )}
         </View>
     );
 };
@@ -126,8 +151,6 @@ const styles = transformStyles({
     list: {
         marginHorizontal: 24,
         marginTop: 20,
-        // padding: 10,
-        // backgroundColor: '#F6F6F6'
     },
 });
 

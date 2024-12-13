@@ -1,123 +1,146 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-export const ListItem1 = ({ item }) => (
+export type ListItemProps = {
+    item: {
+        date: string;
+        chineseCalendar: string;
+        content: string;
+        time?: string;
+        location?: string;
+        image?: string;
+    };
+    itemClick?: () => void;
+};
+
+// ListItem1
+export const ListItem1: React.FC<ListItemProps> = ({ item, itemClick }) => (
     <View>
-        <Text style={styles.date}>{item.date} <Text style={{
-            color: '#8A8A8A'
-        }}>{item.chineseCalendar}</Text></Text>
-        <View style={styles.itemContainer}>
-            <View style={styles.contentBeforeIcon}></View>
-            <Text style={styles.content}>{item.content}</Text>
-            {item.time && <Text style={styles.time}>{item.time}</Text>}
-            {item.location && <Text style={styles.location}>{item.location}</Text>}
-            <Image
-                source={{ uri: item.image }}
-                style={styles.image}
-                onError={() => {
-                    // 图片加载失败处理，这里简单展示一个默认占位图片（需要提前准备好占位图片资源）
-                    console.log("图片加载失败，使用默认占位图片");
-                }}
-            />
-        </View>
+        <Text style={styles.date}>
+            {item.date}{" "}
+            <Text style={styles.chineseCalendar}>{item.chineseCalendar}</Text>
+        </Text>
+        <Pressable onPress={itemClick}>
+            <View style={[styles.itemContainer, { backgroundColor: "#EDF6FF" }]}>
+                <View style={[styles.contentBeforeIcon, { backgroundColor: "#3B8E58" }]}></View>
+                <Text style={styles.content}>{item.content}</Text>
+                {item.time && <Text style={styles.time}>{item.time}</Text>}
+                {item.location && <Text style={styles.location}>{item.location}</Text>}
+                {item.image && (
+                    <Image
+                        source={{ uri: item.image }}
+                        style={styles.image}
+                        onError={() => {
+                            console.log("图片加载失败，使用默认占位图片");
+                        }}
+                    />
+                )}
+            </View>
+        </Pressable>
     </View>
 );
 
-export const ListItem2 = ({ item }) => (
+// ListItem2
+export const ListItem2: React.FC<ListItemProps> = ({ item, itemClick }) => (
     <View>
-        <Text style={styles.date}>{item.date} <Text style={{
-            color: '#8A8A8A'
-        }}>{item.chineseCalendar}</Text></Text>
-        <View style={styles.itemContainer}>
-            <View style={styles.contentBeforeIcon}></View>
-            <Text style={styles.content}>{item.content}</Text>
-            {item.time && <Text style={styles.time}>{item.time}</Text>}
-            {item.location && <Text style={styles.location}>{item.location}</Text>}
-            <Image
-                source={{ uri: item.image }}
-                style={styles.image}
-                onError={() => {
-                    // 图片加载失败处理，这里简单展示一个默认占位图片（需要提前准备好占位图片资源）
-                    console.log("图片加载失败，使用默认占位图片");
-                }}
-            />
-        </View>
+        <Text style={styles.date}>
+            {item.date}{" "}
+            <Text style={styles.chineseCalendar}>{item.chineseCalendar}</Text>
+        </Text>
+        <Pressable onPress={itemClick}>
+            <View
+                style={[
+                    styles.itemContainer,
+                    { backgroundColor: "#FFFFFF", borderWidth: 1, borderColor: "#E5E5E5" },
+                ]}
+            >
+                <View style={[styles.contentBeforeIcon, { backgroundColor: "#4CAF50" }]}></View>
+                <Text style={[styles.content, { marginLeft: 10 }]}>{item.content}</Text>
+                <Text style={styles.time}>全天</Text>
+            </View>
+        </Pressable>
     </View>
 );
 
-export const ListItem3 = ({ item }) => (
+// ListItem3
+export const ListItem3: React.FC<ListItemProps> = ({ item, itemClick }) => (
     <View>
-        <Text style={styles.date}>{item.date} <Text style={{
-            color: '#8A8A8A'
-        }}>{item.chineseCalendar}</Text></Text>
-        <View style={styles.itemContainer}>
-            <View style={styles.contentBeforeIcon}></View>
-            <Text style={styles.content}>{item.content}</Text>
-            {item.time && <Text style={styles.time}>{item.time}</Text>}
-            {item.location && <Text style={styles.location}>{item.location}</Text>}
-            <Image
-                source={{ uri: item.image }}
-                style={styles.image}
-                onError={() => {
-                    // 图片加载失败处理，这里简单展示一个默认占位图片（需要提前准备好占位图片资源）
-                    console.log("图片加载失败，使用默认占位图片");
-                }}
-            />
-        </View>
+        <Text style={styles.date}>
+            {item.date}{" "}
+            <Text style={styles.chineseCalendar}>{item.chineseCalendar}</Text>
+        </Text>
+        <Pressable onPress={itemClick}>
+            <View style={[styles.itemContainer, { backgroundColor: "#FFFAE6" }]}>
+                <View style={[styles.contentBeforeIcon, { backgroundColor: "#FFA500" }]}></View>
+                <Text style={styles.content}>{item.content}</Text>
+                {item.time && <Text style={styles.time}>{item.time}</Text>}
+                {item.location && <Text style={styles.location}>{item.location}</Text>}
+                {item.image && (
+                    <Image
+                        source={{ uri: item.image }}
+                        style={styles.image}
+                        onError={() => {
+                            console.log("图片加载失败，使用默认占位图片");
+                        }}
+                    />
+                )}
+            </View>
+        </Pressable>
     </View>
 );
 
+// 样式表
 const styles = StyleSheet.create({
     contentBeforeIcon: {
         width: 4,
         height: 18,
-        backgroundColor: '#3B8E58',
         borderRadius: 2,
-        position: 'absolute',
+        position: "absolute",
         top: 10,
+        left: 10,
     },
     itemContainer: {
-        backgroundColor: '#EDF6FF',
         marginVertical: 12,
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
-        // flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: "space-between",
+        position: "relative",
     },
     date: {
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+        fontWeight: "bold",
+        color: "#333",
+    },
+    chineseCalendar: {
+        color: "#8A8A8A",
     },
     content: {
         fontSize: 14,
-        color: '#363636',
-        // marginTop: 10,
+        color: "#363636",
     },
     time: {
         marginTop: 6,
         marginBottom: 2,
         fontSize: 12,
-        color: '#8A8A8A',
+        color: "#8A8A8A",
     },
     location: {
         fontSize: 12,
-        color: '#8A8A8A',
+        color: "#8A8A8A",
     },
     image: {
         width: 36,
         height: 36,
         borderRadius: 18,
-        // marginTop: 10,
-        position: 'absolute',
+        position: "absolute",
         top: 10,
         right: 13,
     },
-})
+});
 
 export default {
     ListItem1,
     ListItem2,
     ListItem3,
-}
+};
