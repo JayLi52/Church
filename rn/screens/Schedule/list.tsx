@@ -21,11 +21,21 @@ const fetchData = () => {
                     chineseCalendar: '十月初四',
                     type: "normal", // 标准活动类型
                 },
+
                 {
                     date: "2024-09-09",
                     content: "全天活动",
                     chineseCalendar: '十月初三',
                     type: "allDay", // 全天类型
+                },
+                {
+                    date: "2024-09-11",
+                    content: "线下联合祷告",
+                    time: "14:23 – 15:20",
+                    location: "中国.四川成都.牛王庙A口",
+                    image: 'https://picx.zhimg.com/v2-833b9089b397266bca8fb16457781500_qhd.jpg?source=57bbeac9',
+                    chineseCalendar: '十月初四',
+                    type: "normal", // 标准活动类型
                 },
                 {
                     date: "2024-09-06",
@@ -35,6 +45,12 @@ const fetchData = () => {
                     image: 'https://pic1.zhimg.com/v2-411e5bb482b06abfa0687004f00fab10_1440w.png',
                     chineseCalendar: '十月初四',
                     type: "special", // 特殊类型
+                },
+                {
+                    date: "2024-09-09",
+                    content: "全天活动",
+                    chineseCalendar: '十月初三',
+                    type: "allDay", // 全天类型
                 },
             ]);
         }, 2000);

@@ -10,6 +10,9 @@ import {
     Pressable,
     TouchableWithoutFeedback,
     Image,
+    KeyboardAvoidingView,
+    Dimensions,
+    Keyboard,
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import CustomModal from "@components/CustomModal";
@@ -69,6 +72,25 @@ const ScheduleForm = forwardRef((props, ref) => {
         }
     };
 
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    useEffect(() => {
+        const showListener = Keyboard.addListener("keyboardDidShow", (event) => {
+            setKeyboardHeight(event.endCoordinates.height);
+            console.log("键盘高度:", event.endCoordinates.height);
+            // setMarginBottom(event.endCoordinates.height - distanceToBottom)
+        });
+
+        const hideListener = Keyboard.addListener("keyboardDidHide", () => {
+            setKeyboardHeight(0);
+        });
+
+        return () => {
+            showListener.remove();
+            hideListener.remove();
+        };
+    }, []);
+
     return (
         <>
             <CustomModal ref={modalRef} modalContentWrapStyle={{
@@ -76,7 +98,9 @@ const ScheduleForm = forwardRef((props, ref) => {
                 bottom: 0,
                 left: 0,
             }}>
-                <View style={styles.modalContent}>
+                <View style={[styles.modalContent, {
+                    marginBottom: keyboardHeight > 0 ? keyboardHeight - 476 : 0 // 476保证3个输入框可见
+                }]}>
                     {/* 头部 */}
                     <View style={styles.header}>
                         <TouchableOpacity onPress={closeModal}>

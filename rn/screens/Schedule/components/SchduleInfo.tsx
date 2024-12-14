@@ -48,18 +48,31 @@ const SchduleInfo = forwardRef<SchduleInfoRef, SchduleInfoProps>(
                         <Image source={require('@assets/images/schedule/close.png')} />
                     </TouchableOpacity>
                     <Text style={styles.title}>{title}</Text>
-                    <View style={styles.section}>
-                        <Text style={styles.label}>时间</Text>
-                        <Text style={styles.value}>{time}</Text>
-                    </View>
-                    <View style={styles.section}>
-                        <Text style={styles.label}>地点</Text>
-                        <Text style={styles.value}>{location}</Text>
-                    </View>
-                    <View style={styles.section}>
-                        <Text style={styles.label}>介绍</Text>
-                        <Text style={styles.value}>{description}</Text>
-                    </View>
+                    {[
+                        {
+                            label: '时间',
+                            value: time,
+                            icon: require('@assets/images/schedule/time.png')
+                        },
+                        {
+                            label: '地点',
+                            value: location,
+                            icon: require('@assets/images/schedule/location.png')
+                        },
+                        {
+                            label: '介绍',
+                            value: description,
+                            icon: require('@assets/images/schedule/Introduction.png')
+                        }
+                    ].map((item, idx) =>
+                        <View key={idx} style={styles.row}>
+                            <View style={styles.section}>
+                                <Image style={styles.sectionIcon} source={item.icon} />
+                                <Text style={styles.label}>{item.label}</Text>
+                            </View>
+                            <Text style={styles.value}>{item.value}</Text>
+                        </View>
+                    )}
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => {
@@ -80,8 +93,8 @@ const styles = transformStyles({
     popup: {
         width: 390,
         backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 20,
+        borderRadius: 20,
+        paddingTop: 20,
         alignItems: 'center'
     },
     closeButton: {
@@ -92,35 +105,41 @@ const styles = transformStyles({
         width: 44,
         height: 44
     },
-    closeButtonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: 'gray',
-    },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
     },
+    row: {
+        marginBottom: 13,
+        width: 390,
+        paddingHorizontal: 16,
+    },
     section: {
-        marginBottom: 15,
+        height: 32,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    sectionIcon: {
+        height: 32,
+        width: 32,
     },
     label: {
-        fontSize: 14,
-        color: '#555',
-        marginBottom: 5,
+        fontSize: 12,
+        color: '#8A8A8A',
     },
     value: {
         fontSize: 14,
-        color: '#333',
+        color: '#363636',
     },
     button: {
         backgroundColor: '#FFA500',
         paddingVertical: 10,
         alignItems: 'center',
         borderRadius: 22,
-        marginTop: 20,
+        marginTop: 71,
+        marginBottom: 30,
         width: 300,
         height: 44
     },

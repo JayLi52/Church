@@ -22,7 +22,7 @@ export const ListItem1: React.FC<ListItemProps> = ({ item, itemClick }) => (
         </Text>
         <Pressable onPress={itemClick}>
             <View style={[styles.itemContainer, { backgroundColor: "#EDF6FF" }]}>
-                <View style={[styles.contentBeforeIcon, { backgroundColor: "#3B8E58" }]}></View>
+                <View style={[styles.contentBeforeIcon, { backgroundColor: "#518AC2" }]}></View>
                 <Text style={styles.content}>{item.content}</Text>
                 {item.time && <Text style={styles.time}>{item.time}</Text>}
                 {item.location && <Text style={styles.location}>{item.location}</Text>}
@@ -51,12 +51,14 @@ export const ListItem2: React.FC<ListItemProps> = ({ item, itemClick }) => (
             <View
                 style={[
                     styles.itemContainer,
-                    { backgroundColor: "#FFFFFF", borderWidth: 1, borderColor: "#E5E5E5" },
+                    { flexDirection: 'row', justifyContent: "space-between", paddingRight: 0 },
                 ]}
             >
                 <View style={[styles.contentBeforeIcon, { backgroundColor: "#4CAF50" }]}></View>
-                <Text style={[styles.content, { marginLeft: 10 }]}>{item.content}</Text>
-                <Text style={styles.time}>全天</Text>
+                <Text style={[styles.content, { marginLeft: 0, color: '#8A8A8A' }]}>{item.content}</Text>
+                <Text style={{
+                    color: '#8A8A8A'
+                }}>全天</Text>
             </View>
         </Pressable>
     </View>
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
         borderRadius: 2,
         position: "absolute",
         top: 10,
-        left: 10,
+        left: 0,
     },
     itemContainer: {
         marginVertical: 12,
@@ -108,16 +110,19 @@ const styles = StyleSheet.create({
         position: "relative",
     },
     date: {
-        fontSize: 16,
-        fontWeight: "bold",
+        fontSize: 14,
+        // fontWeight: "bold",
         color: "#333",
     },
     chineseCalendar: {
+        fontSize: 14,
+
         color: "#8A8A8A",
     },
     content: {
         fontSize: 14,
         color: "#363636",
+        width: 200,
     },
     time: {
         marginTop: 6,
