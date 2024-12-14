@@ -10,7 +10,8 @@
     "test": "jest",
     "stop-8081": "npx kill-port 8081",
     "restart": "npm run stop-8081 && yarn start --reset-cache",
-    "push": "git push gitee main:0.76.0"
+    "push": "git push gitee main:0.76.0",
+    "screenshot": "adb shell screencap -p /sdcard/screenshot.png && adb pull /sdcard/screenshot.png ./screenshot.png"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.0.6",

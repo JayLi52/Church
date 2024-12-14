@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { useBackHandler } from '@utils/hooks';
 
 const CalendarScreen = ({ navigation }) => {
-    useBackHandler()
+    useBackHandler();
     const currentDate = dayjs().format('YYYY-MM-DD'); // 获取当前日期
     const [markedDates, setMarkedDates] = useState({
-        '2024-12-05': { marked: true, dotColor: '#FFA500' },
-        '2024-12-12': { marked: true, dotColor: '#008000' },
-        '2024-12-18': { marked: true, dotColor: '#3CB371' },
-        '2024-12-25': { selected: true, marked: true, selectedColor: '#1E90FF' },
+        '2024-09-12': { selected: true, marked: true, selectedColor: '#1E90FF' },
+        '2024-09-17': { marked: true, dotColor: '#FFA500' },
+        '2024-09-20': { marked: true, dotColor: '#008000' },
+        '2024-09-26': { marked: true, dotColor: '#3CB371' },
+        '2024-10-05': { marked: true, dotColor: '#FFA500' },
+        '2024-10-12': { selected: true, marked: true, selectedColor: '#1E90FF' },
     });
 
     const onDayPress = (day: DateData) => {
         console.log('选中的日期:', day.dateString);
-        navigation.navigate('ScheduleList')
+        navigation.navigate('ScheduleList');
     };
 
     return (
@@ -40,23 +42,48 @@ const CalendarScreen = ({ navigation }) => {
                 </View>
             </View>
 
-            {/* 日历组件 */}
-            <Calendar
-                current={currentDate}
-                style={styles.calendar}
-                markedDates={markedDates}
-                onDayPress={onDayPress}
-                theme={{
-                    selectedDayBackgroundColor: '#1E90FF',
-                    todayTextColor: '#FF4500',
-                    arrowColor: '#1E90FF',
-                    monthTextColor: '#333333',
-                    textDayFontWeight: '400',
-                    textMonthFontWeight: '600',
-                    textDayHeaderFontWeight: '400',
-                }}
-                hideExtraDays={false}
-            />
+            {/* 嵌套滚动列表 */}
+            <ScrollView>
+                <View style={styles.monthGroup}>
+                    <Text style={styles.monthTitle}>9月</Text>
+                    <Calendar
+                        current="2024-09-01"
+                        style={styles.calendar}
+                        markedDates={markedDates}
+                        onDayPress={onDayPress}
+                        theme={{
+                            selectedDayBackgroundColor: '#1E90FF',
+                            todayTextColor: '#FF4500',
+                            arrowColor: '#1E90FF',
+                            monthTextColor: '#333333',
+                            textDayFontWeight: '400',
+                            textMonthFontWeight: '600',
+                            textDayHeaderFontWeight: '400',
+                        }}
+                        hideExtraDays={false}
+                    />
+                </View>
+
+                <View style={styles.monthGroup}>
+                    <Text style={styles.monthTitle}>10月</Text>
+                    <Calendar
+                        current="2024-10-01"
+                        style={styles.calendar}
+                        markedDates={markedDates}
+                        onDayPress={onDayPress}
+                        theme={{
+                            selectedDayBackgroundColor: '#1E90FF',
+                            todayTextColor: '#FF4500',
+                            arrowColor: '#1E90FF',
+                            monthTextColor: '#333333',
+                            textDayFontWeight: '400',
+                            textMonthFontWeight: '600',
+                            textDayHeaderFontWeight: '400',
+                        }}
+                        hideExtraDays={false}
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 };
@@ -83,17 +110,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     iconButton: {
-        // marginLeft: 10,
-        // backgroundColor: '#FFA500',
-        // padding: 10,
-        // borderRadius: 8,
         width: 44,
         height: 44,
     },
     icon: {
-        // width: 20,
-        // height: 20,
-        // tintColor: '#FFFFFF',
+        // Customize your icon styles if needed
+    },
+    monthGroup: {
+        marginBottom: 20,
+    },
+    monthTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#333',
+        paddingHorizontal: 16,
+        marginBottom: 10,
     },
     calendar: {
         marginHorizontal: 10,

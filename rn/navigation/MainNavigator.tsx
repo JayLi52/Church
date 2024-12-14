@@ -8,8 +8,8 @@ import SpiritualCultivationHomeScreen from '../screens/SpiritualCultivation/Spir
 const Tab = createBottomTabNavigator()
 const TabBarList = [
   {
-    name: 'Chat', 
-    component: HomeScreen, 
+    name: 'Chat',
+    component: HomeScreen,
     options: {
       tabBarLabel: 'Chat',
       iconDefault: require('@assets/images/tabbar/chat_default.png'),
@@ -53,12 +53,12 @@ const TabBarList = [
     }
   }
 ]
-function MainNavigator () {
+function MainNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
       tabBar={props => <CustomTabBar {...props} />}
-      initialRouteName="ReadingRoom"
+      initialRouteName="ReadingRoomHome"
     >
       {
         TabBarList.map((item, index) => {

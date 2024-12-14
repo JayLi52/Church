@@ -9,6 +9,7 @@ import AuthNavigator from "./AuthNavigator"
 import globalStore from '@store/index';
 import { observer } from "mobx-react"
 import ScheduleNavigator from "./ScheduleNavigator"
+import TeamNavigator from "./TeamNavigator"
 
 const Stack = createNativeStackNavigator()
 
@@ -29,9 +30,10 @@ const AuthStack = () => (
 
 const MainStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Schedule" component={ScheduleNavigator} />
-    <Stack.Screen name="Main" component={MainNavigator} />
+    <Stack.Screen name="Team" component={TeamNavigator} />
     <Stack.Screen name="Mine" component={MineNavigator} />
+    <Stack.Screen name="Main" component={MainNavigator} />
+    <Stack.Screen name="Schedule" component={ScheduleNavigator} />
     <Stack.Screen name="ReadingRoom" component={ReadingRoomNavigator} />
   </Stack.Navigator>
 );

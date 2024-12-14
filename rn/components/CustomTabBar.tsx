@@ -7,6 +7,7 @@ import {
   Image
 } from 'react-native'
 import BaseText from '@components/BaseText'
+import { transformStyles } from '@utils/index'
 
 interface CustomTabOptions extends BottomTabNavigationOptions {
   iconDefault?: any,
@@ -33,8 +34,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           }
           const IconSource = isFocused ? options.iconActive : options.iconDefault
           return (
-            <Pressable key={index} onPressIn={onPress} style={[ isFocused ? styles.tabBarButtonActive : styles.tabBarButton ]}>
-              <Image style={[ isFocused ? styles.tabBarIconActive : styles.tabBarIcon]} source={IconSource} />
+            <Pressable key={index} onPressIn={onPress} style={[isFocused ? styles.tabBarButtonActive : styles.tabBarButton]}>
+              <Image style={[isFocused ? styles.tabBarIconActive : styles.tabBarIcon]} source={IconSource} />
               {
                 isFocused && <BaseText style={styles.tabBarText}>{options.tabBarLabel}</BaseText>
               }
@@ -46,7 +47,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
   tabBar: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 26,
@@ -96,7 +97,10 @@ const styles = StyleSheet.create({
   },
   tabBarText: {
     color: '#fff',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    width: 20,
+    fontSize: 10,
+    textAlign: 'center'
   }
 })
 
