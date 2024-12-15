@@ -1,129 +1,67 @@
 import { transformStyles } from '@utils/index';
 import React from 'react';
-import { View, Text, StyleSheet, Image, ProgressBarAndroid, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { ProgressBar } from 'react-native-paper';
 
 const Devotion = () => {
+    const plans = [
+        { id: 1, title: '90天阅读旧约', progress: 0.65, date: '2024-08-11 至 2024-08-21' },
+        { id: 2, title: '90天阅读旧约', progress: 1, date: '2024-08-11 至 2024-08-21' },
+        { id: 3, title: '90天阅读旧约', progress: 0, date: '2024-08-11 至 2024-08-21' },
+    ];
+
     return (
         <ScrollView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Image
                     style={styles.profileImage}
-                    source={{ uri: 'https://example.com/profile.jpg' }}
+                    source={require('@assets/images/book/Avatar1.png')}
                 />
                 <Text style={styles.title}>教会名称文本信息</Text>
-                <View style={styles.calendarIcon}>
-                    {/* 假图标，可替换为Icon库 */}
-                    <Text>📅</Text>
-                </View>
+                <Text style={styles.calendarIcon}>📅</Text>
             </View>
 
             {/* Stats */}
             <View style={styles.statsContainer}>
-                <View style={styles.statBox}>
-                    <Text style={styles.statNumber}>2 年 100 天</Text>
-                    <Text style={styles.statLabel}>累计灵修时长</Text>
-                </View>
-                <View style={styles.statBox}>
-                    <Text style={styles.statNumber}>0003</Text>
-                    <Text style={styles.statLabel}>累计灵修人次</Text>
-                </View>
+                <StatBox number="2 年 100 天" label="累计灵修时长" />
+                <StatBox number="0003" label="累计灵修人次" />
             </View>
 
             {/* Study Plan */}
             <Text style={styles.sectionTitle}>学经计划</Text>
-            <View style={styles.planCard}>
-                <Text style={styles.planTitle}>90天阅读旧约</Text>
-                <Text>进度：65%</Text>
-                <ProgressBarAndroid styleAttr="Horizontal" progress={0.65} />
-                <Text style={styles.date}>日期：2024-08-11 至 2024-08-21</Text>
-            </View>
-
-            {/* Past Plans */}
-            <Text style={styles.sectionSubtitle}>以往的计划</Text>
-            <View style={styles.planCard}>
-                <Text style={styles.planTitle}>90天阅读旧约</Text>
-                <Text>进度：100%</Text>
-                <ProgressBarAndroid styleAttr="Horizontal" progress={1} />
-                <Text style={styles.date}>日期：2024-08-11 至 2024-08-21</Text>
-            </View>
-            <View style={styles.planCard}>
-                <Text style={styles.planTitle}>90天阅读旧约</Text>
-                <Text>进度：0%</Text>
-                <ProgressBarAndroid styleAttr="Horizontal" progress={0} />
-                <Text style={styles.date}>日期：2024-08-11 至 2024-08-21</Text>
-            </View>
+            {plans.map((plan) => (
+                <View key={plan.id} style={styles.planCard}>
+                    <Text style={styles.planTitle}>{plan.title}</Text>
+                    <ProgressBar progress={plan.progress} color="#3498db" />
+                    <Text style={styles.date}>{plan.date}</Text>
+                </View>
+            ))}
         </ScrollView>
     );
 };
 
+const StatBox = ({ number, label }) => (
+    <View style={styles.statBox}>
+        <Text style={styles.statNumber}>{number}</Text>
+        <Text style={styles.statLabel}>{label}</Text>
+    </View>
+);
+
 const styles = transformStyles({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 16,
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'space-between',
-    },
-    profileImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    calendarIcon: {
-        fontSize: 20,
-    },
-    statsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        backgroundColor: '#FFFFFF',
-        marginVertical: 10,
-        padding: 16,
-    },
-    statBox: {
-        alignItems: 'center',
-    },
-    statNumber: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    statLabel: {
-        color: '#666',
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        margin: 16,
-    },
-    sectionSubtitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginLeft: 16,
-    },
-    planCard: {
-        backgroundColor: '#FFFFFF',
-        marginHorizontal: 16,
-        padding: 16,
-        borderRadius: 8,
-        marginBottom: 8,
-    },
-    planTitle: {
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    date: {
-        fontSize: 12,
-        color: '#888',
-        marginTop: 4,
-    },
+    container: { flex: 1, backgroundColor: '#F5F5F5' },
+    header: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#FFFFFF' },
+    profileImage: { width: 50, height: 50, borderRadius: 25 },
+    title: { fontSize: 18, fontWeight: 'bold', marginLeft: 12 },
+    calendarIcon: { fontSize: 20 },
+    statsContainer: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },
+    statBox: { alignItems: 'center' },
+    statNumber: { fontSize: 18, fontWeight: 'bold' },
+    statLabel: { color: '#666' },
+    sectionTitle: { fontSize: 16, fontWeight: 'bold', marginVertical: 10, marginHorizontal: 16 },
+    planCard: { backgroundColor: '#FFFFFF', margin: 16, padding: 16, borderRadius: 8 },
+    planTitle: { fontWeight: 'bold', marginBottom: 8 },
+    date: { fontSize: 12, color: '#888', marginTop: 4 },
 });
 
 export default Devotion;

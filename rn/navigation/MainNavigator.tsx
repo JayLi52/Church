@@ -4,18 +4,10 @@ import CustomTabBar from '@components/CustomTabBar'
 import HomeScreen from '../screens/HomeScreen'
 import ReadingRoomHomeScreen from '../screens/ReadingRoom/ReadingRoomHomeScreen'
 import SpiritualCultivationHomeScreen from '../screens/SpiritualCultivation/SpiritualCultivationHomeScreen'
+import OrganizationManager from '@screens/Organization/OrganizationManager'
 
 const Tab = createBottomTabNavigator()
 const TabBarList = [
-  {
-    name: 'Chat',
-    component: HomeScreen,
-    options: {
-      tabBarLabel: 'Chat',
-      iconDefault: require('@assets/images/tabbar/chat_default.png'),
-      iconActive: require('@assets/images/tabbar/chat_active.png')
-    }
-  },
   {
     name: 'ReadingRoomHome',
     component: ReadingRoomHomeScreen,
@@ -26,12 +18,12 @@ const TabBarList = [
     }
   },
   {
-    name: 'Pray',
+    name: 'Chat',
     component: HomeScreen,
     options: {
-      tabBarLabel: 'Pray',
-      iconDefault: require('@assets/images/tabbar/pray_default.png'),
-      iconActive: require('@assets/images/tabbar/pray_active.png')
+      tabBarLabel: 'Chat',
+      iconDefault: require('@assets/images/tabbar/chat_default.png'),
+      iconActive: require('@assets/images/tabbar/chat_active.png')
     }
   },
   {
@@ -41,6 +33,15 @@ const TabBarList = [
       tabBarLabel: '灵修',
       iconDefault: require('@assets/images/tabbar/task_default.png'),
       iconActive: require('@assets/images/tabbar/task_active.png')
+    }
+  },
+  {
+    name: 'Organization',
+    component: OrganizationManager,
+    options: {
+      tabBarLabel: '组织管理',
+      iconDefault: require('@assets/images/tabbar/organization.png'),
+      iconActive: require('@assets/images/tabbar/organization_active.png')
     }
   },
   {

@@ -29,13 +29,13 @@ const CalendarScreen = ({ navigation }) => {
                 <View style={styles.headerIcons}>
                     <TouchableOpacity style={styles.iconButton}>
                         <Image
-                            source={require('@assets/images/schedule/Calendar.png')} // 替换为你的图标
+                            source={require('@assets/images/common/Calendar_active.png')} // 替换为你的图标
                             style={styles.icon}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.iconButton}>
                         <Image
-                            source={require('@assets/images/schedule/More_Features.png')} // 替换为你的图标
+                            source={require('@assets/images/common/More_Features.png')} // 替换为你的图标
                             style={styles.icon}
                         />
                     </TouchableOpacity>
