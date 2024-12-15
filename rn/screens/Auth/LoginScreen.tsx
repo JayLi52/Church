@@ -18,11 +18,13 @@ import {
 import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { translations } from '@utils/i18n';
-import globalStore from '@store/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { GlobalState } from '@store/type';
+import { checkCode } from '@store/thunks';
+import { setIsLoggedIn } from '@store/actions';
 // import { Observer } from 'mobx-react';
 
 export default function LoginScreen() {
-  const { isLogIning, isLoggedIn } = globalStore; // 获取登录状态
   const [isSending, setIsSending] = useState(false); // 控制按钮发送状态
   const [countdown, setCountdown] = useState(60); // 倒计时状态
   const [codes, setCodes] = useState(['', '', '', '', '']); // 存储验证码值
@@ -37,6 +39,10 @@ export default function LoginScreen() {
     title: translations.proto.zh.title,
     content: translations.proto.zh.content
   })
+
+  const isLoggedIn = useSelector((state: GlobalState) => state.isLoggedIn);
+  const isLogIning = useSelector((state: GlobalState) => state.isLogIning);
+  const dispatch = useDispatch();
 
   const handleSendCode = () => {
     if (!validateEmail(email)) {
@@ -64,15 +70,29 @@ export default function LoginScreen() {
 
   const handleSubmitCode = async (newCodes: string[]) => {
     const fullCode = newCodes.join('');
-    if (fullCode.length === 5) {
-      const isValid = await globalStore.checkCode(fullCode);
+    if (fullCode.length !== 5) {
+      Alert.alert('提示', '请输入完整的验证码');
+      return;
+    }
+
+    setIsSending(true); // 禁用交互
+    try {
+      const isValid = await dispatch(checkCode(fullCode)); // 正确调用 Thunk
 
       if (isValid) {
-
-        setCodeValidate(true)
+        setCodeValidate(true);
+        dispatch(setIsLoggedIn(true)); // 更新 Redux 状态
+        Alert.alert('验证成功', '您已成功登录！');
+        // navigation.navigate('Main'); // 跳转到主页面
       } else {
-        Alert.alert('验证失败', '验证码错误');
+        Alert.alert('验证失败', '验证码错误，请重试');
+        startShakeAnimation(shakeAnimation); // 触发动画效果
       }
+    } catch (error) {
+      console.error('验证码验证失败', error);
+      Alert.alert('验证失败', '发生错误，请稍后再试');
+    } finally {
+      setIsSending(false); // 恢复交互
     }
   };
 
@@ -205,7 +225,7 @@ export default function LoginScreen() {
             <Text style={styles.contentButtonTextEng}>English</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => {
-            globalStore.changeLoginState(true)
+            dispatch(setIsLoggedIn(true))
             // navigation.navigate('Main')
           }}>
             <Text style={styles.contentButtonTextLogin}>同意并登录</Text>

@@ -18,6 +18,7 @@ export const checkCode = (code: string) => async (dispatch: Dispatch) => {
     try {
         const flag = await verifyCodeWithServer(code);
         dispatch(setIsLoggedIn(flag));
+        return flag
     } catch (error) {
         console.error('checkCode error', error);
     } finally {
