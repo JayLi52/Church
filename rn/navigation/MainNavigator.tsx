@@ -4,7 +4,7 @@ import CustomTabBar from '@components/CustomTabBar'
 import HomeScreen from '../screens/HomeScreen'
 import ReadingRoomHomeScreen from '../screens/ReadingRoom/ReadingRoomHomeScreen'
 import SpiritualCultivationHomeScreen from '../screens/SpiritualCultivation/SpiritualCultivationHomeScreen'
-import OrganizationManager from '@screens/Organization/OrganizationManager'
+import OrganizationNavigator from './Organization'
 
 const Tab = createBottomTabNavigator()
 const TabBarList = [
@@ -37,7 +37,7 @@ const TabBarList = [
   },
   {
     name: 'Organization',
-    component: OrganizationManager,
+    component: OrganizationNavigator,
     options: {
       tabBarLabel: '组织管理',
       iconDefault: require('@assets/images/tabbar/organization.png'),

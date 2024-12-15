@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from 'rea
 import { Calendar, DateData } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { useBackHandler } from '@utils/hooks';
+import OrganizationHeader from '@components/Header';
 
 const CalendarScreen = ({ navigation }) => {
     useBackHandler();
@@ -24,23 +25,7 @@ const CalendarScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {/* 顶部按钮和标题 */}
-            <View style={styles.header}>
-                <Text style={styles.title}></Text>
-                <View style={styles.headerIcons}>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <Image
-                            source={require('@assets/images/common/Calendar_active.png')} // 替换为你的图标
-                            style={styles.icon}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <Image
-                            source={require('@assets/images/common/More_Features.png')} // 替换为你的图标
-                            style={styles.icon}
-                        />
-                    </TouchableOpacity>
-                </View>
-            </View>
+            <OrganizationHeader />
 
             {/* 嵌套滚动列表 */}
             <ScrollView>
@@ -92,7 +77,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F9F9F9',
-        paddingTop: 20,
+        // paddingTop: 20,
     },
     header: {
         flexDirection: 'row',

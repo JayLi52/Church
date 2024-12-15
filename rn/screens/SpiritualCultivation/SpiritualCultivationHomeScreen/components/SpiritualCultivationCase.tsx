@@ -33,7 +33,7 @@ function TabList(props: any): React.JSX.Element {
   useEffect(() => {
     onTabChange(currentTab)
   }, [currentTab])
-  
+
   return (
     <View style={styles.tabListWrap}>
       {
@@ -55,50 +55,50 @@ function TabList(props: any): React.JSX.Element {
 
 function SpiritualCultivationItem(props: any): React.JSX.Element {
   const { data } = props
-  const imgs=["https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png",
+  const imgs = ["https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png",
     "https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png",
     "https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png"
   ]
   return (
     <View>
       <View>
-      <BaseText style={styles.bookItemStatisticsItemText}>昨日,08.18</BaseText>
+        <BaseText style={styles.bookItemStatisticsItemText}>昨日,08.18</BaseText>
       </View>
-       <View style={styles.bookItem}>
-   
-   <View style={styles.bookItemLeft}>
-     <View style={styles.bookItemBgWrap}>
-       <Image style={styles.bookItemBg} source={{ uri: DefaultImage }} />
-       <BaseText style={styles.bookItemProgressText}>65%</BaseText>
-     </View>
-     <View style={styles.bookItemProgressWrap}>
-       <View style={styles.bookItemProgress} />
-       <View style={[styles.bookItemPregressInner, { width: 40 }]}></View>
-     </View>
-   </View>
-   <View>
-     <BaseText style={styles.bookItemTitle}>{data.name}</BaseText>
-     <View style={styles.bookItemStatisticsWrap}>
-       <View style={styles.bookItemStatisticsItem}>
-         <Image style={styles.bookItemStatisticsItemIcon} source={ViewIcon} />
-       </View>
-     </View>
-     <View style={styles.bookItemReaders}>{
-      imgs.map(it=>
-        <Image style={styles.churchIcon} source={{ uri:it }} />
-      )
-    }
-       <BaseText style={styles.bookItemReadersText}>  9999人已完成</BaseText>
-     </View>
-     <View style={styles.bookItemReaders}>
-       <BaseText style={styles.spTimeText}>2023-08-10</BaseText>
-       <BaseText style={styles.spCityText}>四川成都</BaseText>
-       <BaseText style={styles.spMinText}>34分钟</BaseText>
-     </View>
-   </View>
- </View>
+      <View style={styles.bookItem}>
+
+        <View style={styles.bookItemLeft}>
+          <View style={styles.bookItemBgWrap}>
+            <Image style={styles.bookItemBg} source={{ uri: DefaultImage }} />
+            <BaseText style={styles.bookItemProgressText}>65%</BaseText>
+          </View>
+          <View style={styles.bookItemProgressWrap}>
+            <View style={styles.bookItemProgress} />
+            <View style={[styles.bookItemPregressInner, { width: 40 }]}></View>
+          </View>
+        </View>
+        <View>
+          <BaseText style={styles.bookItemTitle}>{data.name}</BaseText>
+          <View style={styles.bookItemStatisticsWrap}>
+            <View style={styles.bookItemStatisticsItem}>
+              <Image style={styles.bookItemStatisticsItemIcon} source={ViewIcon} />
+            </View>
+          </View>
+          <View style={styles.bookItemReaders}>{
+            imgs.map(it =>
+              <Image style={styles.churchIcon} source={{ uri: it }} />
+            )
+          }
+            <BaseText style={styles.bookItemReadersText}>  9999人已完成</BaseText>
+          </View>
+          <View style={styles.bookItemReaders}>
+            <BaseText style={styles.spTimeText}>2023-08-10</BaseText>
+            <BaseText style={styles.spCityText}>四川成都</BaseText>
+            <BaseText style={styles.spMinText}>34分钟</BaseText>
+          </View>
+        </View>
+      </View>
     </View>
-   
+
   )
 }
 
@@ -115,7 +115,7 @@ function SpiritualCultivationCase(): React.JSX.Element {
           partId: 1
         })
         setspiritualCultivationList(res.data || [])
-        console.log(res)
+        // console.log(res)
       } catch (e) {
         console.log(e)
       }
@@ -125,13 +125,13 @@ function SpiritualCultivationCase(): React.JSX.Element {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-      <TabList onTabChange={onTabChange} />
-      <ScrollView style={styles.listWrap}>
+        <TabList onTabChange={onTabChange} />
+        <ScrollView style={styles.listWrap}>
           {
             spiritualCultivationList.map(item => <SpiritualCultivationItem key={(item as any).name} data={item} />)
           }
-            </ScrollView>
-       </View>
+        </ScrollView>
+      </View>
     </View>
   )
 }
@@ -204,12 +204,12 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   spCityText: {
-    marginLeft:10,
+    marginLeft: 10,
     color: '#8A8A8A',
     fontSize: 12
   },
   spMinText: {
-    marginLeft:10,
+    marginLeft: 10,
     color: '#8A8A8A',
     fontSize: 12
   },
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#059973',
   },
   bookItemRight: {
-    
+
   },
   bookItemTitle: {
     fontSize: 16,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   bookItemStatisticsItemIcon: {
     height: 20,
     width: 26,
-    marginLeft:4
+    marginLeft: 4
   },
   bookItemStatisticsItemText: {
     color: '#2E2E2E',
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: 'solid',
     marginRight: -5
-  },  
+  },
 })
 
 export default SpiritualCultivationCase

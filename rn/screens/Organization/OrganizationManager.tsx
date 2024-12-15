@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, FlatList, TouchableOpacity, Alert } from 'react-native';
 import ProfileHeader from './component/ProfileHeader';
 import { transformStyles } from '@utils/index';
-import Tabs from '@components/CustomTabBar1';
+import Tabs from '@components/Tabs';
 import MemberCard from './component/MemberCard1';
 
 const HEADER_DATA = [

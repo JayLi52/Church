@@ -29,7 +29,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               canPreventDefault: true
             })
             if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params)
+              navigation.navigate(route.name, {
+                screen: route.state?.routeNames[0]
+              })
             }
           }
           const IconSource = isFocused ? options.iconActive : options.iconDefault
