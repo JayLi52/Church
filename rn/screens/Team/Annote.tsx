@@ -20,8 +20,8 @@ const Annote = () => {
             </View>
             <Text style={styles.commentText} numberOfLines={3}>{item.text}</Text>
             <View style={styles.commentFooter}>
-                <Image style={styles.avatar} source={require('@assets/images/book/Avatar1.png')} />
-                <Image style={styles.avatar} source={require('@assets/images/book/Avatar2.png')} />
+                <Image style={styles.avatar} source={require('@assets/images/common/Avatar1.png')} />
+                <Image style={styles.avatar} source={require('@assets/images/common/Avatar2.png')} />
                 <Text style={styles.commentMetrics}>9999</Text>
             </View>
         </View>

@@ -7,7 +7,7 @@ const ProfileHeader = () => {
         < View style={styles.header} >
             <Image
                 style={styles.profileImage}
-                source={require('@assets/images/book/Avatar1.png')}
+                source={require('@assets/images/common/Avatar1.png')}
             />
             <Text style={styles.title}>教会名称文本信息</Text>
             <Text style={styles.calendarIcon}>📅</Text>

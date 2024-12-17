@@ -23,7 +23,7 @@ const MEMBERS = [
     //     location: '四川成都',
     //     distance: '1532KM',
     //     date: '2024-08-30 04:42',
-    //     avatar: require('@assets/images/book/Avatar1.png'),
+    //     avatar: require('@assets/images/common/Avatar1.png'),
     // },
     // {
     //     id: '2',
@@ -33,7 +33,7 @@ const MEMBERS = [
     //     location: '四川成都',
     //     distance: '1532KM',
     //     date: '2024-08-30 04:42',
-    //     avatar: require('@assets/images/book/Avatar2.png'),
+    //     avatar: require('@assets/images/common/Avatar2.png'),
     // },
     // {
     //     id: '3',
@@ -43,7 +43,7 @@ const MEMBERS = [
     //     location: '四川成都',
     //     distance: '1532KM',
     //     date: '2024-08-30 04:42',
-    //     avatar: require('@assets/images/book/Avatar3.png'),
+    //     avatar: require('@assets/images/common/Avatar3.png'),
     // },
 
     {

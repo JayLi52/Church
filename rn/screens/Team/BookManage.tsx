@@ -20,8 +20,8 @@ const BookManage = () => {
             </View>
             {item.checked && (
                 <View style={styles.avatarContainer}>
-                    <Image style={styles.avatar} source={require('@assets/images/book/Avatar1.png')} />
-                    <Image style={styles.avatar} source={require('@assets/images/book/Avatar2.png')} />
+                    <Image style={styles.avatar} source={require('@assets/images/common/Avatar1.png')} />
+                    <Image style={styles.avatar} source={require('@assets/images/common/Avatar2.png')} />
                 </View>
             )}
         </TouchableOpacity>
