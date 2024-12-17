@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="390px" height="76px" viewBox="0 0 390 76" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>矩形备份 2@2x</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#000000" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0.703234266" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="小组管理" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="书籍管理/简介操作" transform="translate(0, -274)" fill="url(#linearGradient-1)">
+            <path d="M0,274 L390,274 L390,306 C390,330.300529 370.300529,350 346,350 L44,350 C19.699471,350 0,330.300529 0,306 L0,274 L0,274 Z" id="矩形备份-2"></path>
+        </g>
+    </g>
+</svg>
