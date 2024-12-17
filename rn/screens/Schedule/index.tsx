@@ -19,7 +19,7 @@ const CalendarScreen = ({ navigation }) => {
 
     const onDayPress = (day: DateData) => {
         console.log('选中的日期:', day.dateString);
-        navigation.navigate('ScheduleList');
+        navigation.navigate('Organization', { screen: 'OrganizationScheduleList' });
     };
 
     return (

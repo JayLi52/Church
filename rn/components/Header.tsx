@@ -27,9 +27,6 @@ function Header(): React.JSX.Element {
   };
 
   useEffect(() => {
-    // 获取导航堆栈的状态
-    const stackState = navigation.getState();
-
     if (route.name === 'OrganizationCalendar') {
 
     }
@@ -38,7 +35,7 @@ function Header(): React.JSX.Element {
   return (
     <View style={styles.container}>
       {
-        route.name === 'OrganizationCalendar' ? <View style={styles.churchBox}>
+        route.name.indexOf('Organization') > -1 ? <View style={styles.churchBox}>
           <Image style={styles.churchIcon} source={{ uri: img }} />
           <BaseText style={styles.churchText}>{name}</BaseText>
         </View> : <View></View>

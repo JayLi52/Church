@@ -2,7 +2,7 @@ import { transformStyles } from '@utils/index';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
-const DateHeader = ({ date, navigation, add }) => {
+const DateHeader = ({ date, backAction, add }) => {
   const months = [
     '一月', '二月', '三月', '四月', '五月', '六月',
     '七月', '八月', '九月', '十月', '十一月', '十二月'
@@ -12,7 +12,7 @@ const DateHeader = ({ date, navigation, add }) => {
     <View style={styles.header}>
       <View style={styles.left}>
         <TouchableOpacity onPress={() => {
-          navigation.navigate('ScheduleIndex')
+          backAction()
           // navigation.goBack()
         }} style={styles.button}>
           <Image

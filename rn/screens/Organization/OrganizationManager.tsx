@@ -4,6 +4,7 @@ import ProfileHeader from './component/ProfileHeader';
 import { transformStyles } from '@utils/index';
 import Tabs from '@components/Tabs';
 import MemberCard from './component/MemberCard1';
+import Header from '@components/Header';
 
 const HEADER_DATA = [
     // { title: '总分享次数', value: '9999' },
@@ -55,7 +56,7 @@ const MEMBERS = [
         location: '四川成都',
         distance: '1532KM',
         date: '2024-08-30 04:42',
-        avatar: 'https://via.placeholder.com/100',
+        avatar: 'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
         gradient: ['#FF9E80', '#FF6E40'], // 渐变背景色
     },
     {
@@ -67,7 +68,7 @@ const MEMBERS = [
         location: '四川成都',
         distance: '1532KM',
         date: '2024-08-30 04:42',
-        avatar: 'https://via.placeholder.com/100',
+        avatar: 'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
         gradient: ['#8AB4F8', '#1565C0'], // 渐变背景色
     },
     {
@@ -79,7 +80,7 @@ const MEMBERS = [
         location: '四川成都',
         distance: '1532KM',
         date: '2024-08-30 04:42',
-        avatar: 'https://via.placeholder.com/100',
+        avatar: 'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
         gradient: ['#536DFE', '#1E88E5'], // 渐变背景色
     },
 ];
@@ -113,7 +114,7 @@ const handleAddMember = () => {
 const OrganizationManager = () => {
     return (
         <View style={styles.container}>
-            <ProfileHeader></ProfileHeader>
+            <Header></Header>
 
             {/* 统计卡片 */}
             <View style={styles.headerRow}>
@@ -134,7 +135,7 @@ const OrganizationManager = () => {
                     renderItem: (
                         <View style={styles.groupIntro}>
                             <Image
-                                source={'https://via.placeholder.com/350x130'}
+                                source={{ uri: 'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960' }}
                                 style={styles.groupImage}
                             />
                             <Text style={styles.groupName}>恩慈小组</Text>
@@ -149,7 +150,7 @@ const OrganizationManager = () => {
                     key: '2',
                     label: '成员',
                     renderItem: (
-                        <View style={{ flex: 1 }}>
+                        <View style={styles.memberContainer}>
                             {/* todo 添加新成员按钮 浮动在FlatList上面 */}
                             <FlatList
                                 data={MEMBERS}
@@ -184,7 +185,7 @@ const styles = transformStyles({
     headerRow: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 18, marginTop: 29 },
 
     headerCard: {
-        backgroundColor: '#3498db',
+        backgroundColor: '#4793C2',
         padding: 12,
         borderRadius: 8,
         alignItems: 'center',
@@ -214,10 +215,10 @@ const styles = transformStyles({
     // 小组简介
     groupIntro: {
         backgroundColor: '#fff',
-        margin: 12,
-        padding: 16,
+        // margin: 12,
+        padding: 20,
         borderRadius: 8,
-        elevation: 2,
+        // elevation: 2,
     },
     groupImage: { width: 350, height: 130, borderRadius: 10, marginVertical: 20 },
     groupName: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
@@ -244,6 +245,10 @@ const styles = transformStyles({
     },
 
     // 成员信息卡片
+    memberContainer: {
+        flex: 1,
+        height: 491
+    },
     memberCard: {
         flexDirection: 'row',
         backgroundColor: '#fff',
@@ -263,10 +268,10 @@ const styles = transformStyles({
     floatingButton: {
         position: 'absolute',
         bottom: 20,
-        right: 20,
-        width: 200, // 按钮宽度
+        right: 100,
+        width: 190, // 按钮宽度
         height: 50, // 按钮高度
-        backgroundColor: '#FF6E40', // 背景颜色改为图片中的橙色
+        backgroundColor: '#FF8800', // 背景颜色改为图片中的橙色
         borderRadius: 25, // 圆角为高度的一半，制作圆角矩形
         justifyContent: 'center',
         alignItems: 'center',

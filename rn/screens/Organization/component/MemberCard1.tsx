@@ -31,20 +31,28 @@ const MemberCard = ({ item }) => {
         },
     });
 
+    const titleBg: any = {
+        '同工': '#66AEFF',
+        '平信徒': '#1B6CC7',
+        '小组长': '#0C4380',
+    }
+
     return (
         <View style={styles.memberCard} {...panResponder.panHandlers}>
             <TouchableOpacity
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
                 activeOpacity={0.7} // 提高触感效果
-                style={[styles.memberGradient, { backgroundColor: item.gradient[0] }]}
+                style={styles.memberGradient}
             >
                 <Image source={{ uri: item.avatar }} style={styles.avatar} />
             </TouchableOpacity>
 
             <View style={styles.memberContent}>
                 <Text style={styles.memberName}>{item.name}</Text>
-                <Text style={styles.memberRole}>{item.role}</Text>
+                <Text style={[styles.memberRole, {
+                    backgroundColor: titleBg[item.role]
+                }]}>{item.role}</Text>
                 <Text style={styles.memberInfo}>
                     {item.days} {item.joinDate}
                 </Text>

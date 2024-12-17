@@ -18,8 +18,13 @@ import {
 import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { translations } from '@utils/i18n';
+import { useSelector } from 'react-redux';
+import { RootState } from '@store/store';
 
 export default function LoginScreen() {
+  const { isLogIning, isLoggedIn } = useSelector((state: RootState) => state.global);
+
+
   const [isSending, setIsSending] = useState(false); // 控制按钮发送状态
   const [countdown, setCountdown] = useState(60); // 倒计时状态
   const [codes, setCodes] = useState(['', '', '', '', '']); // 存储验证码值

@@ -47,7 +47,7 @@ const initialState = {
     user: {
         name: '未命名',
     },
-    isLoggedIn: false,
+    isLoggedIn: true,
     isLogIning: false,
 };
 

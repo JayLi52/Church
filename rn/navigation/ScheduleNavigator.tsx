@@ -9,7 +9,7 @@ export default function ScheduleNavigator() {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="ScheduleList" component={ScheduleList} />
-            <Stack.Screen name="ScheduleIndex" component={Schedule} />
+            <Stack.Screen name="Calendar" component={Schedule} />
         </Stack.Navigator>
     )
 }

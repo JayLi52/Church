@@ -1,11 +1,12 @@
 import { transformStyles } from '@utils/index';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, BackHandler, ActivityIndicator } from 'react-native';
 import dayjs from 'dayjs'; // 引入dayjs库
 import DateHeader from './components/DateHeader';
 import ScheduleForm from './components/ScheduleForm';
 import { ListItem1, ListItem2, ListItem3 } from './components/ListItem';
 import SchduleInfo, { SchduleInfoRef } from './components/SchduleInfo';
+import { useRoute } from '@react-navigation/native';
 
 // 模拟API请求
 const fetchData = () => {
@@ -94,13 +95,19 @@ const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
 
         loadData();
     }, []);
+    const route = useRoute();
+    const backAction = useCallback(() => {
+        if (route.name.indexOf('Organization') > -1) {
+            navigation.navigate('Organization', { screen: 'OrganizationCalendar' })
+        } else {
+            navigation.navigate('Mine', { screen: 'Calendar' });
+        }
+        return true; // 阻止默认返回行为
+    }, [])
+
+
 
     useEffect(() => {
-        const backAction = () => {
-            navigation.navigate('ScheduleIndex');
-            return true; // 阻止默认返回行为
-        };
-
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
         return () => backHandler.remove();
@@ -142,7 +149,7 @@ const ScheduleList: React.FC<{ navigation: any }> = ({ navigation }) => {
         <View style={{ backgroundColor: '#F6F6F6', flex: 1 }}>
             <DateHeader
                 date={[2024, 9]}
-                navigation={navigation}
+                backAction={backAction}
                 add={() => {
                     bottomFormRef.current!.open();
                 }}

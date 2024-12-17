@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     activeIndicator: {
         width: 20,
         height: 2,
-        backgroundColor: '#ff7f50',
+        backgroundColor: '#FF8800',
         marginTop: 4,
         borderRadius: 1,
     },

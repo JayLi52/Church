@@ -9,25 +9,16 @@ import OrganizationNavigator from './Organization'
 const Tab = createBottomTabNavigator()
 const TabBarList = [
   {
-    name: 'ReadingRoomHome',
+    name: 'OrganizationReadingRoomHome',
     component: ReadingRoomHomeScreen,
     options: {
-      tabBarLabel: '阅读',
+      tabBarLabel: '书籍',
       iconDefault: require('@assets/images/tabbar/book_default.png'),
       iconActive: require('@assets/images/tabbar/book_active.png')
     }
   },
   {
-    name: 'Chat',
-    component: HomeScreen,
-    options: {
-      tabBarLabel: 'Chat',
-      iconDefault: require('@assets/images/tabbar/chat_default.png'),
-      iconActive: require('@assets/images/tabbar/chat_active.png')
-    }
-  },
-  {
-    name: 'Task',
+    name: 'OrganizationTask',
     component: SpiritualCultivationHomeScreen,
     options: {
       tabBarLabel: '灵修',
@@ -36,19 +27,28 @@ const TabBarList = [
     }
   },
   {
+    name: 'OrganizationChat',
+    component: HomeScreen,
+    options: {
+      tabBarLabel: '培训',
+      iconDefault: require('@assets/images/tabbar/chat_default.png'),
+      iconActive: require('@assets/images/tabbar/chat_active.png')
+    }
+  },
+  {
     name: 'Organization',
     component: OrganizationNavigator,
     options: {
-      tabBarLabel: '组织管理',
+      tabBarLabel: '活动',
       iconDefault: require('@assets/images/tabbar/organization.png'),
       iconActive: require('@assets/images/tabbar/organization_active.png')
     }
   },
   {
-    name: 'Topic',
+    name: 'OrganizationTopic',
     component: HomeScreen,
     options: {
-      tabBarLabel: 'Topic',
+      tabBarLabel: '讨论',
       iconDefault: require('@assets/images/tabbar/topic_default.png'),
       iconActive: require('@assets/images/tabbar/topic_active.png')
     }
