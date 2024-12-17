@@ -6,10 +6,10 @@ import MainNavigator from "./MainNavigator"
 import MineNavigator from "./MineNavigator"
 import ReadingRoomNavigator from "./ReadingRoomNavigator"
 import AuthNavigator from "./AuthNavigator"
-import globalStore from '@store/index';
-import { observer } from "mobx-react"
 import ScheduleNavigator from "./ScheduleNavigator"
 import TeamNavigator from "./TeamNavigator"
+import { RootState } from "@store/store"
+import { useSelector } from "react-redux"
 
 const Stack = createNativeStackNavigator()
 
@@ -38,15 +38,14 @@ const MainStack = () => (
   </Stack.Navigator>
 );
 
-const AppNavigator = observer(() => {
-  // const globalStore = useContext(GlobalStoreContext);
-
+const AppNavigator = () => {
+  const { isLoggedIn } = useSelector((state: RootState) => state.global);
   return (
     <NavigationContainer theme={customTheme}>
-      {globalStore.isLoggedIn ? <MainStack /> : <AuthStack />}
+      {isLoggedIn ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
-});
+};
 
 
 export default AppNavigator

@@ -4,14 +4,15 @@ import {
   View,
   StatusBar
 } from 'react-native'
-import { observer, inject } from 'mobx-react'
-import globalStore from '@store'
 import Swiper from 'react-native-swiper'
 import BasicView from './components/BasicView'
 import ReadingData from './components/ReadingData'
 import ShareData from './components/ShareData'
+import { RootState } from '@store/store'
+import { useSelector } from 'react-redux'
 
 function MineHome(): React.JSX.Element {
+  const { user } = useSelector((state: RootState) => state.global);
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="transparent" translucent={true} />
@@ -21,7 +22,7 @@ function MineHome(): React.JSX.Element {
         paginationStyle={{ bottom: 10 }}
         loop={false}
       >
-        <BasicView user={globalStore.user} />
+        <BasicView user={user} />
         <ReadingData />
         <ShareData />
       </Swiper>
@@ -62,4 +63,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default observer(MineHome)
+export default MineHome

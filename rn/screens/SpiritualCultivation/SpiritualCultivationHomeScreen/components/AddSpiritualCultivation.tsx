@@ -5,18 +5,20 @@ import {
   View,
   StatusBar
 } from 'react-native'
-import { observer, inject } from 'mobx-react'
-import globalStore from '@store'
 import BaseText from '@components/BaseText'
+import { RootState } from '@store/store';
+import { useSelector } from 'react-redux';
 
 function MineHome(): React.JSX.Element {
+  const { user } = useSelector((state: RootState) => state.global);
+
   return (
     <View style={styles.container}>
       {/* <StatusBar backgroundColor="transparent" translucent={true} />
       <Image source={{ uri: 'http://gips3.baidu.com/it/u=3886271102,3123389489&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960' }} style={styles.image} /> */}
       <View style={styles.infoBox}>
         <View style={styles.userInfo}>
-          <BaseText style={styles.username}>{globalStore.user.name}</BaseText>
+          <BaseText style={styles.username}>{user.name}</BaseText>
           <BaseText style={styles.useretc}>四川成都 ｜ 1532KM</BaseText>
         </View>
         <BaseText style={styles.uid}>UID：0000000001</BaseText>
@@ -150,4 +152,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default observer(MineHome)
+export default MineHome
