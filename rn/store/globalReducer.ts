@@ -1,32 +1,84 @@
-import { GlobalState, GlobalAction, initialState, SET_USER, SET_IS_LOGGED_IN, SET_IS_LOGGING_IN, RESET_USER } from './types';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { GetUserInfo } from '@services/BaseService';
 
-// Reducer 函数
-export function globalReducer(
-    state: GlobalState = initialState,
-    action: GlobalAction
-): GlobalState {
-    switch (action.type) {
-        case SET_USER:
-            return {
-                ...state,
-                user: action.payload,
-            };
-        case SET_IS_LOGGED_IN:
-            return {
-                ...state,
-                isLoggedIn: action.payload,
-            };
-        case SET_IS_LOGGING_IN:
-            return {
-                ...state,
-                isLogIning: action.payload,
-            };
-        case RESET_USER:
-            return {
-                ...state,
-                user: { name: '未命名' },
-            };
-        default:
-            return state;
+// 模拟服务端验证逻辑
+const verifyCodeWithServer = async (code: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(code === '12345'); // 假设验证码是12345
+        }, 1000);
+    });
+};
+
+// 异步 Thunk: 验证验证码
+export const checkCode = createAsyncThunk<boolean, string>(
+    'global/checkCode',
+    async (code, { dispatch }) => {
+        dispatch(setIsLoggingIn(true));
+        try {
+            const flag = await verifyCodeWithServer(code);
+            dispatch(setIsLoggedIn(flag));
+            return flag;
+        } catch (error) {
+            console.error('checkCode error', error);
+            throw error; // 抛出错误供调用者处理
+        } finally {
+            dispatch(setIsLoggingIn(false));
+        }
     }
+);
+
+// 异步 Thunk: 初始化用户信息
+export const initUser = createAsyncThunk<void, void>(
+    'global/initUser',
+    async (_, { dispatch }) => {
+        try {
+            const res = await GetUserInfo({});
+            dispatch(setUser({ name: res.user?.nickName || '未登录' }));
+        } catch (error) {
+            console.error('initUser error', error);
+            throw error; // 抛出错误供调用者处理
+        }
+    }
+);
+
+// 初始化状态
+const initialState = {
+    user: {
+        name: '未命名',
+    },
+    isLoggedIn: false,
+    isLogIning: false,
+};
+
+const globalSlice = createSlice({
+    name: 'global',
+    initialState,
+    reducers: {
+        setUser(state, action: PayloadAction<{ name: string }>) {
+            state.user = action.payload;
+        },
+        setIsLoggedIn(state, action: PayloadAction<boolean>) {
+            state.isLoggedIn = action.payload;
+        },
+        setIsLoggingIn(state, action: PayloadAction<boolean>) {
+            state.isLogIning = action.payload;
+        },
+        resetUser(state) {
+            state.user = { name: '未命名' };
+        },
+    },
+});
+
+// 定义 GlobalState 接口
+export interface GlobalState {
+    user: {
+        name: string;
+    };
+    isLoggedIn: boolean;
+    isLogIning: boolean;
 }
+
+// 导出 Actions 和 Reducer
+export const { setUser, setIsLoggedIn, setIsLoggingIn, resetUser } = globalSlice.actions;
+export const globalReducer = globalSlice.reducer;

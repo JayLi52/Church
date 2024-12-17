@@ -1,12 +1,13 @@
-import { createStore, applyMiddleware } from 'redux';
-import thunk, { ThunkMiddleware } from 'redux-thunk';
-import { globalReducer } from './globalReducer';
-import { GlobalState, GlobalAction } from './types';
+import { configureStore } from "@reduxjs/toolkit";
+import { globalReducer } from "./globalReducer";
 
-// 配置 Redux Store
-const store = createStore(
-    globalReducer,
-    applyMiddleware(thunk as ThunkMiddleware<GlobalState, GlobalAction>)
-);
+export const store = configureStore({
+    reducer: {
+        global: globalReducer, // 挂载 globalReducer
+    },
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
