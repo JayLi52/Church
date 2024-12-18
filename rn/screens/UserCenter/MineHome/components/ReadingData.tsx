@@ -5,6 +5,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import BaseText from '@components/BaseText';
 import { transformStyles } from '@utils/index';
 
@@ -19,7 +20,10 @@ function ReadingData(): React.JSX.Element {
           uri: 'http://gips3.baidu.com/it/u=3886271102,3123389489&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960',
         }}
         style={styles.image}
-      />
+      >
+        {/* 添加模糊层 */}
+        <BlurView style={styles.blurView} blurType="dark" blurAmount={15} />
+      </ImageBackground>
 
       {/* 数据展示 */}
       <View style={styles.infoBox}>
@@ -64,7 +68,6 @@ function ReadingData(): React.JSX.Element {
 
 const styles = transformStyles({
   container: {
-    // backgroundColor: '#FFF',
     flex: 1,
     width: 390,
     height,
@@ -76,6 +79,9 @@ const styles = transformStyles({
     left: 0,
     top: 0,
     zIndex: -1,
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject, // 使模糊层覆盖整个背景图
   },
   infoBox: {
     flex: 1,

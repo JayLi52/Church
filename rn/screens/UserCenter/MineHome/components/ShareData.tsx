@@ -5,8 +5,10 @@ import {
   View,
   Dimensions,
 } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import BaseText from '@components/BaseText';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { transformStyles } from '@utils/index';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,7 +21,14 @@ function ShareData(): React.JSX.Element {
           uri: 'http://gips3.baidu.com/it/u=3886271102,3123389489&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960',
         }}
         style={styles.image}
-      />
+      >
+        {/* 添加模糊效果 */}
+        <BlurView
+          style={styles.blurView}
+          blurType="light" // 模糊类型: light, dark, or extraLight
+          blurAmount={20} // 模糊程度
+        />
+      </ImageBackground>
 
       {/* 数据展示容器 */}
       <View style={styles.infoBox}>
@@ -46,48 +55,27 @@ function ShareData(): React.JSX.Element {
             </View>
           </View>
         </View>
-
-        {/* 答题分享 */}
-        <BaseText style={styles.sectionTitle}>答题分享</BaseText>
-        <View style={styles.mainCountContainer}>
-          <BaseText style={styles.mainCount}>9999</BaseText>
-          <BaseText style={styles.unit}>次</BaseText>
-        </View>
-
-        <View style={styles.cardRow}>
-          <View style={styles.card}>
-            <Icon name="share" size={24} color="#666" style={styles.cardIcon} />
-            <View style={styles.cardContent}>
-              <BaseText style={styles.cardValue}>9999</BaseText>
-              <BaseText style={styles.cardLabel}>分享点击</BaseText>
-            </View>
-          </View>
-          <View style={styles.card}>
-            <Icon name="user-plus" size={24} color="#666" style={styles.cardIcon} />
-            <View style={styles.cardContent}>
-              <BaseText style={styles.cardValue}>9999</BaseText>
-              <BaseText style={styles.cardLabel}>新用户注册</BaseText>
-            </View>
-          </View>
-        </View>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
   container: {
     flex: 1,
-    width,
+    width: 390,
     height,
   },
   image: {
-    width,
+    width: 390,
     height,
     position: 'absolute',
     left: 0,
     top: 0,
     zIndex: -1,
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject, // 覆盖整个背景图片
   },
   infoBox: {
     flex: 1,
@@ -128,7 +116,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     width: '45%',
-    // height: 96,
     padding: 15,
     elevation: 3,
     shadowColor: '#000',
@@ -137,7 +124,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   cardIcon: {
-    marginRight: 10,
+    marginBottom: 10,
   },
   cardContent: {
     justifyContent: 'center',
