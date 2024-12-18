@@ -1,26 +1,22 @@
-import React, { useContext } from "react"
-import { NavigationContainer } from "@react-navigation/native"
-import { DefaultTheme } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import MainNavigator from "./MainNavigator"
-import MineNavigator from "./MineNavigator"
-import ReadingRoomNavigator from "./ReadingRoomNavigator"
-import AuthNavigator from "./AuthNavigator"
-import ScheduleNavigator from "./ScheduleNavigator"
-import TeamNavigator from "./TeamNavigator"
-import { RootState } from "@store/store"
-import { useSelector } from "react-redux"
+import React from "react";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MainNavigator from "./MainNavigator";
+import MineNavigator from "./MineNavigator";
+import AuthNavigator from "./AuthNavigator";
+import { RootState } from "@store/store";
+import { useSelector } from "react-redux";
+import LoadingSpinner from "@components/LoadingSpinner"; // 自定义加载组件
 
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator();
 
-// 自定义主题
 const customTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     background: "white",
-  }
-}
+  },
+};
 
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -28,30 +24,23 @@ const AuthStack = () => (
   </Stack.Navigator>
 );
 
-const MainStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Main" component={MainNavigator} />
-    <Stack.Screen name="Team" component={TeamNavigator} />
-    <Stack.Screen name="Schedule" component={ScheduleNavigator} />
-    <Stack.Screen name="ReadingRoom" component={ReadingRoomNavigator} />
-  </Stack.Navigator>
-);
-
-const MineStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Mine" component={MineNavigator} />
-  </Stack.Navigator>
-);
-
-
 const AppNavigator = () => {
   const { isLoggedIn, isPersonalPage } = useSelector((state: RootState) => state.global);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // 模拟数据加载
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <NavigationContainer theme={customTheme}>
-      {isLoggedIn ? isPersonalPage ? <MineNavigator /> : <MainNavigator /> : <AuthStack />}
+      {isLoggedIn ? (isPersonalPage ? <MineNavigator /> : <MainNavigator />) : <AuthStack />}
     </NavigationContainer>
   );
 };
 
-
-export default AppNavigator
+export default AppNavigator;

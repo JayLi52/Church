@@ -8,6 +8,8 @@ import {
 } from 'react-native'
 import BaseText from '@components/BaseText'
 import { transformStyles } from '@utils/index'
+import { useSelector } from 'react-redux'
+import { RootState } from '@store/store'
 
 interface CustomTabOptions extends BottomTabNavigationOptions {
   iconDefault?: any,
@@ -16,8 +18,12 @@ interface CustomTabOptions extends BottomTabNavigationOptions {
 }
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const isTabBarVisible = useSelector((state: RootState) => state.tab.isVisible);
+
   return (
-    <View style={styles.tabBar}>
+    <View style={[styles.tabBar, {
+      display: isTabBarVisible ? 'flex' : 'none'
+    }]}>
       {
         state.routes.map((route, index) => {
           const options = descriptors[route.key].options as CustomTabOptions

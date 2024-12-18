@@ -1,21 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+} from 'react-native';
 
-const CustomTabs = ({ tabs, onTabChange }) => {
+interface CustomTabsProps {
+    tabs: {
+        key: string;
+        label: string;
+        renderItem?: React.ReactNode; // Tab 对应的内容区域
+    }[];
+    onTabChange: (key: string) => void; // 切换事件
+}
+
+const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
     const [activeTab, setActiveTab] = useState(tabs[0].key);
 
-    const handleTabPress = (key) => {
+    const handleTabPress = (key: string) => {
         setActiveTab(key);
         onTabChange(key);
     };
 
     return (
         <>
-            <View style={styles.container}>
+            {/* 横向滚动 Tab */}
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContainer}
+            >
                 {tabs.map((tab) => (
                     <TouchableOpacity
                         key={tab.key}
-                        style={styles.tab}
+                        style={[styles.tab, activeTab === tab.key && styles.activeTab]}
                         onPress={() => handleTabPress(tab.key)}
                     >
                         <Text style={[styles.tabText, activeTab === tab.key && styles.activeText]}>
@@ -24,50 +44,31 @@ const CustomTabs = ({ tabs, onTabChange }) => {
                         {activeTab === tab.key && <View style={styles.activeIndicator} />}
                     </TouchableOpacity>
                 ))}
+            </ScrollView>
 
+            {/* 渲染选中 Tab 内容 */}
+            <View style={styles.contentContainer}>
+                {tabs.find(item => activeTab === item.key)?.renderItem}
             </View>
-            {
-                tabs.find(item => activeTab === item.key).renderItem
-            }
         </>
     );
 };
 
-// const Tabs = () => {
-//     const tabs = [
-//         { key: 'group', label: '小组' },
-//         { key: 'members', label: '成员' },
-//     ];
-
-//     const handleTabChange = (key) => {
-//         console.log('Active Tab:', key);
-//         // 根据 key 切换内容
-//     };
-
-//     return (
-//         <View style={{ flex: 1, backgroundColor: '#fff' }}>
-//             {/* 自定义 Tabs */}
-//             <CustomTabs tabs={tabs} onTabChange={handleTabChange} />
-
-//             {/* Tab 内容区域 */}
-//             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//                 <Text>切换的 Tab 内容将显示在这里</Text>
-//             </View>
-//         </View>
-//     );
-// };
-
 const styles = StyleSheet.create({
-    container: {
+    scrollContainer: {
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
         backgroundColor: '#fff',
     },
     tab: {
-        flex: 1,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
         alignItems: 'center',
-        paddingVertical: 10,
+    },
+    activeTab: {
+        borderBottomWidth: 2,
+        borderBottomColor: '#FF8800',
     },
     tabText: {
         fontSize: 16,
@@ -83,6 +84,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF8800',
         marginTop: 4,
         borderRadius: 1,
+    },
+    contentContainer: {
+        flex: 1,
+        backgroundColor: '#F9F9F9',
+        padding: 16,
     },
 });
 

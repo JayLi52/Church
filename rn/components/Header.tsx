@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import BaseText from '@components/BaseText'
 import { transformStyles } from '@utils/index';
+import { useSelector } from 'react-redux';
+import { RootState } from '@store/store';
 
 function Header(): React.JSX.Element {
   const img = 'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png';
@@ -26,16 +28,12 @@ function Header(): React.JSX.Element {
     setIsVisible(!isVisible);
   };
 
-  useEffect(() => {
-    if (route.name === 'OrganizationCalendar') {
-
-    }
-  }, []);
+  const pageType = useSelector((state: RootState) => state.page.pageType);
 
   return (
     <View style={styles.container}>
       {
-        route.name.indexOf('Organization') > -1 ? <View style={styles.churchBox}>
+        pageType === 'church' ? <View style={styles.churchBox}>
           <Image style={styles.churchIcon} source={{ uri: img }} />
           <BaseText style={styles.churchText}>{name}</BaseText>
         </View> : <View></View>

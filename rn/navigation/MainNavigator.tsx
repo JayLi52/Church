@@ -2,19 +2,19 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import CustomTabBar from '@components/CustomTabBar'
 import HomeScreen from '../screens/HomeScreen'
-import ReadingRoomHomeScreen from '../screens/ReadingRoom/ReadingRoomHomeScreen'
 import SpiritualCultivationHomeScreen from '../screens/SpiritualCultivation/SpiritualCultivationHomeScreen'
 import OrganizationNavigator from './Organization'
+import BookManageNavigator from './BookManage'
 
 const Tab = createBottomTabNavigator()
 const TabBarList = [
   {
-    name: 'OrganizationReadingRoomHome',
-    component: ReadingRoomHomeScreen,
+    name: 'BookManageNavigator',
+    component: BookManageNavigator,
     options: {
       tabBarLabel: '书籍',
       iconDefault: require('@assets/images/tabbar/book_default.png'),
-      iconActive: require('@assets/images/tabbar/book_active.png')
+      iconActive: require('@assets/images/tabbar/book_active.png'),
     }
   },
   {
@@ -57,9 +57,11 @@ const TabBarList = [
 function MainNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false
+      }}
       tabBar={props => <CustomTabBar {...props} />}
-      initialRouteName="OrganizationReadingRoomHome"
+      initialRouteName="BookManageNavigator"
     >
       {
         TabBarList.map((item, index) => {
