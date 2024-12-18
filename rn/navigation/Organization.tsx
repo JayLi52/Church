@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import OrganizationManager from '@screens/Organization/OrganizationManager'
 import CalendarScreen from '@screens/Schedule';
 import ScheduleList from '@screens/Schedule/list';
+import MapViewContainer from '@screens/MapView';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function OrganizationNavigator() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen name="OrganizationScheduleList" component={ScheduleList} options={{ headerShown: false }} />
+            <Stack.Screen name="OrganizationMap" component={MapViewContainer} options={{ headerShown: false }} />
 
         </Stack.Navigator>
     );

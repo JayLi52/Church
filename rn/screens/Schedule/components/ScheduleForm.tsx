@@ -19,6 +19,7 @@ import CustomModal from "@components/CustomModal";
 import { transformStyles } from "@utils/index";
 import dayjs from 'dayjs';
 import CustomSelect from "@components/CustomSelect";
+import { useNavigation } from "@react-navigation/native";
 
 // 使用 forwardRef 暴露内部方法
 const ScheduleForm = forwardRef((props, ref) => {
@@ -74,6 +75,8 @@ const ScheduleForm = forwardRef((props, ref) => {
 
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
+    const navigation = useNavigation()
+
     useEffect(() => {
         const showListener = Keyboard.addListener("keyboardDidShow", (event) => {
             setKeyboardHeight(event.endCoordinates.height);
@@ -124,6 +127,7 @@ const ScheduleForm = forwardRef((props, ref) => {
                                 placeholder="在此输入活动地点"
                             />
                             <Pressable onPress={() => {
+                                navigation.navigate('Organization', { screen: 'OrganizationMap' })
 
                             }}>
                                 <Image style={styles.locationIcon} source={require('@assets/images/schedule/location.png')} />

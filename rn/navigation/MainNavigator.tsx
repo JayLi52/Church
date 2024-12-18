@@ -59,7 +59,7 @@ function MainNavigator() {
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
       tabBar={props => <CustomTabBar {...props} />}
-      initialRouteName="ReadingRoomHome"
+      initialRouteName="OrganizationReadingRoomHome"
     >
       {
         TabBarList.map((item, index) => {

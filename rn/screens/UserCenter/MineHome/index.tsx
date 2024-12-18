@@ -10,6 +10,7 @@ import ReadingData from './components/ReadingData'
 import ShareData from './components/ShareData'
 import { RootState } from '@store/store'
 import { useSelector } from 'react-redux'
+import { transformStyles } from '@utils/index'
 
 function MineHome(): React.JSX.Element {
   const { user } = useSelector((state: RootState) => state.global);
@@ -30,7 +31,7 @@ function MineHome(): React.JSX.Element {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
   container: {
     backgroundColor: "#FFF",
     flexDirection: 'column',
