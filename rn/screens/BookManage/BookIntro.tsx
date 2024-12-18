@@ -1,61 +1,73 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, StatusBar, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, StatusBar, TouchableOpacity, Image, ImageBackground, Platform } from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import { useNavigation } from '@react-navigation/native';
+import { transformStyles } from '@utils/index';
+import LinearGradient from 'react-native-linear-gradient';
+
+const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0;
 
 function BookIntroScreen(): React.JSX.Element {
     const navigation = useNavigation();
 
     return (
         <>
-            <StatusBar barStyle="dark-content" backgroundColor="#F6F6F6" />
+            <StatusBar backgroundColor="transparent" translucent={true} />
+            <ImageBackground source={require('@assets/images/book/Home.png')} style={styles.imageBackground}>
 
-            {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.headerLeft}>
+                {/* Header */}
+                <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                        <TouchableOpacity style={styles.headerButton}>
+                            <FontAwesome name="book" size={18} color="#fff" iconStyle="solid" />
+                        </TouchableOpacity>
+                        <BaseText style={styles.headerTitle}>马太福音</BaseText>
+                    </View>
                     <TouchableOpacity style={styles.headerButton}>
-                        <FontAwesome name="book" size={18} color="#333" iconStyle="solid" />
-                    </TouchableOpacity>
-                    <BaseText style={styles.headerTitle}>马太福音</BaseText>
-                </View>
-                <TouchableOpacity style={styles.headerButton}>
-                    <FontAwesome name="xmark" size={18} color="#333" iconStyle="solid" />
-                </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.container}>
-                {/* 封面图片 */}
-                <View style={styles.coverContainer}>
-                    <Image
-                        source={{ uri: 'https://your-image-url.com/cover.jpg' }}
-                        style={styles.coverImage}
-                    />
-                    <TouchableOpacity style={styles.likeButton}>
-                        <FontAwesome name="heart" size={24} color="#fff" iconStyle="solid" />
+                        <FontAwesome name="xmark" size={22} color="#fff" iconStyle="solid" />
                     </TouchableOpacity>
                 </View>
+                <View style={styles.likeContainer}>
+                    <BaseText style={styles.bookName}>
+                        马太福音
+                    </BaseText>
+                    <TouchableOpacity>
+                        <FontAwesome name="heart" size={20} color="#fff" iconStyle="solid" />
+                    </TouchableOpacity>
 
-                {/* 描述文本 */}
-                <View style={styles.contentContainer}>
+                </View>
+            </ImageBackground>
+
+
+
+            {/* 描述文本 */}
+            <View style={styles.contentContainer}>
+                <View style={styles.textContainer}>
                     <BaseText style={styles.description}>
+                        反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。
                         反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。
                     </BaseText>
                 </View>
+                <LinearGradient
+                    colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+                    locations={[0, 0.5]}
+                    style={styles.textGradient}
+                />
+            </View>
 
-                {/* 底部互动数据 */}
-                <View style={styles.interactionContainer}>
-                    <View style={styles.interactionBox}>
-                        <FontAwesome name="comment" size={20} color="#666" iconStyle="solid" />
-                        <BaseText style={styles.interactionCount}>9999</BaseText>
-                    </View>
+            {/* 底部互动数据 */}
+            <View style={styles.interactionContainer}>
+                <View style={styles.interactionBox}>
+                    <FontAwesome name="share" size={20} color="#FF9A27" iconStyle="solid" />
+                    <BaseText style={styles.interactionCount}>9999</BaseText>
                 </View>
-            </ScrollView>
+            </View>
         </>
     );
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
     container: {
         flex: 1,
         backgroundColor: '#fff',
@@ -64,10 +76,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 12,
-        backgroundColor: '#F6F6F6',
-        borderBottomWidth: 1,
-        borderBottomColor: '#EEEEEE',
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 44 + STATUSBAR_HEIGHT,
     },
     headerLeft: {
         flexDirection: 'row',
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#fff',
         marginLeft: 8,
     },
     coverContainer: {
@@ -94,13 +104,9 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'cover',
     },
-    likeButton: {
-        position: 'absolute',
-        right: 16,
-        bottom: 16,
-    },
     contentContainer: {
         padding: 16,
+        position: 'relative',
     },
     description: {
         fontSize: 14,
@@ -108,25 +114,70 @@ const styles = StyleSheet.create({
         lineHeight: 22,
     },
     interactionContainer: {
+        position: 'absolute',
+        bottom: 16,
+        left: '50%',
+        transform: [{ translateX: -90 }],
+        width: 180,
         flexDirection: 'row',
         justifyContent: 'center',
-        paddingVertical: 16,
-        borderTopWidth: 1,
-        borderTopColor: '#EEEEEE',
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        elevation: 5,
+        borderRadius: 24,
+        height: 44,
     },
     interactionBox: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
         paddingVertical: 8,
-        borderWidth: 1,
-        borderColor: '#EEEEEE',
-        borderRadius: 4,
+        borderRadius: 20,
+        backgroundColor: '#fff',
     },
     interactionCount: {
         marginLeft: 8,
         fontSize: 14,
         color: '#666',
+    },
+    imageBackground: {
+        width: '100%',
+        height: 350,
+        borderBottomLeftRadius: 44,
+        borderBottomRightRadius: 44,
+        overflow: 'hidden',
+    },
+    likeContainer: {
+        position: 'absolute',
+        width: '100%',
+        // height: '100%',
+        height: 76,
+        bottom: 0,
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingLeft: 30,
+
+        // left: 16,
+    },
+    bookName: {
+        fontSize: 32,
+        color: '#fff',
+        textAlign: 'left',
+        marginRight: 16,
+        display: 'flex',
+    },
+    textContainer: {
+        position: 'relative',
+        zIndex: 1,
+    },
+    textGradient: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: '100%',
     },
 });
 

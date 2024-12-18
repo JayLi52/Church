@@ -4,12 +4,13 @@ import OrganizationManager from '@screens/Organization/OrganizationManager'
 import CalendarScreen from '@screens/Schedule';
 import ScheduleList from '@screens/Schedule/list';
 import MapViewContainer from '@screens/MapView';
+import SpreadStatsAnswerScreen from '@screens/SpreadStats/answer';
 
 const Stack = createNativeStackNavigator();
 
 export default function OrganizationNavigator() {
     return (
-        <Stack.Navigator initialRouteName="OrganizationManager">
+        <Stack.Navigator initialRouteName="SpreadStatsAnswer">
             <Stack.Screen
                 name="OrganizationManager"
                 component={OrganizationManager}
@@ -22,7 +23,11 @@ export default function OrganizationNavigator() {
             />
             <Stack.Screen name="OrganizationScheduleList" component={ScheduleList} options={{ headerShown: false }} />
             <Stack.Screen name="OrganizationMap" component={MapViewContainer} options={{ headerShown: false }} />
-
+            <Stack.Screen
+                name="SpreadStatsAnswer"
+                component={SpreadStatsAnswerScreen}
+                options={{ headerShown: false }}
+            />
         </Stack.Navigator>
     );
 }
