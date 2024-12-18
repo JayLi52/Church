@@ -49,6 +49,7 @@ const initialState = {
     },
     isLoggedIn: true,
     isLogIning: false,
+    isPersonalPage: false,
 };
 
 const globalSlice = createSlice({
@@ -77,6 +78,7 @@ export interface GlobalState {
     };
     isLoggedIn: boolean;
     isLogIning: boolean;
+    isPersonalPage: boolean;
 }
 
 // 导出 Actions 和 Reducer

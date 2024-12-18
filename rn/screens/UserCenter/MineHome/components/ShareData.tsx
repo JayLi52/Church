@@ -1,18 +1,35 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ImageBackground,
-  View,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, ImageBackground, View, Dimensions } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import BaseText from '@components/BaseText';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from '@react-native-vector-icons/fontawesome6'; // 确保库正确引用
 import { transformStyles } from '@utils/index';
 
 const { width, height } = Dimensions.get('window');
 
 function ShareData(): React.JSX.Element {
+  // 统一的动态数据数组
+  const sections = [
+    {
+      id: 1,
+      sectionTitle: '圣经分享',
+      count: 9999,
+      data: [
+        { id: 1, title: '分享点击', value: 9999, icon: 'share-from-square' },
+        { id: 2, title: '新用户注册', value: 9999, icon: 'user-group' },
+      ],
+    },
+    {
+      id: 2,
+      sectionTitle: '答题分享',
+      count: 9999,
+      data: [
+        { id: 3, title: '分享点击', value: 9999, icon: 'share-from-square' },
+        { id: 4, title: '新用户注册', value: 9999, icon: 'user-group' },
+      ],
+    },
+  ];
+
   return (
     <View style={styles.container}>
       {/* 背景图片 */}
@@ -23,38 +40,38 @@ function ShareData(): React.JSX.Element {
         style={styles.image}
       >
         {/* 添加模糊效果 */}
-        <BlurView
-          style={styles.blurView}
-          blurType="light" // 模糊类型: light, dark, or extraLight
-          blurAmount={20} // 模糊程度
-        />
+        <BlurView style={styles.blurView} blurType="light" blurAmount={20} />
       </ImageBackground>
 
-      {/* 数据展示容器 */}
+      {/* 数据展示 */}
       <View style={styles.infoBox}>
-        {/* 圣经分享 */}
-        <BaseText style={styles.sectionTitle}>圣经分享</BaseText>
-        <View style={styles.mainCountContainer}>
-          <BaseText style={styles.mainCount}>9999</BaseText>
-          <BaseText style={styles.unit}>次</BaseText>
-        </View>
+        {sections.map((section) => (
+          <View key={section.id}>
+            {/* 标题和统计次数 */}
+            <BaseText style={styles.sectionTitle}>{section.sectionTitle}</BaseText>
+            <View style={styles.mainCountContainer}>
+              <BaseText style={styles.mainCount}>{section.count}</BaseText>
+              <BaseText style={styles.unit}>次</BaseText>
+            </View>
 
-        <View style={styles.cardRow}>
-          <View style={styles.card}>
-            <Icon name="share" size={24} color="#666" style={styles.cardIcon} />
-            <View style={styles.cardContent}>
-              <BaseText style={styles.cardValue}>9999</BaseText>
-              <BaseText style={styles.cardLabel}>分享点击</BaseText>
+            {/* 卡片列表 */}
+            <View style={styles.cardRow}>
+              {section.data.map((item) => (
+                <View style={styles.card} key={item.id}>
+                  <FontAwesome
+                    name={item.icon}
+                    iconStyle="solid"
+                    style={styles.cardIcon}
+                  />
+                  <View style={styles.cardContent}>
+                    <BaseText style={styles.cardValue}>{item.value}</BaseText>
+                    <BaseText style={styles.cardLabel}>{item.title}</BaseText>
+                  </View>
+                </View>
+              ))}
             </View>
           </View>
-          <View style={styles.card}>
-            <Icon name="user-plus" size={24} color="#666" style={styles.cardIcon} />
-            <View style={styles.cardContent}>
-              <BaseText style={styles.cardValue}>9999</BaseText>
-              <BaseText style={styles.cardLabel}>新用户注册</BaseText>
-            </View>
-          </View>
-        </View>
+        ))}
       </View>
     </View>
   );
@@ -107,6 +124,7 @@ const styles = transformStyles({
   cardRow: {
     flexDirection: 'row',
     justifyContent: 'center',
+    width: 370,
     gap: 20,
     marginBottom: 30,
   },
@@ -115,7 +133,7 @@ const styles = transformStyles({
     alignItems: 'flex-start',
     backgroundColor: 'white',
     borderRadius: 10,
-    width: '45%',
+    width: '40%',
     padding: 15,
     elevation: 3,
     shadowColor: '#000',
@@ -125,6 +143,7 @@ const styles = transformStyles({
   },
   cardIcon: {
     marginBottom: 10,
+    fontSize: 15,
   },
   cardContent: {
     justifyContent: 'center',

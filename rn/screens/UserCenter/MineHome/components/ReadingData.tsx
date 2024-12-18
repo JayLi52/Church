@@ -20,48 +20,51 @@ function ReadingData(): React.JSX.Element {
           uri: 'http://gips3.baidu.com/it/u=3886271102,3123389489&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960',
         }}
         style={styles.image}
+        blurRadius={10} // 模糊程度
       >
-        {/* 添加模糊层 */}
-        <BlurView style={styles.blurView} blurType="dark" blurAmount={15} />
+        {/* 数据展示 */}
+        <View style={styles.infoBox}>
+          {/* 标题 */}
+          <BaseText style={styles.title}>圣经阅读</BaseText>
+
+          {/* 拆分的 TotalCount */}
+          <View style={styles.totalCountContainer}>
+            <BaseText style={styles.totalCountNumber}>99999</BaseText>
+            <BaseText style={styles.totalCountUnit}>次</BaseText>
+          </View>
+
+          {/* 两个时长区域 */}
+          <View style={styles.timeBox}>
+            <View style={styles.timeItem}>
+              <BaseText style={styles.label}>阅读时长</BaseText>
+              <BaseText style={styles.timeValue}>9999时99分</BaseText>
+            </View>
+            <View style={styles.timeItem}>
+              <BaseText style={styles.label}>事工时长</BaseText>
+              <BaseText style={styles.timeValue}>9999时99分</BaseText>
+            </View>
+          </View>
+
+          {/* 学经进度卡片 */}
+          <View style={styles.cardBox}>
+            <View style={styles.card}>
+              <BaseText style={styles.cardTitle}>学经答题</BaseText>
+              <BaseText style={styles.cardValue}>9999</BaseText>
+              <View style={styles.progressBar} />
+            </View>
+            <View style={styles.card}>
+              <BaseText style={styles.cardTitle}>小组学经</BaseText>
+              <BaseText style={styles.cardValue}>9999</BaseText>
+              <View style={styles.progressBar} />
+            </View>
+            <View style={styles.card}>
+              <BaseText style={styles.cardTitle}>单人学经</BaseText>
+              <BaseText style={styles.cardValue}>9999</BaseText>
+              <View style={styles.progressBar} />
+            </View>
+          </View>
+        </View>
       </ImageBackground>
-
-      {/* 数据展示 */}
-      <View style={styles.infoBox}>
-        {/* 标题 */}
-        <BaseText style={styles.title}>圣经阅读</BaseText>
-        <BaseText style={styles.totalCount}>99999 次</BaseText>
-
-        {/* 两个时长区域 */}
-        <View style={styles.timeBox}>
-          <View style={styles.timeItem}>
-            <BaseText style={styles.label}>阅读时长</BaseText>
-            <BaseText style={styles.timeValue}>9999时99分</BaseText>
-          </View>
-          <View style={styles.timeItem}>
-            <BaseText style={styles.label}>事工时长</BaseText>
-            <BaseText style={styles.timeValue}>9999时99分</BaseText>
-          </View>
-        </View>
-
-        {/* 学经进度卡片 */}
-        <View style={styles.cardBox}>
-          <View style={styles.card}>
-            <BaseText style={styles.cardTitle}>学经答题</BaseText>
-            <BaseText style={styles.cardValue}>9999</BaseText>
-            <View style={styles.progressBar} />
-          </View>
-          <View style={styles.card}>
-            <BaseText style={styles.cardTitle}>小组学经</BaseText>
-            <BaseText style={styles.cardValue}>9999</BaseText>
-            <View style={styles.progressBar} />
-          </View>
-          <View style={styles.card}>
-            <BaseText style={styles.cardTitle}>单人学经</BaseText>
-            <BaseText style={styles.cardValue}>9999</BaseText>
-            <View style={styles.progressBar} />
-          </View>
-        </View>
-      </View>
     </View>
   );
 }
@@ -95,11 +98,20 @@ const styles = transformStyles({
     color: 'white',
     marginBottom: 10,
   },
-  totalCount: {
+  totalCountContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    marginBottom: 20,
+  },
+  totalCountNumber: {
     fontSize: 48,
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 20,
+  },
+  totalCountUnit: {
+    fontSize: 18,
+    color: 'white',
+    marginLeft: 5,
   },
   timeBox: {
     flexDirection: 'row',
@@ -131,10 +143,10 @@ const styles = transformStyles({
     width: '30%',
     padding: 15,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 3,
     elevation: 5,
   },
   cardTitle: {

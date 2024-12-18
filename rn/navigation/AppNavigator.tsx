@@ -30,7 +30,6 @@ const AuthStack = () => (
 
 const MainStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Mine" component={MineNavigator} />
     <Stack.Screen name="Main" component={MainNavigator} />
     <Stack.Screen name="Team" component={TeamNavigator} />
     <Stack.Screen name="Schedule" component={ScheduleNavigator} />
@@ -38,11 +37,18 @@ const MainStack = () => (
   </Stack.Navigator>
 );
 
+const MineStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Mine" component={MineNavigator} />
+  </Stack.Navigator>
+);
+
+
 const AppNavigator = () => {
-  const { isLoggedIn } = useSelector((state: RootState) => state.global);
+  const { isLoggedIn, isPersonalPage } = useSelector((state: RootState) => state.global);
   return (
     <NavigationContainer theme={customTheme}>
-      {isLoggedIn ? <MainStack /> : <AuthStack />}
+      {isLoggedIn ? isPersonalPage ? <MineNavigator /> : <MainNavigator /> : <AuthStack />}
     </NavigationContainer>
   );
 };

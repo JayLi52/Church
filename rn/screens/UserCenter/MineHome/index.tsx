@@ -13,7 +13,6 @@ import { useSelector } from 'react-redux'
 import { transformStyles } from '@utils/index'
 
 function MineHome(): React.JSX.Element {
-  const { user } = useSelector((state: RootState) => state.global);
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="transparent" translucent={true} />
@@ -23,7 +22,7 @@ function MineHome(): React.JSX.Element {
         paginationStyle={{ bottom: 10 }}
         loop={false}
       >
-        <BasicView user={user} />
+        <BasicView />
         <ReadingData />
         <ShareData />
       </Swiper>

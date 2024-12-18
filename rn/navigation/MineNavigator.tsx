@@ -3,12 +3,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import CustomTabBar from '@components/CustomTabBar'
 import MineScreen from '@screens/UserCenter/MineHome'
 import MallScreen from '@screens/UserCenter/MallHome'
+import UserInfoNavigator from './UserInfo'
 
 const Tab = createBottomTabNavigator()
 const TabBarList = [
   {
-    name: 'MineProfile', 
-    component: MineScreen, 
+    name: 'MineProfile',
+    component: UserInfoNavigator,
     options: {
       tabBarLabel: '个人',
       iconDefault: require('@assets/images/tabbar/chat_default.png'),
@@ -52,7 +53,7 @@ const TabBarList = [
     }
   }
 ]
-function MainNavigator () {
+function MainNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
