@@ -35,7 +35,7 @@ function VersionManageScreen(): React.JSX.Element {
                 <BaseText style={styles.cardDetail}>{item.hours} {item.people}</BaseText>
             </View>
             {item.image && <Image source={{ uri: item.image }} style={styles.cardImage} />}
-            <FontAwesome name="bars" size={18} color="#888" />
+            <FontAwesome name="bars" size={18} color="#888" iconStyle="solid" />
         </View>
     );
 

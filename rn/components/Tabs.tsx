@@ -11,9 +11,9 @@ interface CustomTabsProps {
     tabs: {
         key: string;
         label: string;
-        renderItem?: React.ReactNode; // Tab 对应的内容区域
+        renderItem?: () => React.ReactNode; // 修改这里：从 ReactNode 改为函数
     }[];
-    onTabChange: (key: string) => void; // 切换事件
+    onTabChange: (key: string) => void;
 }
 
 const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
@@ -31,6 +31,7 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContainer}
+                style={styles.scrollView}
             >
                 {tabs.map((tab) => (
                     <TouchableOpacity
@@ -48,18 +49,20 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
 
             {/* 渲染选中 Tab 内容 */}
             <View style={styles.contentContainer}>
-                {tabs.find(item => activeTab === item.key)?.renderItem}
+                {tabs.find(item => activeTab === item.key)?.renderItem?.()}
             </View>
         </>
     );
 };
 
 const styles = StyleSheet.create({
+    scrollView: {
+        height: 60,
+        flexGrow: 0,
+    },
     scrollContainer: {
         flexDirection: 'row',
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee',
-        backgroundColor: '#fff',
+        height: '100%',
     },
     tab: {
         paddingHorizontal: 16,
@@ -67,8 +70,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     activeTab: {
-        borderBottomWidth: 2,
-        borderBottomColor: '#FF8800',
+        // borderBottomWidth: 2,
+        // borderBottomColor: '#FF8800',
     },
     tabText: {
         fontSize: 16,
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
         borderRadius: 1,
     },
     contentContainer: {
-        flex: 1,
+        // flex: 1,
         backgroundColor: '#F9F9F9',
         padding: 16,
     },
