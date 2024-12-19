@@ -21,7 +21,6 @@ function GenealogyScreen(): React.JSX.Element {
 
     return (
         <>
-            <StatusBar barStyle="dark-content" backgroundColor="#F6F6F6" />
 
             {/* 自定义 Header */}
             <View style={styles.header}>

@@ -12,7 +12,6 @@ import BookCase from './components/BookCase'
 function ReadingRoomHomeScreen(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F6F6F6" />
       <Header />
       <Statistics />
       <BookCase />

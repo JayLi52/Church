@@ -60,7 +60,6 @@ function VersionManageScreen(): React.JSX.Element {
 
     return (
         <>
-            <StatusBar barStyle="dark-content" backgroundColor="#F6F6F6" />
             <Header />
             <View style={styles.container}>
                 {/* 统计栏 */}

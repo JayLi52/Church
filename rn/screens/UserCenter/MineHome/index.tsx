@@ -15,7 +15,6 @@ import { transformStyles } from '@utils/index'
 function MineHome(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="transparent" translucent={true} />
       <Swiper
         dot={<View style={styles.dot} />}
         activeDot={<View style={styles.dotActive} />}

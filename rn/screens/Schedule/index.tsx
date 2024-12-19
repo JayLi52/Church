@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, ScrollView, StatusBar } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { useBackHandler } from '@utils/hooks';
 import OrganizationHeader from '@components/Header';
+import { transformStyles } from '@utils/index';
 
 const CalendarScreen = ({ navigation }) => {
     useBackHandler();
@@ -73,11 +74,10 @@ const CalendarScreen = ({ navigation }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
     container: {
         flex: 1,
         backgroundColor: '#F9F9F9',
-        // paddingTop: 20,
     },
     header: {
         flexDirection: 'row',

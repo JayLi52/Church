@@ -14,8 +14,6 @@ function MineHome(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar backgroundColor="transparent" translucent={true} />
-      <Image source={{ uri: 'http://gips3.baidu.com/it/u=3886271102,3123389489&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960' }} style={styles.image} /> */}
       <View style={styles.infoBox}>
         <View style={styles.userInfo}>
           <BaseText style={styles.username}>{user.name}</BaseText>

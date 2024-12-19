@@ -1,3 +1,4 @@
+import { transformStyles } from '@utils/index';
 import React, { useState } from 'react';
 import {
     View,
@@ -24,18 +25,20 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
         onTabChange(key);
     };
 
+    // 找到当前激活的 tab
+    const activeTabContent = tabs.find(item => activeTab === item.key)?.renderItem;
+
     return (
-        <>
-            {/* 横向滚动 Tab */}
+        <View style={styles.wrapper}>
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                style={styles.scrollView}
                 contentContainerStyle={[
                     styles.scrollContainer,
                     // 当内容不需要滚动时，居中显示
                     { justifyContent: tabs.length <= 5 ? 'center' : 'flex-start', flex: tabs.length <= 5 ? 1 : 0 }
                 ]}
-                style={styles.scrollView}
             >
                 {tabs.map((tab) => (
                     <TouchableOpacity
@@ -52,17 +55,22 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
             </ScrollView>
 
             {/* 渲染选中 Tab 内容 */}
-            <View style={styles.contentContainer}>
+            <ScrollView style={styles.contentContainer}>
                 {tabs.find(item => activeTab === item.key)?.renderItem?.()}
-            </View>
-        </>
+            </ScrollView>
+        </View>
     );
 };
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
+    wrapper: {
+        height: '100%',
+        flexDirection: 'column',
+    },
     scrollView: {
         height: 60,
         flexGrow: 0,
+        marginBottom: 8,
     },
     scrollContainer: {
         flexDirection: 'row',
@@ -70,7 +78,7 @@ const styles = StyleSheet.create({
     },
     tab: {
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingTop: 12,
         alignItems: 'center',
     },
     activeTab: {
@@ -93,9 +101,10 @@ const styles = StyleSheet.create({
         borderRadius: 1,
     },
     contentContainer: {
-        // flex: 1,
-        backgroundColor: '#F9F9F9',
-        padding: 16,
+        flex: 1,
+        marginTop: -20,
+        // backgroundColor: '#F9F9F9',
+        // padding: 16,
     },
 });
 

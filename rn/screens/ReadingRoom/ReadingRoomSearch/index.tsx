@@ -13,7 +13,6 @@ import SearchResult from './components/SearchResult'
 function ReadingRoomSearch(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F6F6F6" />
       <SearchBar />
       <FilterTags />
       <SearchResult />

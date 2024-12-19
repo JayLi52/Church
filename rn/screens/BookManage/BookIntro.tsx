@@ -13,7 +13,6 @@ function BookIntroScreen(): React.JSX.Element {
 
     return (
         <>
-            <StatusBar backgroundColor="transparent" translucent={true} />
             <ImageBackground source={require('@assets/images/book/Home.png')} style={styles.imageBackground}>
 
                 {/* Header */}

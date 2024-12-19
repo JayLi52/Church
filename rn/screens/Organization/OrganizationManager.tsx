@@ -132,7 +132,7 @@ const OrganizationManager = () => {
                 {
                     key: '1',
                     label: '小组',
-                    renderItem: (
+                    renderItem: () => (
                         <View style={styles.groupIntro}>
                             <Image
                                 source={{ uri: 'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960' }}
@@ -144,12 +144,13 @@ const OrganizationManager = () => {
                             <Text style={styles.groupIntroText}>
                                 简介: 通过以圣经为基础的多样化培训课程，营造出具有神同在氛围的场域，帮助组员遇见耶稣、认识耶稣、经历耶稣。
                             </Text>
-                        </View>)
+                        </View>
+                    )
                 },
                 {
                     key: '2',
                     label: '成员',
-                    renderItem: (
+                    renderItem: () => (
                         <View style={styles.memberContainer}>
                             {/* todo 添加新成员按钮 浮动在FlatList上面 */}
                             <FlatList
