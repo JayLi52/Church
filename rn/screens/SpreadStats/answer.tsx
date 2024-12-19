@@ -26,7 +26,7 @@ function SpreadStatsScreen(): React.JSX.Element {
         },
         {
             key: 'share',
-            label: '请客',
+            label: '祷告',
             renderItem: () => <StatsList />
         },
         {

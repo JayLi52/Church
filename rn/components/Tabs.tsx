@@ -30,7 +30,11 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.scrollContainer}
+                contentContainerStyle={[
+                    styles.scrollContainer,
+                    // 当内容不需要滚动时，居中显示
+                    { justifyContent: tabs.length <= 5 ? 'center' : 'flex-start', flex: tabs.length <= 5 ? 1 : 0 }
+                ]}
                 style={styles.scrollView}
             >
                 {tabs.map((tab) => (
