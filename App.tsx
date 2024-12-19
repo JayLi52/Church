@@ -29,7 +29,6 @@ const AppContent = () => {
         translucent={isTranslucent}
         hidden={isHidden}
       />
-      <View style={styles.statusBarPlaceholder} />
       <GestureHandlerRootView style={styles.content}>
         <AppNavigator />
       </GestureHandlerRootView>
@@ -40,10 +39,6 @@ const AppContent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  statusBarPlaceholder: {
-    height: STATUSBAR_HEIGHT,
-    backgroundColor: '#333333', // 与状态栏默认背景色保持一致
   },
   content: {
     flex: 1,

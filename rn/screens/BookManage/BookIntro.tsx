@@ -5,11 +5,15 @@ import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import { useNavigation } from '@react-navigation/native';
 import { transformStyles } from '@utils/index';
 import LinearGradient from 'react-native-linear-gradient';
+import { hideStatusBar, setTranslucent } from '@store/statusBarSlice';
+import { useDispatch } from 'react-redux';
+import { hideTabBar } from '@store/tabSlice';
 
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0;
 
 function BookIntroScreen(): React.JSX.Element {
-    const navigation = useNavigation();
+    const dispatch = useDispatch();
+    dispatch(setTranslucent()); // 设置状态栏为透明
+    dispatch(hideTabBar()); // 隐藏状态栏
 
     return (
         <>
@@ -50,17 +54,23 @@ function BookIntroScreen(): React.JSX.Element {
                 </View>
                 <LinearGradient
                     colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-                    locations={[0, 0.5]}
+                    locations={[0, 0.8]}
                     style={styles.textGradient}
                 />
             </View>
 
             {/* 底部互动数据 */}
             <View style={styles.interactionContainer}>
-                <View style={styles.interactionBox}>
+                <TouchableOpacity
+                    style={styles.interactionBox}
+                    onPress={() => {
+                        // 在这里添加分享功能
+                        console.log('分享按钮被点击');
+                    }}
+                >
                     <FontAwesome name="share" size={20} color="#FF9A27" iconStyle="solid" />
                     <BaseText style={styles.interactionCount}>9999</BaseText>
-                </View>
+                </TouchableOpacity>
             </View>
         </>
     );
@@ -75,8 +85,8 @@ const styles = transformStyles({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: STATUSBAR_HEIGHT,
-        height: 44 + STATUSBAR_HEIGHT,
+        paddingTop: Platform.OS === 'ios' ? 44 : StatusBar.currentHeight || 0,
+        // height: 44 + STATUSBAR_HEIGHT,
     },
     headerLeft: {
         flexDirection: 'row',
@@ -114,14 +124,14 @@ const styles = transformStyles({
     },
     interactionContainer: {
         position: 'absolute',
-        bottom: 16,
+        bottom: 40,
         left: '50%',
         transform: [{ translateX: -90 }],
         width: 180,
         flexDirection: 'row',
         justifyContent: 'center',
         backgroundColor: '#fff',
-        shadowColor: '#000',
+        // shadowColor: '#000',
         elevation: 5,
         borderRadius: 24,
         height: 44,
@@ -133,6 +143,7 @@ const styles = transformStyles({
         paddingVertical: 8,
         borderRadius: 20,
         backgroundColor: '#fff',
+        activeOpacity: 0.7,
     },
     interactionCount: {
         marginLeft: 8,
@@ -169,7 +180,6 @@ const styles = transformStyles({
     },
     textContainer: {
         position: 'relative',
-        zIndex: 1,
     },
     textGradient: {
         position: 'absolute',
