@@ -68,10 +68,11 @@ function Header(): React.JSX.Element {
                 'btnText': '小组管理',
                 onPress: () => {
                   console.log("点击了管理选项1")
-                }
+                },
+                key: 'xiaozu'
               },
             ].map(item => (
-              <TouchableOpacity style={styles.popupOption} onPress={item.onPress}>
+              <TouchableOpacity key={item.key} style={styles.popupOption} onPress={item.onPress}>
                 <Text style={styles.popupOptionText}>{item.btnText}</Text>
               </TouchableOpacity>
             ))}

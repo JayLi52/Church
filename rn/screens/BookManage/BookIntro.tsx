@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, StatusBar, TouchableOpacity, Image, ImageBackground, Platform } from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
@@ -12,8 +12,11 @@ import { hideTabBar } from '@store/tabSlice';
 
 function BookIntroScreen(): React.JSX.Element {
     const dispatch = useDispatch();
+    const navigation = useNavigation();
     dispatch(setTranslucent()); // 设置状态栏为透明
     dispatch(hideTabBar()); // 隐藏状态栏
+
+    const [isLiked, setIsLiked] = useState(false); // 添加点赞状态
 
     return (
         <>
@@ -27,7 +30,10 @@ function BookIntroScreen(): React.JSX.Element {
                         </TouchableOpacity>
                         <BaseText style={styles.headerTitle}>马太福音</BaseText>
                     </View>
-                    <TouchableOpacity style={styles.headerButton}>
+                    <TouchableOpacity
+                        style={styles.headerButton}
+                        onPress={() => navigation.goBack()}
+                    >
                         <FontAwesome name="xmark" size={22} color="#fff" iconStyle="solid" />
                     </TouchableOpacity>
                 </View>
@@ -35,8 +41,19 @@ function BookIntroScreen(): React.JSX.Element {
                     <BaseText style={styles.bookName}>
                         马太福音
                     </BaseText>
-                    <TouchableOpacity>
-                        <FontAwesome name="heart" size={20} color="#fff" iconStyle="solid" />
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsLiked(!isLiked);
+                            // 这里可以添加调用后端 API 的逻辑
+                            console.log('点赞状态:', !isLiked);
+                        }}
+                    >
+                        <FontAwesome
+                            name="heart"
+                            size={20}
+                            color={isLiked ? "#FF6B6B" : "#fff"}
+                            iconStyle="solid"
+                        />
                     </TouchableOpacity>
 
                 </View>
@@ -49,7 +66,7 @@ function BookIntroScreen(): React.JSX.Element {
                 <View style={styles.textContainer}>
                     <BaseText style={styles.description}>
                         反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。
-                        反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。
+                        反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。反映四福音书均记载��耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事的特殊意思的角度去看他的生平与教导，为此缘故，本书将旧约的预言与耶稣的生平连贯起来，从而阐演了旧约与新约之间的桥梁。
                     </BaseText>
                 </View>
                 <LinearGradient
@@ -64,12 +81,11 @@ function BookIntroScreen(): React.JSX.Element {
                 <TouchableOpacity
                     style={styles.interactionBox}
                     onPress={() => {
-                        // 在这里添加分享功能
                         console.log('分享按钮被点击');
                     }}
                 >
-                    <FontAwesome name="share" size={20} color="#FF9A27" iconStyle="solid" />
-                    <BaseText style={styles.interactionCount}>9999</BaseText>
+                    <FontAwesome name='share' size={20} color="#FF9A27" iconStyle="solid" />
+                    <BaseText style={styles.interactionCount}>{9999}</BaseText>
                 </TouchableOpacity>
             </View>
         </>

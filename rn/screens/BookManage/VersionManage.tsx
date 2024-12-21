@@ -5,6 +5,10 @@ import { transformStyles } from '@utils/index';
 import BaseText from '@components/BaseText';
 import Header from '@components/Header';
 import CustomTabs from '@components/Tabs';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { hideTabBar, showTabBar } from '@store/tabSlice';
+import { resetStatusBar } from '@store/statusBarSlice';
 
 const DATA = [
     { id: 1, title: '和合本2010（上帝版）', hours: '9999小时', people: '9999人', image: 'https://placekitten.com/50/50', selected: true },
@@ -14,8 +18,18 @@ const DATA = [
 ];
 
 function VersionManageScreen(): React.JSX.Element {
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
     const [listData, setListData] = useState(DATA);
     const [currentTab, setCurrentTab] = useState('zh');
+
+    // 处理页面激活和失活
+    useFocusEffect(
+        () => {
+            dispatch(showTabBar());
+            dispatch(resetStatusBar());
+        }
+    );
 
     const toggleSelect = (id: number) => {
         const updatedData = listData.map(item => ({
@@ -25,18 +39,33 @@ function VersionManageScreen(): React.JSX.Element {
         setListData(updatedData);
     };
 
+    const handleCardPress = (item: typeof DATA[0]) => {
+        navigation.navigate('BookIntro');
+    };
+
     const renderCard = ({ item }: { item: typeof DATA[0] }) => (
-        <View style={[styles.card, item.selected && styles.cardActive]}>
-            <TouchableOpacity onPress={() => toggleSelect(item.id)} style={styles.checkbox}>
-                <FontAwesome name={item.selected ? 'square-check' : 'square'} size={18} color="#2E2E2E" />
-            </TouchableOpacity>
-            <View style={styles.cardContent}>
-                <BaseText style={styles.cardTitle}>{item.title}</BaseText>
-                <BaseText style={styles.cardDetail}>{item.hours} {item.people}</BaseText>
+        <TouchableOpacity
+            onPress={() => handleCardPress(item)}
+            activeOpacity={0.7}
+        >
+            <View style={[styles.card, item.selected && styles.cardActive]}>
+                <TouchableOpacity
+                    onPress={(e) => {
+                        e.stopPropagation();  // 防止触发父级的点击事件
+                        toggleSelect(item.id);
+                    }}
+                    style={styles.checkbox}
+                >
+                    <FontAwesome name={item.selected ? 'square-check' : 'square'} size={18} color="#2E2E2E" />
+                </TouchableOpacity>
+                <View style={styles.cardContent}>
+                    <BaseText style={styles.cardTitle}>{item.title}</BaseText>
+                    <BaseText style={styles.cardDetail}>{item.hours} {item.people}</BaseText>
+                </View>
+                {item.image && <Image source={{ uri: item.image }} style={styles.cardImage} />}
+                <FontAwesome name="bars" size={18} color="#888" iconStyle="solid" />
             </View>
-            {item.image && <Image source={{ uri: item.image }} style={styles.cardImage} />}
-            <FontAwesome name="bars" size={18} color="#888" iconStyle="solid" />
-        </View>
+        </TouchableOpacity>
     );
 
     const tabs = [
@@ -60,6 +89,7 @@ function VersionManageScreen(): React.JSX.Element {
 
     return (
         <>
+            <StatusBar />
             <Header />
             <View style={styles.container}>
                 {/* 统计栏 */}

@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 
 export default function BookManageNavigator() {
     return (
-        <Stack.Navigator initialRouteName="BookIntro">
+        <Stack.Navigator initialRouteName="VersionManageScreen">
             <Stack.Screen
                 name="AnnotationList"
                 component={AnnotationList}

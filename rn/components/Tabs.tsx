@@ -55,9 +55,9 @@ const CustomTabs: React.FC<CustomTabsProps> = ({ tabs, onTabChange }) => {
             </ScrollView>
 
             {/* 渲染选中 Tab 内容 */}
-            <ScrollView style={styles.contentContainer}>
-                {tabs.find(item => activeTab === item.key)?.renderItem?.()}
-            </ScrollView>
+            {/* <ScrollView style={styles.contentContainer}> */}
+            {tabs.find(item => activeTab === item.key)?.renderItem?.()}
+            {/* </ScrollView> */}
         </View>
     );
 };
