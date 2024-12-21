@@ -13,6 +13,7 @@ module.exports = {
           '@utils': './rn/utils',
           '@services': './rn/services',
           '@store': './rn/store',
+          '@hooks': './rn/hooks',
         },
       },
     ],

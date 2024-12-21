@@ -9,6 +9,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { hideTabBar, showTabBar } from '@store/tabSlice';
 import { resetStatusBar } from '@store/statusBarSlice';
+import { useTabBarControl } from '@hooks/useTabBarControl';
 
 const DATA = [
     { id: 1, title: '和合本2010（上帝版）', hours: '9999小时', people: '9999人', image: 'https://placekitten.com/50/50', selected: true },
@@ -18,18 +19,11 @@ const DATA = [
 ];
 
 function VersionManageScreen(): React.JSX.Element {
+    useTabBarControl();
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [listData, setListData] = useState(DATA);
     const [currentTab, setCurrentTab] = useState('zh');
-
-    // 处理页面激活和失活
-    useFocusEffect(
-        () => {
-            dispatch(showTabBar());
-            dispatch(resetStatusBar());
-        }
-    );
 
     const toggleSelect = (id: number) => {
         const updatedData = listData.map(item => ({

@@ -5,7 +5,7 @@ import { transformStyles } from '@utils/index';
 import Header from '@components/Header';
 import CustomTabs from '@components/Tabs';
 
-function SpreadStatsScreen(): React.JSX.Element {
+function SpreadStatsAnswerScreen(): React.JSX.Element {
     const tabs = [
         {
             key: 'member',
@@ -200,4 +200,4 @@ const styles = transformStyles({
     },
 });
 
-export default SpreadStatsScreen;
+export default SpreadStatsAnswerScreen;

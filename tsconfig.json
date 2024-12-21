@@ -9,7 +9,8 @@
       "@utils/*": ["rn/utils/*"],
       "@services/*": ["rn/services/*"],
       "@assets/*": ["assets/*"],
-      "@store/*": ["rn/store/*"]
+      "@store/*": ["rn/store/*"],
+      "@hooks/*": ["rn/hooks/*"]
     }
   }
 }
