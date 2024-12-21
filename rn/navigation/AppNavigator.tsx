@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TabNavigator from "@components/TabNavigator";
+import TabNavigator, { StackNavigator } from "@components/Navigator";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "@components/LoadingSpinner";
 import { RootState } from "@store/store";
@@ -29,12 +29,12 @@ const AppNavigator = () => {
 
   const getNavigator = () => {
     if (!isLoggedIn) {
-      return <TabNavigator tabList={authTabList} initialRouteName="Auth" />;
+      return <StackNavigator screens={authTabList} />;
     }
     return isPersonalPage ? (
-      <TabNavigator tabList={mineTabList} initialRouteName="MineProfile" />
+      <TabNavigator tabList={mineTabList} />
     ) : (
-      <TabNavigator tabList={mainTabList} initialRouteName="BookManageNavigator" />
+      <TabNavigator tabList={mainTabList} />
     );
   };
 

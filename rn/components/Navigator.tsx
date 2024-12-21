@@ -1,40 +1,39 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import CustomTabBar from '@components/CustomTabBar';
+import { ImageSourcePropType } from 'react-native';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 interface StackScreen {
     name: string;
     component: React.ComponentType<any>;
-    options: {
-        title: string;
-        [key: string]: any;
-    };
+    options: NativeStackNavigationOptions;
 }
 
-interface TabItem {
+export interface TabItem {
     name: string;
-    component: React.ComponentType<any>;
     options: {
         tabBarLabel: string;
-        iconDefault: any;
-        iconActive: any;
+        iconDefault: ImageSourcePropType | React.ComponentType<any>;
+        iconActive: ImageSourcePropType | React.ComponentType<any>;
     };
-    stackScreens?: StackScreen[];
+    stackScreens: StackScreen[];
 }
 
 interface TabNavigatorProps {
     tabList: TabItem[];
-    initialRouteName: string;
 }
 
-function StackNavigator({ screens }: { screens: StackScreen[] }) {
+export function StackNavigator(props: any) {
+    const { route } = props;
+    const screens = route.params?.screens || [];
+
     return (
-        <Stack.Navigator initialRouteName={screens[0].name}>
-            {screens.map(screen => (
+        <Stack.Navigator initialRouteName={screens[0]?.name}>
+            {screens.map((screen: any) => (
                 <Stack.Screen
                     key={screen.name}
                     name={screen.name}
@@ -46,22 +45,19 @@ function StackNavigator({ screens }: { screens: StackScreen[] }) {
     );
 }
 
-function TabNavigator({ tabList, initialRouteName }: TabNavigatorProps) {
+function TabNavigator({ tabList }: TabNavigatorProps) {
     return (
         <Tab.Navigator
             screenOptions={{ headerShown: false }}
             tabBar={props => <CustomTabBar {...props} />}
-            initialRouteName={initialRouteName}
+            initialRouteName={tabList[0].name}
         >
             {tabList.map((item) => (
                 <Tab.Screen
                     key={item.name}
                     name={item.name}
-                    component={
-                        item.stackScreens
-                            ? () => <StackNavigator screens={item.stackScreens!} />
-                            : item.component
-                    }
+                    component={StackNavigator}
+                    initialParams={{ screens: item.stackScreens }}
                     options={item.options}
                 />
             ))}

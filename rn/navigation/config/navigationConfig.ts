@@ -17,8 +17,9 @@ import GenealogyScreen from '@screens/BookManage/Genealogy';
 import VersionManageScreen from '@screens/BookManage/VersionManage';
 import BookIntro from '@screens/BookManage/BookIntro';
 import ReadingRoomSearch from '@screens/ReadingRoom/ReadingRoomSearch';
+import { TabItem } from '@components/Navigator';
 
-export const mainTabList = [
+export const mainTabList: TabItem[] = [
     {
         name: 'BookManageNavigator',
         options: {
@@ -26,7 +27,7 @@ export const mainTabList = [
             iconDefault: require('@assets/images/tabbar/book_default.png'),
             iconActive: require('@assets/images/tabbar/book_active.png'),
         },
-        screens: [
+        stackScreens: [
             {
                 name: 'AnnotationList',
                 component: AnnotationList,
@@ -61,21 +62,33 @@ export const mainTabList = [
     },
     {
         name: 'OrganizationTask',
-        component: SpiritualCultivationHomeScreen,
         options: {
             tabBarLabel: '灵修',
             iconDefault: require('@assets/images/tabbar/task_default.png'),
             iconActive: require('@assets/images/tabbar/task_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'SpiritualCultivationHomeScreen',
+                component: SpiritualCultivationHomeScreen,
+                options: { headerShown: false }
+            }
+        ]
     },
     {
         name: 'OrganizationChat',
-        component: HomeScreen,
         options: {
             tabBarLabel: '培训',
             iconDefault: require('@assets/images/tabbar/chat_default.png'),
             iconActive: require('@assets/images/tabbar/chat_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'HomeScreen',
+                component: HomeScreen,
+                options: { headerShown: false }
+            }
+        ]
     },
     {
         name: 'Organization',
@@ -84,7 +97,7 @@ export const mainTabList = [
             iconDefault: require('@assets/images/tabbar/organization.png'),
             iconActive: require('@assets/images/tabbar/organization_active.png')
         },
-        screens: [
+        stackScreens: [
             {
                 name: 'OrganizationManager',
                 component: OrganizationManager,
@@ -114,12 +127,18 @@ export const mainTabList = [
     },
     {
         name: 'OrganizationTopic',
-        component: HomeScreen,
         options: {
             tabBarLabel: '讨论',
             iconDefault: require('@assets/images/tabbar/topic_default.png'),
             iconActive: require('@assets/images/tabbar/topic_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'OrganizationTopicHome',
+                component: HomeScreen,
+                options: { headerShown: false }
+            }
+        ]
     }
 ];
 
@@ -131,7 +150,7 @@ export const mineTabList = [
             iconDefault: require('@assets/images/tabbar/chat_default.png'),
             iconActive: require('@assets/images/tabbar/mine_active.png')
         },
-        screens: [
+        stackScreens: [
             {
                 name: 'UserInfoIndex',
                 component: MineHome,
@@ -146,39 +165,63 @@ export const mineTabList = [
     },
     {
         name: 'Live',
-        component: MineScreen,
         options: {
             tabBarLabel: '生活',
             iconDefault: require('@assets/images/tabbar/book_default.png'),
             iconActive: require('@assets/images/tabbar/book_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'LiveHome',
+                component: MineScreen,
+                options: { headerShown: false }
+            }
+        ]
     },
     {
         name: 'Social',
-        component: MineScreen,
         options: {
             tabBarLabel: '社交',
             iconDefault: require('@assets/images/tabbar/pray_default.png'),
             iconActive: require('@assets/images/tabbar/pray_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'SocialHome',
+                component: MineScreen,
+                options: { headerShown: false }
+            }
+        ]
     },
     {
         name: 'PodCast',
-        component: MineScreen,
         options: {
             tabBarLabel: '博客',
             iconDefault: require('@assets/images/tabbar/task_default.png'),
             iconActive: require('@assets/images/tabbar/task_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'PodCastHome',
+                component: MineScreen,
+                options: { headerShown: false }
+            }
+        ]
     },
     {
         name: 'Mall',
-        component: MallScreen,
         options: {
             tabBarLabel: '商城',
             iconDefault: require('@assets/images/tabbar/topic_default.png'),
             iconActive: require('@assets/images/tabbar/topic_active.png')
-        }
+        },
+        stackScreens: [
+            {
+                name: 'MallHome',
+                component: MineScreen,
+                options: { headerShown: false }
+            }
+        ]
     }
 ];
 
@@ -186,19 +229,11 @@ export const authTabList = [
     {
         name: 'Login',
         component: LoginScreen,
-        options: {
-            tabBarLabel: '登录',
-            iconDefault: require('@assets/images/tabbar/login_default.png'),
-            iconActive: require('@assets/images/tabbar/login_active.png')
-        }
+        options: { headerShown: false }
     },
     {
         name: 'Logining',
         component: Logining,
-        options: {
-            tabBarLabel: '登录中',
-            iconDefault: require('@assets/images/tabbar/logining_default.png'),
-            iconActive: require('@assets/images/tabbar/logining_active.png')
-        }
+        options: { headerShown: false }
     }
-]; 
+]
