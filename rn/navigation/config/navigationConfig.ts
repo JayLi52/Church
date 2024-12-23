@@ -18,6 +18,7 @@ import VersionManageScreen from '@screens/BookManage/VersionManage';
 import BookIntro from '@screens/BookManage/BookIntro';
 import ReadingRoomSearch from '@screens/ReadingRoom/ReadingRoomSearch';
 import { TabItem } from '@components/Navigator';
+import Devotion from '@screens/Team/Devotion';
 
 export const mainTabList: TabItem[] = [
     {
@@ -98,6 +99,12 @@ export const mainTabList: TabItem[] = [
             iconActive: require('@assets/images/tabbar/organization_active.png')
         },
         stackScreens: [
+
+            {
+                name: 'Devotion',
+                component: Devotion,
+                options: { headerShown: false }
+            },
             {
                 name: 'OrganizationManager',
                 component: OrganizationManager,
@@ -122,7 +129,7 @@ export const mainTabList: TabItem[] = [
                 name: 'SpreadStatsAnswer',
                 component: SpreadStatsAnswerScreen,
                 options: { headerShown: false }
-            }
+            },
         ]
     },
     {

@@ -1,5 +1,8 @@
 {
     "editor.formatOnSave": true, // 自动格式化
-    "editor.defaultFormatter": "esbenp.prettier-vscode" // 默认使用 Prettier 格式化
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    } // 默认使用 Prettier 格式化
   }
   
