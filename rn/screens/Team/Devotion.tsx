@@ -197,7 +197,7 @@ const Devotion = () => {
       </View>
       <View style={styles.tabsContainer}>
         <CustomTabs
-          tabs={tabs}
+          tabs={tabs.map((item, index) => ({...item, key: index.toString()}))}
           onTabChange={key => console.log('Tab changed:', key)}
         />
       </View>
