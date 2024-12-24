@@ -177,6 +177,26 @@ const styles = transformStyles({
         height: 10,
         borderRadius: 5,
     },
+    planCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    planName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 10,
+    },
+    progressBarContainer: {
+        flex: 1,
+        height: 10,
+        borderRadius: 5,
+        overflow: 'hidden',
+    },
+    progressText: {
+        fontSize: 16,
+        marginLeft: 10,
+    },
 });
 
 export default NewPlan; 
