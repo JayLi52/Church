@@ -17,7 +17,7 @@ import ImmersiveReadingScreen from '@screens/BookManage/ImmersiveReading';
 import VersionManageScreen from '@screens/BookManage/VersionManage';
 import BookIntro from '@screens/BookManage/BookIntro';
 import ReadingRoomSearch from '@screens/ReadingRoom/ReadingRoomSearch';
-import {TabItem} from '@components/Navigator';
+import { TabItem } from '@components/Navigator';
 import Devotion from '@screens/Team/Devotion';
 import MinReadingTime from '@screens/Team/MinReadingTime';
 import Topic from '@screens/Team/Topic';
@@ -28,6 +28,7 @@ import AddAnswer from '@screens/Team/AddAnswer';
 import CompleteQuestion from '@screens/Team/CompleteQuestion';
 import BookIntroTwo from '@screens/ReadingRoom/BookIntroTwo';
 import ReadingList from '@screens/BookManage/ReadingList';
+import AudioPlayer from '@screens/BookManage/AudioPlayer';
 
 export const mainTabList: TabItem[] = [
   {
@@ -40,43 +41,48 @@ export const mainTabList: TabItem[] = [
     stackScreens: [
       {
         name: 'ReadingRoomHomeScreen',
-        component: ReadingRoomHomeScreen,
-        options: {headerShown: false},
+        renderComponent: ReadingRoomHomeScreen,
+        options: { headerShown: false },
       },
       {
         name: 'BookIntro',
-        component: BookIntro,
-        options: {headerShown: false},
+        renderComponent: BookIntro,
+        options: { headerShown: false },
       },
       {
         name: 'BookIntroTwo',
-        component: BookIntroTwo,
-        options: {headerShown: false},
+        renderComponent: BookIntroTwo,
+        options: { headerShown: false },
       },
       {
         name: 'AnnotationList',
-        component: AnnotationList,
-        options: {headerShown: false},
+        renderComponent: AnnotationList,
+        options: { headerShown: false },
       },
       {
         name: 'VersionManageScreen',
-        component: VersionManageScreen,
-        options: {headerShown: false},
+        renderComponent: VersionManageScreen,
+        options: { headerShown: false },
       },
       {
         name: 'ImmersiveReadingScreen',
-        component: ImmersiveReadingScreen,
-        options: {headerShown: false},
+        renderComponent: ImmersiveReadingScreen,
+        options: { headerShown: false },
       },
       {
         name: 'ReadingRoomSearch',
-        component: ReadingRoomSearch,
-        options: {headerShown: false},
+        renderComponent: ReadingRoomSearch,
+        options: { headerShown: false },
       },
       {
         name: 'ReadingListScreen',
-        component: ReadingList,
-        options: {headerShown: false},
+        renderComponent: ReadingList,
+        options: { headerShown: false },
+      },
+      {
+        name: 'AudioPlayer',
+        renderComponent: AudioPlayer,
+        options: { headerShown: false },
       },
     ],
   },
@@ -90,8 +96,8 @@ export const mainTabList: TabItem[] = [
     stackScreens: [
       {
         name: 'SpiritualCultivationHomeScreen',
-        component: SpiritualCultivationHomeScreen,
-        options: {headerShown: false},
+        renderComponent: SpiritualCultivationHomeScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -105,8 +111,8 @@ export const mainTabList: TabItem[] = [
     stackScreens: [
       {
         name: 'HomeScreen',
-        component: HomeScreen,
-        options: {headerShown: false},
+        renderComponent: HomeScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -120,68 +126,68 @@ export const mainTabList: TabItem[] = [
     stackScreens: [
       {
         name: 'CompleteQuestion',
-        component: CompleteQuestion,
-        options: {headerShown: false},
+        renderComponent: CompleteQuestion,
+        options: { headerShown: false },
       },
       {
         name: 'AddAnswer',
-        component: AddAnswer,
-        options: {headerShown: false},
+        renderComponent: AddAnswer,
+        options: { headerShown: false },
       },
       {
         name: 'NewPlan',
-        component: NewPlan,
-        options: {headerShown: false},
+        renderComponent: NewPlan,
+        options: { headerShown: false },
       },
       {
         name: 'MinReadingTime',
-        component: MinReadingTime,
-        options: {headerShown: false},
+        renderComponent: MinReadingTime,
+        options: { headerShown: false },
       },
       {
         name: 'Devotion',
-        component: Devotion,
-        options: {headerShown: false},
+        renderComponent: Devotion,
+        options: { headerShown: false },
       },
       {
         name: 'OrganizationManager',
-        component: OrganizationManager,
-        options: {headerShown: false},
+        renderComponent: OrganizationManager,
+        options: { headerShown: false },
       },
       {
         name: 'OrganizationCalendar',
-        component: CalendarScreen,
-        options: {headerShown: false},
+        renderComponent: CalendarScreen,
+        options: { headerShown: false },
       },
       {
         name: 'OrganizationScheduleList',
-        component: ScheduleList,
-        options: {headerShown: false},
+        renderComponent: ScheduleList,
+        options: { headerShown: false },
       },
       {
         name: 'OrganizationMap',
-        component: MapViewContainer,
-        options: {headerShown: false},
+        renderComponent: MapViewContainer,
+        options: { headerShown: false },
       },
       {
         name: 'SpreadStatsAnswer',
-        component: SpreadStatsAnswerScreen,
-        options: {headerShown: false},
+        renderComponent: SpreadStatsAnswerScreen,
+        options: { headerShown: false },
       },
       {
         name: 'Live',
-        component: Live,
-        options: {headerShown: false},
+        renderComponent: Live,
+        options: { headerShown: false },
       },
       {
         name: 'SkipTime',
-        component: SkipTime,
-        options: {headerShown: false},
+        renderComponent: SkipTime,
+        options: { headerShown: false },
       },
       {
         name: 'Topic',
-        component: Topic,
-        options: {headerShown: false},
+        renderComponent: Topic,
+        options: { headerShown: false },
       },
     ],
   },
@@ -195,8 +201,8 @@ export const mainTabList: TabItem[] = [
     stackScreens: [
       {
         name: 'OrganizationTopicHome',
-        component: HomeScreen,
-        options: {headerShown: false},
+        renderComponent: HomeScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -213,13 +219,13 @@ export const mineTabList = [
     stackScreens: [
       {
         name: 'UserInfoIndex',
-        component: MineHome,
-        options: {headerShown: false},
+        renderComponent: MineHome,
+        options: { headerShown: false },
       },
       {
         name: 'UserInfoQrCode',
-        component: QrCode,
-        options: {headerShown: false},
+        renderComponent: QrCode,
+        options: { headerShown: false },
       },
     ],
   },
@@ -233,8 +239,8 @@ export const mineTabList = [
     stackScreens: [
       {
         name: 'LiveHome',
-        component: MineScreen,
-        options: {headerShown: false},
+        renderComponent: MineScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -248,8 +254,8 @@ export const mineTabList = [
     stackScreens: [
       {
         name: 'SocialHome',
-        component: MineScreen,
-        options: {headerShown: false},
+        renderComponent: MineScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -263,8 +269,8 @@ export const mineTabList = [
     stackScreens: [
       {
         name: 'PodCastHome',
-        component: MineScreen,
-        options: {headerShown: false},
+        renderComponent: MineScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -278,8 +284,8 @@ export const mineTabList = [
     stackScreens: [
       {
         name: 'MallHome',
-        component: MineScreen,
-        options: {headerShown: false},
+        renderComponent: MineScreen,
+        options: { headerShown: false },
       },
     ],
   },
@@ -288,12 +294,12 @@ export const mineTabList = [
 export const authTabList = [
   {
     name: 'Login',
-    component: LoginScreen,
-    options: {headerShown: false},
+    renderComponent: LoginScreen,
+    options: { headerShown: false },
   },
   {
     name: 'Logining',
-    component: Logining,
-    options: {headerShown: false},
+    renderComponent: Logining,
+    options: { headerShown: false },
   },
 ];

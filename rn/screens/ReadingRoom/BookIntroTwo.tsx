@@ -1,11 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
-  StyleSheet,
-  ScrollView,
   StatusBar,
   TouchableOpacity,
-  Image,
   ImageBackground,
   Platform,
 } from 'react-native';
@@ -21,8 +18,13 @@ import {hideTabBar} from '@store/tabSlice';
 function BookIntroScreen(): React.JSX.Element {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  dispatch(setTranslucent()); // 设置状态栏为透明
-  dispatch(hideTabBar()); // 隐藏状态栏
+  //   dispatch(setTranslucent()); // 设置状态栏为透明
+  //   dispatch(hideTabBar()); // 隐藏状态栏
+
+  useEffect(() => {
+    dispatch(setTranslucent());
+    dispatch(hideTabBar());
+  }, []);
 
   const [isLiked, setIsLiked] = useState(false); // 添加点赞状态
 

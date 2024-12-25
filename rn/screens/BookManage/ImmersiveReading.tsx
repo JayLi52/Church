@@ -7,13 +7,20 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Dimensions,
+  Share,
 } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
 import {transformStyles} from '@utils/index';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
 import Slider from '@react-native-community/slider';
+import Toast from 'react-native-root-toast';
+import ViewShot from 'react-native-view-shot';
+import RNShare from 'react-native-share';
+import ShareCard from './components/ShareCard';
 
 const genealogyData = [
   {id: 1, text: '亚伯拉罕的后裔，大卫的子孙、耶稣基督的家谱。'},
@@ -77,6 +84,31 @@ const themes = {
   },
 };
 
+// 添加新的类型定义
+type ToolbarPosition = 'top' | 'bottom';
+type SelectedVerse = {
+  id: number;
+  text: string;
+  position: {
+    y: number;
+    height: number;
+  };
+} | null;
+
+// 添加高亮状态类型
+type HighlightedVerse = {
+  id: number;
+  color: string;
+};
+
+// 添加分享信息类型
+type ShareInfo = {
+  qrCode: string;
+  backgroundImage: string;
+  slogan: string;
+  appName: string;
+};
+
 function ImmersiveReading(): React.JSX.Element {
   const navigation = useNavigation();
   const [theme, setTheme] = useState<Theme>('light');
@@ -98,6 +130,18 @@ function ImmersiveReading(): React.JSX.Element {
   const modalChapterRef = useRef<CustomModalRef>(null);
   const [currentSection, setCurrentSection] = useState(1);
   const sections = Array.from({length: 20}, (_, i) => i + 1); // 假设每章有20节
+  const [selectedVerse, setSelectedVerse] = useState<SelectedVerse>(null);
+  const [toolbarPosition, setToolbarPosition] =
+    useState<ToolbarPosition>('bottom');
+  const scrollViewRef = useRef<ScrollView>(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  // 添加高亮状态管理
+  const [highlightedVerses, setHighlightedVerses] = useState<
+    HighlightedVerse[]
+  >([]);
+  const shareCardRef = useRef<View>(null);
+  const [shareInfo, setShareInfo] = useState<ShareInfo | null>(null);
+  const [loadingShare, setLoadingShare] = useState(false);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -132,24 +176,164 @@ function ImmersiveReading(): React.JSX.Element {
     },
   ];
 
-  const renderToolbar = () => (
-    <View style={styles.toolbar}>
-      {toolbarButtons.map((button, index) => (
+  // 添加工具栏选项
+  const toolbarOptions = [
+    {icon: 'highlighter', label: '高亮', onPress: () => handleHighlight()},
+    {icon: 'copy', label: '复制', onPress: () => handleCopy()},
+    {
+      icon: 'share',
+      label: '分享',
+      onPress: () => handleShare(),
+      disabled: loadingShare,
+    },
+    {icon: 'quote-right', label: '引用', onPress: () => handleQuote()},
+    {icon: 'language', label: '翻译', onPress: () => handleTranslate()},
+  ];
+
+  // 处理长按事件
+  const handleVerseLongPress = (
+    verse: (typeof genealogyData)[0],
+    layout: {y: number; height: number},
+  ) => {
+    const screenHeight = Dimensions.get('window').height;
+    const positionFromTop = layout.y - scrollOffset;
+    const spaceAbove = positionFromTop;
+    const spaceBelow = screenHeight - (positionFromTop + layout.height);
+
+    setToolbarPosition(spaceBelow > spaceAbove ? 'bottom' : 'top');
+    setSelectedVerse({
+      id: verse.id,
+      text: verse.text,
+      position: {
+        y: layout.y,
+        height: layout.height,
+      },
+    });
+  };
+
+  // 处理工具栏操作
+  const handleHighlight = () => {
+    if (selectedVerse) {
+      setHighlightedVerses(prev => [
+        ...prev.filter(v => v.id !== selectedVerse.id),
+        {id: selectedVerse.id, color: 'rgba(76, 175, 80, 0.2)'}, // 使用绿色半透明背景
+      ]);
+    }
+    setSelectedVerse(null);
+  };
+
+  const handleCopy = () => {
+    if (selectedVerse) {
+      Clipboard.setString(selectedVerse.text);
+      Toast.show('复制成功', {
+        duration: 1000,
+      });
+    }
+    setSelectedVerse(null);
+  };
+
+  // 获取分享信息的函数
+  const fetchShareInfo = async () => {
+    try {
+      setLoadingShare(true);
+      // TODO: 替换为实际的 API 调用
+      const response = await fetch('your-api-endpoint');
+      const data = await response.json();
+      setShareInfo(data);
+    } catch (error) {
+      console.error('获取分享信息失败:', error);
+      Toast.show('获取分享信息失败，请重试', {
+        duration: Toast.durations.SHORT,
+      });
+    } finally {
+      setLoadingShare(false);
+    }
+  };
+
+  // 修改分享处理函数
+  const handleShare = async () => {
+    if (selectedVerse && !loadingShare) {
+      try {
+        if (!shareInfo) {
+          await fetchShareInfo();
+        }
+
+        const uri = await ViewShot.captureRef(shareCardRef, {
+          format: 'png',
+          quality: 1,
+        });
+
+        const shareOptions = {
+          title: '分享经文',
+          message: selectedVerse.text,
+          url: uri,
+          social: RNShare.Social.INSTAGRAM,
+          failOnCancel: false,
+        };
+
+        await RNShare.open(shareOptions);
+      } catch (error) {
+        console.error('分享失败:', error);
+        Toast.show('分享失败，请重试', {
+          duration: Toast.durations.SHORT,
+        });
+      }
+    }
+  };
+
+  const handleQuote = () => {
+    // 实现引用功能
+    setSelectedVerse(null);
+  };
+
+  const handleTranslate = () => {
+    // 实现翻译功能
+    setSelectedVerse(null);
+  };
+
+  // 渲染工具栏
+  const renderToolbar = () => {
+    if (!selectedVerse) return null;
+
+    return (
+      <>
         <TouchableOpacity
-          key={index}
-          style={styles.toolbarButton}
-          onPress={button.onPress}>
-          <FontAwesome
-            name={button.icon}
-            size={20}
-            color="#666"
-            iconStyle="solid"
-          />
-          <BaseText style={styles.toolbarButtonText}>{button.label}</BaseText>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={() => setSelectedVerse(null)}
+        />
+
+        <View
+          style={[
+            styles.verseToolbar,
+            toolbarPosition === 'top'
+              ? {bottom: '150%', marginBottom: 8}
+              : {top: '150%', marginTop: 8},
+          ]}>
+          {toolbarOptions.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.toolbarButton,
+                option.disabled && styles.toolbarButtonDisabled,
+              ]}
+              onPress={option.onPress}
+              disabled={option.disabled}>
+              <FontAwesome
+                name={option.icon}
+                size={20}
+                color="#fff"
+                iconStyle="solid"
+              />
+              <BaseText style={styles.toolbarButtonText}>
+                {option.label}
+              </BaseText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </>
+    );
+  };
 
   const renderFontMenu = () => (
     <CustomModal
@@ -558,49 +742,77 @@ function ImmersiveReading(): React.JSX.Element {
 
   const chapters = Array.from({length: 28}, (_, i) => i + 1); // 假设有28章
 
+  const renderShareCard = () => (
+    <ViewShot ref={shareCardRef} options={{format: 'png', quality: 1}}>
+      <ShareCard
+        verse={selectedVerse?.text || ''}
+        reference={`马太福音 1:${selectedVerse?.id || 1}`}
+        loading={loadingShare}
+        shareInfo={shareInfo || undefined}
+      />
+    </ViewShot>
+  );
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
       {renderHeader()}
-      <ScrollView>
+      <ScrollView
+        ref={scrollViewRef}
+        onScroll={event => {
+          setScrollOffset(event.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={16}>
         <View style={styles.titleContainer}>
           <BaseText style={[styles.title, {color: colors.text}]}>
             最后的问候
           </BaseText>
         </View>
 
-        {genealogyData.map((item, index) => (
-          <View
-            key={item.id}
-            style={[styles.verseContainer, {borderBottomColor: colors.border}]}>
-            <View style={styles.verseContent}>
-              <BaseText
-                style={[styles.verseNumber, {color: colors.verseNumber}]}>
-                {index + 1}
-              </BaseText>
-              <BaseText style={[styles.verseText, {color: colors.text}]}>
-                {item.text}
-              </BaseText>
+        {genealogyData.map((item, index) => {
+          const isHighlighted = highlightedVerses.find(v => v.id === item.id);
+
+          return (
+            <View
+              key={item.id}
+              style={[
+                styles.verseContainer,
+                {borderBottomColor: colors.border},
+                isHighlighted && {
+                  backgroundColor: isHighlighted.color,
+                  borderRadius: 8,
+                },
+              ]}>
+              <TouchableOpacity
+                onLongPress={event => {
+                  event.target.measure((x, y, width, height, pageX, pageY) => {
+                    handleVerseLongPress(item, {y: pageY, height});
+                  });
+                }}
+                delayLongPress={500}
+                style={styles.verseContent}>
+                <BaseText
+                  style={[styles.verseNumber, {color: colors.verseNumber}]}>
+                  {index + 1}
+                </BaseText>
+                <BaseText style={[styles.verseText, {color: colors.text}]}>
+                  {item.text}
+                </BaseText>
+              </TouchableOpacity>
+              {selectedVerse?.id === item.id && renderToolbar()}
             </View>
-            <View style={styles.actionButtons}>
-              <FontAwesome
-                name="comment"
-                size={16}
-                color={colors.icon}
-                style={styles.icon}
-                iconStyle="solid"
-              />
-              <BaseText style={[styles.commentCount, {color: colors.icon}]}>
-                99+
-              </BaseText>
-            </View>
-          </View>
-        ))}
+          );
+        })}
 
         {renderReaders()}
       </ScrollView>
 
       <TouchableOpacity
-        style={[styles.floatingButton, {backgroundColor: colors.background}]}>
+        style={[styles.floatingButton, {backgroundColor: colors.background}]}
+        onPress={() =>
+          navigation.navigate('BookManageNavigator', {
+            screen: 'AudioPlayer',
+          })
+        }>
         <FontAwesome
           name="headphones"
           size={20}
@@ -618,6 +830,10 @@ function ImmersiveReading(): React.JSX.Element {
       {renderBgColorMenu()}
       {renderVersionModal()}
       {renderChapterModal()}
+
+      <View style={styles.hiddenShareCard}>
+        {selectedVerse && renderShareCard()}
+      </View>
     </View>
   );
 }
@@ -639,7 +855,8 @@ const styles = transformStyles({
   verseContainer: {
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    position: 'relative',
+    marginHorizontal: 16,
   },
   verseContent: {
     flexDirection: 'row',
@@ -673,7 +890,7 @@ const styles = transformStyles({
   floatingButton: {
     position: 'absolute',
     right: 16,
-    bottom: 16,
+    bottom: 100,
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -688,6 +905,7 @@ const styles = transformStyles({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    zIndex: 10,
   },
   readersContainer: {
     flexDirection: 'row',
@@ -719,6 +937,7 @@ const styles = transformStyles({
     backgroundColor: '#F6F6F6',
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
+    marginHorizontal: 16,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -1015,6 +1234,53 @@ const styles = transformStyles({
   },
   sectionItemTextActive: {
     color: '#fff',
+  },
+  verseToolbar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderRadius: 8,
+    padding: 8,
+    justifyContent: 'space-around',
+    zIndex: 1000,
+  },
+  toolbarButton: {
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  toolbarButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  verseContainer: {
+    padding: 16,
+    borderBottomWidth: 1,
+    position: 'relative', // 添加这个以支持工具栏定位
+  },
+  verseContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    zIndex: 999,
+  },
+  hiddenShareCard: {
+    position: 'absolute',
+    top: -9999,
+    left: -9999,
+  },
+  toolbarButtonDisabled: {
+    opacity: 0.5,
   },
 });
 
