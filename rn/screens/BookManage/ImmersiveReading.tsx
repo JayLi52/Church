@@ -109,6 +109,9 @@ type ShareInfo = {
   appName: string;
 };
 
+// 添加 tab 类型定义
+type TabType = 'chapter' | 'section';
+
 function ImmersiveReading(): React.JSX.Element {
   const navigation = useNavigation();
   const [theme, setTheme] = useState<Theme>('light');
@@ -142,6 +145,9 @@ function ImmersiveReading(): React.JSX.Element {
   const shareCardRef = useRef<View>(null);
   const [shareInfo, setShareInfo] = useState<ShareInfo | null>(null);
   const [loadingShare, setLoadingShare] = useState(false);
+  const [currentTab, setCurrentTab] = useState<TabType>('chapter');
+  const [showBottomToolbar, setShowBottomToolbar] = useState(true);
+  const [showUI, setShowUI] = useState(false);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -195,6 +201,7 @@ function ImmersiveReading(): React.JSX.Element {
     verse: (typeof genealogyData)[0],
     layout: {y: number; height: number},
   ) => {
+    setShowBottomToolbar(false); // 隐藏底部工具栏
     const screenHeight = Dimensions.get('window').height;
     const positionFromTop = layout.y - scrollOffset;
     const spaceAbove = positionFromTop;
@@ -511,7 +518,7 @@ function ImmersiveReading(): React.JSX.Element {
               name="search"
               size={20}
               color="#fff"
-              iconStyle="solid"
+              // iconStyle="solid"
             />
           </TouchableOpacity>
         </View>
@@ -600,7 +607,7 @@ function ImmersiveReading(): React.JSX.Element {
         <BaseText style={styles.chapterText}>第一章</BaseText>
         <FontAwesome
           name="chevron-down"
-          size={12}
+          size={15}
           color={colors.text}
           iconStyle="solid"
         />
@@ -649,88 +656,128 @@ function ImmersiveReading(): React.JSX.Element {
     </CustomModal>
   );
 
-  const renderChapterModal = () => (
-    <CustomModal
-      ref={modalChapterRef}
-      modalContentWrapStyle={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-      }}>
-      <View style={styles.chapterContainer}>
-        <View style={styles.menuHeader}>
-          <BaseText style={styles.menuTitle}>马太福音</BaseText>
-          <TouchableOpacity onPress={() => modalChapterRef.current?.close()}>
-            <FontAwesome
-              name="xmark"
-              size={20}
-              color="#333"
-              iconStyle="solid"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.chapterTabContainer}>
-          <TouchableOpacity
-            style={[styles.chapterTab, styles.chapterTabActive]}>
-            <BaseText style={styles.chapterTabText}>章</BaseText>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.chapterTab}>
-            <BaseText style={styles.chapterTabText}>节</BaseText>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.chapterContent}>
-          <View style={styles.chapterList}>
-            {chapters.map(chapter => (
-              <TouchableOpacity
-                key={chapter}
+  const renderChapterModal = () => {
+    return (
+      <CustomModal
+        ref={modalChapterRef}
+        modalContentWrapStyle={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+        }}>
+        <View style={styles.chapterContainer}>
+          <View style={styles.chapterTabContainer}>
+            <TouchableOpacity
+              style={[
+                styles.chapterTab,
+                currentTab === 'chapter' && styles.chapterTabActive,
+              ]}
+              onPress={() => setCurrentTab('chapter')}>
+              <BaseText
                 style={[
-                  styles.chapterItem,
-                  currentChapter === chapter && styles.chapterItemActive,
-                ]}
-                onPress={() => {
-                  setCurrentChapter(chapter);
-                  // 不关闭弹窗，等用户选择节
-                }}>
-                <BaseText
-                  style={[
-                    styles.chapterItemText,
-                    currentChapter === chapter && styles.chapterItemTextActive,
-                  ]}>
-                  {String(chapter).padStart(2, '0')}
-                </BaseText>
-              </TouchableOpacity>
-            ))}
+                  styles.chapterTabText,
+                  currentTab === 'chapter' && styles.chapterTabTextActive,
+                ]}>
+                章
+              </BaseText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.chapterTab,
+                currentTab === 'section' && styles.chapterTabActive,
+              ]}
+              onPress={() => setCurrentTab('section')}>
+              <BaseText
+                style={[
+                  styles.chapterTabText,
+                  currentTab === 'section' && styles.chapterTabTextActive,
+                ]}>
+                节
+              </BaseText>
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.sectionList}>
-            {sections.map(section => (
-              <TouchableOpacity
-                key={section}
-                style={[
-                  styles.sectionItem,
-                  currentSection === section && styles.sectionItemActive,
-                ]}
-                onPress={() => {
-                  setCurrentSection(section);
-                  modalChapterRef.current?.close();
-                }}>
-                <BaseText
-                  style={[
-                    styles.sectionItemText,
-                    currentSection === section && styles.sectionItemTextActive,
-                  ]}>
-                  {String(section).padStart(2, '0')}
-                </BaseText>
-              </TouchableOpacity>
-            ))}
+          <View style={styles.chapterContent}>
+            <ScrollView style={styles.chapterList}>
+              <View style={styles.chapterListContent}>
+                {chapters.map(chapter => (
+                  <TouchableOpacity
+                    key={chapter}
+                    style={[
+                      styles.chapterItem,
+                      currentChapter === chapter && styles.chapterItemActive,
+                    ]}
+                    onPress={() => setCurrentChapter(chapter)}>
+                    <BaseText
+                      style={[
+                        styles.chapterItemText,
+                        currentChapter === chapter &&
+                          styles.chapterItemTextActive,
+                      ]}>
+                      {String(chapter).padStart(2, '0')}
+                    </BaseText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+
+            <ScrollView style={styles.sectionList}>
+              <View style={styles.sectionListContent}>
+                {sections.map(section => (
+                  <TouchableOpacity
+                    key={section}
+                    style={[
+                      styles.sectionItem,
+                      currentSection === section && styles.sectionItemActive,
+                    ]}
+                    onPress={() => setCurrentSection(section)}>
+                    <BaseText
+                      style={[
+                        styles.sectionItemText,
+                        currentSection === section &&
+                          styles.sectionItemTextActive,
+                      ]}>
+                      {String(section).padStart(2, '0')}
+                    </BaseText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+
+          <View style={styles.chapterFooter}>
+            <TouchableOpacity
+              style={styles.chapterFooterButton}
+              onPress={() => modalChapterRef.current?.close()}>
+              <FontAwesome
+                name="xmark"
+                size={20}
+                color="#666"
+                iconStyle="solid"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.chapterFooterButton,
+                styles.chapterFooterButtonPrimary,
+              ]}
+              onPress={() => {
+                // 处理启用逻辑
+                modalChapterRef.current?.close();
+              }}>
+              <FontAwesome
+                name="check"
+                size={20}
+                color="#666"
+                iconStyle="solid"
+              />
+              <BaseText style={styles.chapterFooterButtonText}>启用</BaseText>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </CustomModal>
-  );
+      </CustomModal>
+    );
+  };
 
   const versions = [
     {id: '1', name: '现代标点和合本', shortName: '和'},
@@ -753,58 +800,80 @@ function ImmersiveReading(): React.JSX.Element {
     </ViewShot>
   );
 
+  const handleOverlayPress = () => {
+    setSelectedVerse(null);
+    setShowBottomToolbar(true); // 显示底部工具栏
+  };
+
+  const handleContentPress = () => {
+    setShowUI(prev => !prev);
+    setSelectedVerse(null); // 同时关闭段落工具栏
+  };
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
-      {renderHeader()}
-      <ScrollView
-        ref={scrollViewRef}
-        onScroll={event => {
-          setScrollOffset(event.nativeEvent.contentOffset.y);
-        }}
-        scrollEventThrottle={16}>
-        <View style={styles.titleContainer}>
-          <BaseText style={[styles.title, {color: colors.text}]}>
-            最后的问候
-          </BaseText>
+      {showUI && (
+        <View style={[styles.header, {backgroundColor: colors.header}]}>
+          {renderHeader()}
         </View>
+      )}
 
-        {genealogyData.map((item, index) => {
-          const isHighlighted = highlightedVerses.find(v => v.id === item.id);
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.contentContainer}
+        onPress={handleContentPress}>
+        <ScrollView
+          ref={scrollViewRef}
+          onScroll={event => {
+            setScrollOffset(event.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}>
+          <View style={styles.titleContainer}>
+            <BaseText style={[styles.title, {color: colors.text}]}>
+              最后的问候
+            </BaseText>
+          </View>
 
-          return (
-            <View
-              key={item.id}
-              style={[
-                styles.verseContainer,
-                {borderBottomColor: colors.border},
-                isHighlighted && {
-                  backgroundColor: isHighlighted.color,
-                  borderRadius: 8,
-                },
-              ]}>
-              <TouchableOpacity
-                onLongPress={event => {
-                  event.target.measure((x, y, width, height, pageX, pageY) => {
-                    handleVerseLongPress(item, {y: pageY, height});
-                  });
-                }}
-                delayLongPress={500}
-                style={styles.verseContent}>
-                <BaseText
-                  style={[styles.verseNumber, {color: colors.verseNumber}]}>
-                  {index + 1}
-                </BaseText>
-                <BaseText style={[styles.verseText, {color: colors.text}]}>
-                  {item.text}
-                </BaseText>
-              </TouchableOpacity>
-              {selectedVerse?.id === item.id && renderToolbar()}
-            </View>
-          );
-        })}
+          {genealogyData.map((item, index) => {
+            const isHighlighted = highlightedVerses.find(v => v.id === item.id);
 
-        {renderReaders()}
-      </ScrollView>
+            return (
+              <View
+                key={item.id}
+                style={[
+                  styles.verseContainer,
+                  {borderBottomColor: colors.border},
+                  isHighlighted && {
+                    backgroundColor: isHighlighted.color,
+                    borderRadius: 8,
+                  },
+                ]}>
+                <TouchableOpacity
+                  onLongPress={event => {
+                    event.target.measure(
+                      (x, y, width, height, pageX, pageY) => {
+                        handleVerseLongPress(item, {y: pageY, height});
+                      },
+                    );
+                  }}
+                  delayLongPress={500}
+                  style={styles.verseContent}>
+                  <BaseText
+                    style={[styles.verseNumber, {color: colors.verseNumber}]}>
+                    {index + 1}
+                  </BaseText>
+                  <BaseText style={[styles.verseText, {color: colors.text}]}>
+                    {item.text}
+                  </BaseText>
+                </TouchableOpacity>
+                {selectedVerse?.id === item.id && renderToolbar()}
+              </View>
+            );
+          })}
+
+          {renderReaders()}
+        </ScrollView>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.floatingButton, {backgroundColor: colors.background}]}
@@ -834,6 +903,35 @@ function ImmersiveReading(): React.JSX.Element {
       <View style={styles.hiddenShareCard}>
         {selectedVerse && renderShareCard()}
       </View>
+
+      {selectedVerse && (
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={handleOverlayPress}
+        />
+      )}
+
+      {showUI && showBottomToolbar && (
+        <View style={styles.bottomToolbar}>
+          {toolbarButtons.map((button, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.bottomToolbarButton}
+              onPress={button.onPress}>
+              <FontAwesome
+                name={button.icon}
+                size={20}
+                color="#666"
+                iconStyle="solid"
+              />
+              <BaseText style={styles.bottomToolbarButtonText}>
+                {button.label}
+              </BaseText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -937,7 +1035,13 @@ const styles = transformStyles({
     backgroundColor: '#F6F6F6',
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
+    width: 390,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -1135,11 +1239,14 @@ const styles = transformStyles({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 8,
+    // paddingTop: 12,
   },
   chapterText: {
     fontSize: 14,
     color: '#333',
     marginRight: 4,
+    // paddingTop: 4,
+    marginTop: -4,
   },
   versionContainer: {
     padding: 16,
@@ -1168,39 +1275,52 @@ const styles = transformStyles({
   },
   chapterContainer: {
     backgroundColor: '#fff',
-    height: '80%', // 占屏幕高度的80%
+    height: 350,
+    display: 'flex',
+    flexDirection: 'column',
+    width: 390,
   },
   chapterTabContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
-    paddingHorizontal: 16,
+    padding: 16,
+    gap: 16,
+    justifyContent: 'space-around',
   },
   chapterTab: {
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 24,
-    marginRight: 16,
+    borderRadius: 20,
+    backgroundColor: '#F5F5F5',
   },
   chapterTabActive: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFB224',
+    backgroundColor: '#FFB224',
   },
   chapterTabText: {
     fontSize: 14,
     color: '#666',
   },
+  chapterTabTextActive: {
+    color: '#fff',
+  },
   chapterContent: {
     flexDirection: 'row',
     flex: 1,
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    overflow: 'hidden',
   },
   chapterList: {
-    width: '40%',
+    width: '50%',
     borderRightWidth: 1,
     borderRightColor: '#EEEEEE',
+  },
+  chapterListContent: {
     padding: 12,
   },
   sectionList: {
     flex: 1,
+  },
+  sectionListContent: {
     padding: 12,
   },
   chapterItem: {
@@ -1235,6 +1355,26 @@ const styles = transformStyles({
   sectionItemTextActive: {
     color: '#fff',
   },
+  chapterFooter: {
+    flexDirection: 'row',
+    height: 44, // 固定高度
+    // borderTopWidth: 1,
+    // borderTopColor: '#EEEEEE',
+    justifyContent: 'space-between',
+  },
+  chapterFooterButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  chapterFooterButtonPrimary: {
+    // borderLeftWidth: 1,
+    // borderLeftColor: '#EEEEEE',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   verseToolbar: {
     position: 'absolute',
     left: 0,
@@ -1246,24 +1386,15 @@ const styles = transformStyles({
     justifyContent: 'space-around',
     zIndex: 1000,
   },
-  toolbarButton: {
+  verseToolbarButton: {
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  toolbarButtonText: {
+  verseToolbarButtonText: {
     color: '#fff',
     fontSize: 12,
     marginTop: 4,
-  },
-  verseContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    position: 'relative', // 添加这个以支持工具栏定位
-  },
-  verseContent: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
   },
   overlay: {
     position: 'absolute',
@@ -1281,6 +1412,39 @@ const styles = transformStyles({
   },
   toolbarButtonDisabled: {
     opacity: 0.5,
+  },
+  chapterFooterButtonText: {
+    fontSize: 16,
+    color: '#333',
+    marginLeft: 8,
+    marginTop: -4,
+  },
+  bottomToolbar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    paddingBottom: 34, // 适配底部安全区域
+    paddingTop: 8,
+    justifyContent: 'space-around',
+    zIndex: 100,
+  },
+  bottomToolbarButton: {
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  bottomToolbarButtonText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+  contentContainer: {
+    flex: 1,
   },
 });
 
