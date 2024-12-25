@@ -13,7 +13,7 @@ import MapViewContainer from '@screens/MapView';
 import SpreadStatsAnswerScreen from '@screens/SpreadStats/answer';
 import AnnotationList from '@screens/BookManage/AnnotationList';
 import ReadingRoomHomeScreen from '@screens/ReadingRoom/ReadingRoomHomeScreen';
-import GenealogyScreen from '@screens/BookManage/Genealogy';
+import ImmersiveReadingScreen from '@screens/BookManage/ImmersiveReading';
 import VersionManageScreen from '@screens/BookManage/VersionManage';
 import BookIntro from '@screens/BookManage/BookIntro';
 import ReadingRoomSearch from '@screens/ReadingRoom/ReadingRoomSearch';
@@ -26,6 +26,8 @@ import NewPlan from '@screens/Team/NewPlan';
 import Live from '@screens/Team/Live';
 import AddAnswer from '@screens/Team/AddAnswer';
 import CompleteQuestion from '@screens/Team/CompleteQuestion';
+import BookIntroTwo from '@screens/ReadingRoom/BookIntroTwo';
+import ReadingList from '@screens/BookManage/ReadingList';
 
 export const mainTabList: TabItem[] = [
   {
@@ -37,23 +39,8 @@ export const mainTabList: TabItem[] = [
     },
     stackScreens: [
       {
-        name: 'AnnotationList',
-        component: AnnotationList,
-        options: {headerShown: false},
-      },
-      {
         name: 'ReadingRoomHomeScreen',
         component: ReadingRoomHomeScreen,
-        options: {headerShown: false},
-      },
-      {
-        name: 'VersionManageScreen',
-        component: VersionManageScreen,
-        options: {headerShown: false},
-      },
-      {
-        name: 'GenealogyScreen',
-        component: GenealogyScreen,
         options: {headerShown: false},
       },
       {
@@ -62,8 +49,33 @@ export const mainTabList: TabItem[] = [
         options: {headerShown: false},
       },
       {
+        name: 'BookIntroTwo',
+        component: BookIntroTwo,
+        options: {headerShown: false},
+      },
+      {
+        name: 'AnnotationList',
+        component: AnnotationList,
+        options: {headerShown: false},
+      },
+      {
+        name: 'VersionManageScreen',
+        component: VersionManageScreen,
+        options: {headerShown: false},
+      },
+      {
+        name: 'ImmersiveReadingScreen',
+        component: ImmersiveReadingScreen,
+        options: {headerShown: false},
+      },
+      {
         name: 'ReadingRoomSearch',
         component: ReadingRoomSearch,
+        options: {headerShown: false},
+      },
+      {
+        name: 'ReadingListScreen',
+        component: ReadingList,
         options: {headerShown: false},
       },
     ],

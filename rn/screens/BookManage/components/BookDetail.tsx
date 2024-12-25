@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ImageBackground } from 'react-native';
 import BaseText from '@components/BaseText';
-import FontAwesome from '@react-native-vector-icons/FontAwesome6';
+import FontAwesome from '@react-native-vector-icons/fontawesome6';
 
 const BookDetail: React.FC = () => (
     <View style={styles.container}>

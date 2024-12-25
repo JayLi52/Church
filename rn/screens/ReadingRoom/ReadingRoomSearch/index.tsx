@@ -9,6 +9,7 @@ import BaseText from '@components/BaseText'
 import SearchBar from './components/SearchBar'
 import FilterTags from './components/FIlterTags'
 import SearchResult from './components/SearchResult'
+import { transformStyles } from '@utils/index'
 
 function ReadingRoomSearch(): React.JSX.Element {
   return (
@@ -20,7 +21,7 @@ function ReadingRoomSearch(): React.JSX.Element {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
   container: {
     backgroundColor: "#FFF",
     flexDirection: 'column',

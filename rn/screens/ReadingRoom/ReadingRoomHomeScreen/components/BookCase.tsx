@@ -34,7 +34,7 @@ function TabList(props: any): React.JSX.Element {
   }
 
   const handleSearchPress = () => {
-    navigation.navigate('ReadingRoom' as never)
+    navigation.navigate('BookManageNavigator', {screen: 'ReadingRoomSearch'})
   }
 
   useEffect(() => {
@@ -66,10 +66,14 @@ function TabList(props: any): React.JSX.Element {
 
 function BookItem(props: any): React.JSX.Element {
   const { data } = props
+  const navigation = useNavigation()
   return (
-    <View style={styles.bookItem}>
-      <View style={styles.bookItemLeft}>
-        <View style={styles.bookItemBgWrap}>
+    <Pressable style={styles.bookItem} onPress={() => {
+      navigation.navigate('BookManageNavigator', {screen: 'BookIntroTwo'})
+    }}>
+      <View style={styles.bookItem}>
+        <View style={styles.bookItemLeft}>
+          <View style={styles.bookItemBgWrap}>
           <Image style={styles.bookItemBg} source={{ uri: DefaultImage }} />
           <BaseText style={styles.bookItemProgressText}>65%</BaseText>
         </View>
@@ -94,7 +98,8 @@ function BookItem(props: any): React.JSX.Element {
           <BaseText style={styles.bookItemReadersText}>9999人已读</BaseText>
         </View>
       </View>
-    </View>
+      </View>
+    </Pressable>
   )
 }
 

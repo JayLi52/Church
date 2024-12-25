@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native'
+import { transformStyles } from '@utils/index'
 import React from 'react'
 import {
   StyleSheet,
@@ -11,23 +13,27 @@ const SearchIcon = require('@assets/images/readingroom/icon_search_gray.png')
 const CloseIcon = require('@assets/images/readingroom/icon_close.png')
 
 function SearchBar(): React.JSX.Element {
+  const navigation = useNavigation()
   return (
     <View style={styles.container}>
       <View style={styles.inputBox}>
-        <View style={styles.prefix}></View>
-        <TextInput style={styles.textInput} placeholder="搜索" />
+        {/* <View style={styles.prefix}></View> */}
+        <TextInput style={styles.textInput} placeholder="搜索" selectionColor={'#FFB224'} />
         <View style={styles.iconWrap}>
           <Image style={styles.searchIcon} source={SearchIcon} />
         </View>
       </View>
-      <Pressable style={styles.iconWrap}>
+      <Pressable style={styles.iconWrap} onPress={() => {
+        // 添加 navigation 的引用
+        navigation?.goBack()
+      }}>
         <Image style={styles.cancelIcon} source={CloseIcon} />
       </Pressable>
     </View>
   )
 }
 
-const styles = StyleSheet.create({
+const styles = transformStyles({
   container: {
     height: 44,
     paddingLeft: 18,
