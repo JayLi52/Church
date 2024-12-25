@@ -24,6 +24,8 @@ import Topic from '@screens/Team/Topic';
 import SkipTime from '@screens/Team/SkipTime';
 import NewPlan from '@screens/Team/NewPlan';
 import Live from '@screens/Team/Live';
+import AddAnswer from '@screens/Team/AddAnswer';
+import CompleteQuestion from '@screens/Team/CompleteQuestion';
 
 export const mainTabList: TabItem[] = [
   {
@@ -104,6 +106,16 @@ export const mainTabList: TabItem[] = [
       iconActive: require('@assets/images/tabbar/organization_active.png'),
     },
     stackScreens: [
+      {
+        name: 'CompleteQuestion',
+        component: CompleteQuestion,
+        options: {headerShown: false},
+      },
+      {
+        name: 'AddAnswer',
+        component: AddAnswer,
+        options: {headerShown: false},
+      },
       {
         name: 'NewPlan',
         component: NewPlan,

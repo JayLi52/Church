@@ -6,6 +6,7 @@ import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import CustomTabs from '@components/Tabs';
 import {ProgressBar} from 'react-native-paper';
 
+// 定义单个计划的接口
 interface Plan {
   id: string;
   name: string;
@@ -13,18 +14,35 @@ interface Plan {
   selected?: boolean;
 }
 
+// 定义计划分类的接口
 interface PlanSection {
-  title: string;
-  key: string;
-  days: number;
-  remainingTime: string;
-  data: Plan[];
-  progress: number;
+  title: string;     // 分类标题
+  key: string;       // 分类唯一标识
+  days: number;      // 计划天数
+  remainingTime: string;  // 剩余时间
+  data: Plan[];      // 该分类下的具体计划
+  progress: number;  // 整体进度
 }
 
-const NewPlan = () => {
+// 在文件顶部添加路由参数接口
+interface NewPlanProps {
+  route: {
+    params?: {
+      mode?: 'create' | 'edit'; // 页面模式：创建/编辑
+      planId?: string;          // 编辑时的计划ID
+    };
+  };
+}
+
+const NewPlan = ({route}: NewPlanProps) => {
+  // 从路由参数中获取模式，默认为创建模式
+  const mode = route.params?.mode || 'create';
+  
+  // 选中的计划周期（天数）
   const [selectedPeriod, setSelectedPeriod] = useState(180);
-  const [allPlans, setAllPlans] = useState([
+  
+  // 所有计划数据
+  const [allPlans, setAllPlans] = useState<PlanSection[]>([
     {
       title: '新约',
       key: 'new',
@@ -74,13 +92,14 @@ const NewPlan = () => {
   ]);
 
   const modalRef = useRef<CustomModalRef>(null);
-
   const [selectedPlans, setSelectedPlans] = useState<number[]>([]);
 
   useEffect(() => {
+    // 初始化选中前三个计划
     setSelectedPlans([0, 1, 2]);
   }, []);
 
+  // 渲染时间选择器
   const renderTimeOptions = () => (
     <View style={styles.timeOptions}>
       {[30, 90, 180, 360].map(days => (
@@ -103,6 +122,7 @@ const NewPlan = () => {
     </View>
   );
 
+  // 渲染计划进度条
   const renderPlanProgress = (plans: Plan[]) => (
     <>
       {plans.map(plan => (
@@ -125,6 +145,7 @@ const NewPlan = () => {
     </>
   );
 
+  // 渲染所有计划列表
   const renderAllPlans = () => (
     <ScrollView style={styles.scrollContainer}>
       <>
@@ -139,6 +160,7 @@ const NewPlan = () => {
     </ScrollView>
   );
 
+  // 渲染计划指标
   const renderPlanMetrics = (plan: PlanSection) => (
     <View style={styles.planMetrics}>
       <View style={styles.metricItem}>
@@ -161,6 +183,7 @@ const NewPlan = () => {
     </View>
   );
 
+  // 渲染单个计划分类的详细内容
   const renderPlanCard = (planSection: PlanSection) => (
     <ScrollView style={styles.scrollContainer}>
       {renderPlanMetrics(planSection)}
@@ -169,9 +192,28 @@ const NewPlan = () => {
     </ScrollView>
   );
 
+  // 获取按钮文案
+  const getButtonText = () => {
+    return mode === 'create' ? '创建计划' : '调整计划';
+  };
+
+  // 处理按钮点击
+  const handleButtonPress = () => {
+    if (mode === 'create') {
+      // 创建计划逻辑
+      modalRef.current?.open();
+    } else {
+      // 调整计划逻辑
+      console.log('调整计划', selectedPlans);
+      // TODO: 实现调整计划的具体逻辑
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>当前计划</Text>
+      <Text style={styles.title}>
+        {mode === 'create' ? '新建计划' : '调整计划'}
+      </Text>
       <CustomTabs
         tabs={[
           {key: 'all', label: '所有', renderItem: renderAllPlans},
@@ -204,14 +246,18 @@ const NewPlan = () => {
         onTabChange={key => console.log(key)}
       />
       <TouchableOpacity
-        style={styles.createButton}
-        onPress={() => modalRef.current?.open()}>
-        <Text style={styles.createButtonText}>创建计划</Text>
+        style={[
+          styles.createButton,
+          mode === 'edit' && styles.editButton, // 编辑模式使用不同样式
+        ]}
+        onPress={handleButtonPress}>
+        <Text style={styles.createButtonText}>{getButtonText()}</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
+// 样式定义
 const styles = transformStyles({
   container: {
     flex: 1,
@@ -303,6 +349,9 @@ const styles = transformStyles({
     padding: 12,
     borderRadius: 22,
     alignItems: 'center',
+  },
+  editButton: {
+    backgroundColor: '#3B8E58', // 编辑模式使用不同的颜色
   },
   createButtonText: {
     color: '#fff',
