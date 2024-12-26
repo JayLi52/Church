@@ -10,6 +10,7 @@ import {
 type VerseItem = {
   id: number;
   text: string;
+  commentCount?: number;
 };
 
 type VerseProps = {
@@ -56,9 +57,18 @@ export const Verse = ({
       <BaseText style={[styles.verseNumber, {color: colors.verseNumber}]}>
         {index + 1}
       </BaseText>
-      <BaseText style={[styles.verseText, {color: colors.text}]}>
-        {item.text}
-      </BaseText>
+      <View style={styles.verseTextContainer}>
+        <BaseText style={[styles.verseText, {color: colors.text}]}>
+          {item.text}
+        </BaseText>
+        {item.commentCount ? (
+          <View style={styles.commentBadge}>
+            <BaseText style={styles.commentCount}>
+              {item.commentCount}+
+            </BaseText>
+          </View>
+        ) : null}
+      </View>
     </TouchableOpacity>
     {selectedVerse?.id === item.id && renderToolbar()}
   </View>
@@ -84,10 +94,29 @@ const styles = transformStyles({
     marginRight: 8,
     lineHeight: 24,
   },
+  verseTextContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
   verseText: {
     flex: 1,
     fontSize: 16,
     color: '#333',
     lineHeight: 24,
+  },
+  commentBadge: {
+    backgroundColor: '#FFF5E6',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    marginLeft: 8,
+    alignSelf: 'flex-start',
+  },
+  commentCount: {
+    fontSize: 12,
+    color: '#FFB224',
+    fontWeight: 'bold',
   },
 });
