@@ -52,6 +52,7 @@ import {
   setCurrentLanguage,
 } from '@store/slices/bibleSlice';
 import type {BibleVersion} from '@store/slices/bibleSlice';
+import {VerseToolbar} from './components/ImmersiveReading/VerseToolbar';
 
 const genealogyData = [
   {
@@ -385,35 +386,7 @@ function ImmersiveReading(): React.JSX.Element {
           activeOpacity={1}
           onPress={() => setSelectedVerse(null)}
         />
-
-        <View
-          style={[
-            styles.verseToolbar,
-            toolbarPosition === 'top'
-              ? {bottom: '150%', marginBottom: 8}
-              : {top: '150%', marginTop: 8},
-          ]}>
-          {toolbarOptions.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.toolbarButton,
-                option.disabled && styles.toolbarButtonDisabled,
-              ]}
-              onPress={option.onPress}
-              disabled={option.disabled}>
-              <FontAwesome
-                name={option.icon}
-                size={20}
-                color="#fff"
-                iconStyle="solid"
-              />
-              <BaseText style={styles.toolbarButtonText}>
-                {option.label}
-              </BaseText>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <VerseToolbar position={toolbarPosition} options={toolbarButtons} />
       </>
     );
   };
@@ -646,26 +619,6 @@ const styles = transformStyles({
     shadowRadius: 3.84,
     zIndex: 10,
   },
-  toolbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#EEEEEE',
-  },
-  toolbarButton: {
-    alignItems: 'center',
-  },
-  toolbarButtonText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
   searchBar: {
     position: 'absolute',
     top: 0,
@@ -680,27 +633,6 @@ const styles = transformStyles({
     zIndex: 1,
   },
 
-  verseToolbar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    borderRadius: 8,
-    padding: 8,
-    justifyContent: 'space-around',
-    zIndex: 1000,
-  },
-  verseToolbarButton: {
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  verseToolbarButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    marginTop: 4,
-  },
   overlay: {
     position: 'absolute',
     top: 0,
@@ -715,9 +647,7 @@ const styles = transformStyles({
     top: -9999,
     left: -9999,
   },
-  toolbarButtonDisabled: {
-    opacity: 0.5,
-  },
+
   contentContainer: {
     flex: 1,
     marginBottom: 64,

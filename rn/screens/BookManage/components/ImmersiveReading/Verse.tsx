@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import BaseText from '@components/BaseText';
-import {transformStyles} from '@utils/index';
+import {commonStyles, transformStyles} from '@utils/index';
 import {
   HighlightedVerse,
   SelectedVerse,
 } from '@screens/BookManage/ImmersiveReading';
-
+import FontAwesome from '@react-native-vector-icons/fontawesome6';
 type VerseItem = {
   id: number;
   text: string;
@@ -60,14 +60,17 @@ export const Verse = ({
       <View style={styles.verseTextContainer}>
         <BaseText style={[styles.verseText, {color: colors.text}]}>
           {item.text}
-        </BaseText>
-        {item.commentCount ? (
-          <View style={styles.commentBadge}>
-            <BaseText style={styles.commentCount}>
-              {item.commentCount}+
-            </BaseText>
+          <View style={styles.commentContainer}>
+            <FontAwesome
+              style={[commonStyles.icon, styles.commentIcon]}
+              name="comment-dots"
+              size={16}
+              color="#000"
+              iconStyle="brands"
+            />
+            <BaseText style={styles.commentText}>{item.commentCount}</BaseText>
           </View>
-        ) : null}
+        </BaseText>
       </View>
     </TouchableOpacity>
     {selectedVerse?.id === item.id && renderToolbar()}
@@ -75,22 +78,18 @@ export const Verse = ({
 );
 
 const styles = transformStyles({
-  // ... 复制相关样式
-
   verseContainer: {
     padding: 16,
     borderBottomWidth: 1,
     position: 'relative',
     marginHorizontal: 16,
   },
-
   verseContent: {
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   verseNumber: {
     fontSize: 12,
-    color: '#3B8E58',
     marginRight: 8,
     lineHeight: 24,
   },
@@ -103,8 +102,19 @@ const styles = transformStyles({
   verseText: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
     lineHeight: 24,
+  },
+  commentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  commentIcon: {
+    marginLeft: 8,
+    marginRight: 4,
+  },
+  commentText: {
+    fontSize: 12,
+    color: '#000',
   },
   commentBadge: {
     backgroundColor: '#FFF5E6',
