@@ -50,6 +50,8 @@ const initialState = {
     isLoggedIn: true,
     isLogIning: false,
     isPersonalPage: false,
+    showPlayer: true,
+    isPlaying: false,
 };
 
 const globalSlice = createSlice({
@@ -68,6 +70,12 @@ const globalSlice = createSlice({
         resetUser(state) {
             state.user = { name: '未命名' };
         },
+        setShowPlayer(state, action: PayloadAction<boolean>) {
+            state.showPlayer = action.payload;
+        },
+        setIsPlaying(state, action: PayloadAction<boolean>) {
+            state.isPlaying = action.payload;
+        },
     },
 });
 
@@ -79,8 +87,10 @@ export interface GlobalState {
     isLoggedIn: boolean;
     isLogIning: boolean;
     isPersonalPage: boolean;
+    showPlayer: boolean;
+    isPlaying: boolean;
 }
 
 // 导出 Actions 和 Reducer
-export const { setUser, setIsLoggedIn, setIsLoggingIn, resetUser } = globalSlice.actions;
+export const { setUser, setIsLoggedIn, setIsLoggingIn, resetUser, setShowPlayer, setIsPlaying } = globalSlice.actions;
 export const globalReducer = globalSlice.reducer;

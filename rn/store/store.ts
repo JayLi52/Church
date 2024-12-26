@@ -3,6 +3,7 @@ import { globalReducer } from "./globalReducer";
 import tabReducer from "./tabSlice";
 import pageReducer from "./pageSlice";
 import statusBarReducer from "./statusBarSlice";
+import bibleReducer from './slices/bibleSlice';
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         tab: tabReducer,
         page: pageReducer,
         statusBar: statusBarReducer,
+        bible: bibleReducer,
     },
 });
 

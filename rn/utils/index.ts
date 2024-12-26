@@ -98,6 +98,9 @@ export const commonStyles = {
         paddingRight: 10,
         backgroundColor: '#FF8800',
     },
+    icon: {
+        marginTop: 4,
+    },
 };
 
 export const validateEmail = (input: string) => {

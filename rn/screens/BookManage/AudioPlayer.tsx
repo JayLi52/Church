@@ -15,6 +15,9 @@ import {transformStyles} from '@utils/index';
 import Slider from '@react-native-community/slider';
 import {BlurView} from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@store/store';
+import {setIsPlaying} from '@store/globalReducer';
 
 const coverUrl =
   'http://gips3.baidu.com/it/u=764883555,2569275522&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280';
@@ -98,13 +101,13 @@ const ITEM_OFFSET = 50;
 
 function AudioPlayer(): React.JSX.Element {
   const navigation = useNavigation();
-  const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const totalDuration = 1465; // 24:25 in seconds
   const [playbackSpeed, setPlaybackSpeed] = useState<PlaybackSpeed>(1.0);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
   const manualScrollTimeoutRef = useRef<NodeJS.Timeout>();
-
+  const dispatch = useDispatch();
+  const isPlaying = useSelector((state: RootState) => state.global.isPlaying);
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -181,7 +184,7 @@ function AudioPlayer(): React.JSX.Element {
     (time: number) => {
       setCurrentTime(time);
       if (!isPlaying) {
-        setIsPlaying(true);
+        dispatch(setIsPlaying(true));
       }
     },
     [isPlaying],
@@ -402,7 +405,9 @@ function AudioPlayer(): React.JSX.Element {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.playButton}
-            onPress={() => setIsPlaying(!isPlaying)}>
+            onPress={() => {
+              dispatch(setIsPlaying(!isPlaying));
+            }}>
             <FontAwesome
               name={isPlaying ? 'pause' : 'play'}
               size={32}
