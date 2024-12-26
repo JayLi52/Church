@@ -499,6 +499,11 @@ function ImmersiveReading(): React.JSX.Element {
     }
   }, [showUI]);
 
+  useEffect(() => {
+    // console.log(123);
+    modalQuoteRef.current?.open();
+  }, []);
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
       <View style={[styles.header, {backgroundColor: colors.header}]}>
