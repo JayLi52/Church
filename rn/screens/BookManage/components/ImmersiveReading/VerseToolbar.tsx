@@ -1,17 +1,19 @@
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Pressable} from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {transformStyles} from '@utils/index';
 
+type ToolbarOption = {
+  icon: string;
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+};
+
 type VerseToolbarProps = {
   position: 'top' | 'bottom';
-  options: Array<{
-    icon: string;
-    label: string;
-    onPress: () => void;
-    disabled?: boolean;
-  }>;
+  options: ToolbarOption[];
 };
 
 export const VerseToolbar = ({position, options}: VerseToolbarProps) => (
@@ -23,13 +25,15 @@ export const VerseToolbar = ({position, options}: VerseToolbarProps) => (
         : {top: '150%', marginTop: 8},
     ]}>
     {options.map((option, index) => (
-      <TouchableOpacity
+      <Pressable
         key={index}
         style={[
           styles.toolbarButton,
           option.disabled && styles.toolbarButtonDisabled,
         ]}
-        onPress={option.onPress}
+        onPress={() => {
+          option.onPress();
+        }}
         disabled={option.disabled}>
         <FontAwesome
           name={option.icon}
@@ -38,14 +42,12 @@ export const VerseToolbar = ({position, options}: VerseToolbarProps) => (
           iconStyle="solid"
         />
         <BaseText style={styles.toolbarButtonText}>{option.label}</BaseText>
-      </TouchableOpacity>
+      </Pressable>
     ))}
   </View>
 );
 
 const styles = transformStyles({
-  // ... 复制相关样式
-
   verseToolbar: {
     position: 'absolute',
     left: 0,
@@ -57,35 +59,14 @@ const styles = transformStyles({
     justifyContent: 'space-around',
     zIndex: 1000,
   },
-  verseToolbarButton: {
+  toolbarButton: {
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
-  verseToolbarButtonText: {
+  toolbarButtonText: {
     color: '#fff',
     fontSize: 12,
-    marginTop: 4,
-  },
-
-  toolbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff',
-    paddingVertical: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#EEEEEE',
-  },
-  toolbarButton: {
-    alignItems: 'center',
-  },
-  toolbarButtonText: {
-    fontSize: 12,
-    color: '#666',
     marginTop: 4,
   },
   toolbarButtonDisabled: {

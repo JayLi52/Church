@@ -40,7 +40,7 @@ import {BottomToolbar} from './components/ImmersiveReading/BottomToolbar';
 import {Header} from './components/ImmersiveReading/Header';
 import {Readers} from './components/ImmersiveReading/Readers';
 import {SearchBar} from './components/ImmersiveReading/SearchBar';
-import {Verse} from './components/ImmersiveReading/Verse';
+import {Verse, VerseItem} from './components/ImmersiveReading/Verse';
 import {FloatingPlayer} from './components/ImmersiveReading/FloatingPlayer';
 import {RootState} from '@store/store';
 import {useSelector, useDispatch} from 'react-redux';
@@ -53,8 +53,12 @@ import {
 } from '@store/slices/bibleSlice';
 import type {BibleVersion} from '@store/slices/bibleSlice';
 import {VerseToolbar} from './components/ImmersiveReading/VerseToolbar';
+import {
+  QuoteModal,
+  QuoteOption,
+} from './components/ImmersiveReading/QuoteModal';
 
-const genealogyData = [
+const originGenealogyData = [
   {
     id: 1,
     text: '亚伯拉罕的后裔，大卫的子孙、耶稣基督的家谱。',
@@ -154,20 +158,6 @@ const themes = {
 
 // 添加新的类型定义
 type ToolbarPosition = 'top' | 'bottom';
-export type SelectedVerse = {
-  id: number;
-  text: string;
-  position: {
-    y: number;
-    height: number;
-  };
-} | null;
-
-// 添加高亮状态类型
-export type HighlightedVerse = {
-  id: number;
-  color: string;
-};
 
 // 添加分享信息类型
 type ShareInfo = {
@@ -181,6 +171,8 @@ type ShareInfo = {
 export type TabType = 'chapter' | 'section';
 
 function ImmersiveReading(): React.JSX.Element {
+  const [genealogyData, setGenealogyData] =
+    useState<VerseItem[]>(originGenealogyData);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {currentVersion, versions, isPlaying, showPlayer, currentLanguage} =
@@ -203,15 +195,12 @@ function ImmersiveReading(): React.JSX.Element {
   const modalChapterRef = useRef<CustomModalRef>(null);
   const [currentSection, setCurrentSection] = useState(1);
   const sections = Array.from({length: 20}, (_, i) => i + 1); // 假设每章有20节
-  const [selectedVerse, setSelectedVerse] = useState<SelectedVerse>(null);
+
   const [toolbarPosition, setToolbarPosition] =
     useState<ToolbarPosition>('bottom');
   const scrollViewRef = useRef<ScrollView>(null);
   const [scrollOffset, setScrollOffset] = useState(0);
-  // 添加高亮状态管理
-  const [highlightedVerses, setHighlightedVerses] = useState<
-    HighlightedVerse[]
-  >([]);
+
   const shareCardRef = useRef<View>(null);
   const [shareInfo, setShareInfo] = useState<ShareInfo | null>(null);
   const [loadingShare, setLoadingShare] = useState(false);
@@ -219,12 +208,15 @@ function ImmersiveReading(): React.JSX.Element {
   const [showBottomToolbar, setShowBottomToolbar] = useState(true);
   const [showUI, setShowUI] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(true);
+  const [selectedVerses, setSelectedVerses] = useState<VerseItem | null>(null);
+
+  const modalQuoteRef = useRef<CustomModalRef>(null);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const toolbarButtons = [
+  const bottomToolbarButtons = [
     {
       icon: 'font',
       label: '字体',
@@ -252,61 +244,152 @@ function ImmersiveReading(): React.JSX.Element {
     },
   ];
 
-  const toolbarOptions = [
-    {icon: 'highlighter', label: '高亮', onPress: () => handleHighlight()},
-    {icon: 'copy', label: '复制', onPress: () => handleCopy()},
-    {
-      icon: 'share',
-      label: '分享',
-      onPress: () => handleShare(),
-      disabled: loadingShare,
-    },
-    {icon: 'quote-right', label: '引用', onPress: () => handleQuote()},
-    {icon: 'language', label: '翻译', onPress: () => handleTranslate()},
-  ];
-
-  const handleVerseLongPress = (
-    verse: (typeof genealogyData)[0],
-    layout: {y: number; height: number},
-  ) => {
-    setShowBottomToolbar(false); // 隐藏底部工具栏
-    const screenHeight = Dimensions.get('window').height;
-    const positionFromTop = layout.y - scrollOffset;
-    const spaceAbove = positionFromTop;
-    const spaceBelow = screenHeight - (positionFromTop + layout.height);
-
-    console.log('spaceBelow', spaceBelow);
-
-    setToolbarPosition(spaceBelow > spaceAbove ? 'bottom' : 'top');
-    setSelectedVerse({
-      id: verse.id,
-      text: verse.text,
-      position: {
-        y: layout.y,
-        height: layout.height,
-      },
-    });
-  };
-
   const handleHighlight = () => {
-    if (selectedVerse) {
-      setHighlightedVerses(prev => [
-        ...prev.filter(v => v.id !== selectedVerse.id),
-        {id: selectedVerse.id, color: 'rgba(76, 175, 80, 0.2)'}, // 使用绿色半透明背景
-      ]);
-    }
-    setSelectedVerse(null);
+    setGenealogyData(prev =>
+      prev.map(item =>
+        selectedVerses?.id === item.id ? {...item, isHighlighted: true} : item,
+      ),
+    );
+    setSelectedVerses(null);
+    setShowBottomToolbar(true);
   };
 
   const handleCopy = () => {
-    if (selectedVerse) {
-      Clipboard.setString(selectedVerse.text);
-      Toast.show('复制成功', {
-        duration: 1000,
+    const textToCopy = selectedVerses?.text || '';
+    Clipboard.setString(textToCopy);
+    Toast.show('复制成功', {
+      duration: Toast.durations.SHORT,
+    });
+    setSelectedVerses(null);
+    setShowBottomToolbar(true);
+  };
+
+  const handleShare = async () => {
+    if (!selectedVerses || loadingShare) return;
+
+    try {
+      setLoadingShare(true);
+      if (!shareInfo) {
+        await fetchShareInfo();
+      }
+
+      const uri = await ViewShot.captureRef(shareCardRef, {
+        format: 'png',
+        quality: 1,
+      });
+
+      const shareOptions = {
+        title: '分享经文',
+        message: selectedVerses.text,
+        url: uri,
+        social: RNShare.Social.INSTAGRAM,
+        failOnCancel: false,
+      };
+
+      await RNShare.open(shareOptions);
+    } catch (error) {
+      console.error('分享失败:', error);
+      Toast.show('分享失败，请重试', {
+        duration: Toast.durations.SHORT,
+      });
+    } finally {
+      setLoadingShare(false);
+      setSelectedVerses(null);
+      setShowBottomToolbar(true);
+    }
+  };
+
+  const handleQuote = () => {
+    console.log('handleQuote');
+    modalQuoteRef.current?.open();
+    setGenealogyData(prev =>
+      prev.map(item =>
+        selectedVerses?.id === item.id ? {...item, isQuoting: true} : item,
+      ),
+    );
+    // 引用情况比较特殊，不能重置selectedVerses（暂时）
+  };
+
+  const handleQuoteSelect = (option: QuoteOption) => {
+    if (option.id === '1') {
+      navigation.navigate('CreateTopic', {
+        verse: selectedVerses,
+      });
+    } else if (option.id === '2') {
+      navigation.navigate('CreateExercise', {
+        verse: selectedVerses,
       });
     }
-    setSelectedVerse(null);
+
+    setGenealogyData(prev =>
+      prev.map(item =>
+        item.id === selectedVerses?.id ? {...item, isQuoting: false} : item,
+      ),
+    );
+    setShowBottomToolbar(true);
   };
+
+  const handleQuoteClose = () => {
+    setGenealogyData(prev =>
+      prev.map(item =>
+        item.id === selectedVerses?.id ? {...item, isQuoting: false} : item,
+      ),
+    );
+    setShowBottomToolbar(true);
+  };
+
+  const handleTranslate = async () => {
+    try {
+      // 这里应该调用实际的翻译 API
+      // const translatedText = await translateText(selectedVerses[0].text);
+      const translatedText = await String(selectedVerses?.text || '');
+      setGenealogyData(prev =>
+        prev.map(item =>
+          selectedVerses?.id === item.id
+            ? {
+                ...item,
+                isTranslated: true,
+                translation: translatedText,
+              }
+            : item,
+        ),
+      );
+    } catch (error) {
+      Toast.show('翻译失败，请重试', {
+        duration: Toast.durations.SHORT,
+      });
+    }
+    setShowBottomToolbar(true);
+  };
+
+  const verseToolbarOptions = [
+    {
+      icon: 'highlighter',
+      label: '高亮',
+      onPress: handleHighlight,
+    },
+    {
+      icon: 'copy',
+      label: '复制',
+      onPress: handleCopy,
+    },
+    {
+      icon: 'share',
+      label: '分享',
+      onPress: handleShare,
+      disabled: loadingShare,
+    },
+    {
+      icon: 'quote-right',
+      label: '引用',
+      onPress: handleQuote,
+    },
+    {
+      icon: 'language',
+      label: '翻译',
+      onPress: handleTranslate,
+    },
+  ];
 
   const fetchShareInfo = async () => {
     try {
@@ -325,46 +408,6 @@ function ImmersiveReading(): React.JSX.Element {
     }
   };
 
-  const handleShare = async () => {
-    if (selectedVerse && !loadingShare) {
-      try {
-        if (!shareInfo) {
-          await fetchShareInfo();
-        }
-
-        const uri = await ViewShot.captureRef(shareCardRef, {
-          format: 'png',
-          quality: 1,
-        });
-
-        const shareOptions = {
-          title: '分享经文',
-          message: selectedVerse.text,
-          url: uri,
-          social: RNShare.Social.INSTAGRAM,
-          failOnCancel: false,
-        };
-
-        await RNShare.open(shareOptions);
-      } catch (error) {
-        console.error('分享失败:', error);
-        Toast.show('分享失败，请重试', {
-          duration: Toast.durations.SHORT,
-        });
-      }
-    }
-  };
-
-  const handleQuote = () => {
-    // 实现引用功能
-    setSelectedVerse(null);
-  };
-
-  const handleTranslate = () => {
-    // 实现翻译功能
-    setSelectedVerse(null);
-  };
-
   const handleToggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
     // TODO: 实现实际的书签保存逻辑
@@ -375,21 +418,23 @@ function ImmersiveReading(): React.JSX.Element {
     modalVersionRef.current?.close();
   };
 
-  const renderToolbar = () => {
-    console.log('selectedVerse', selectedVerse);
-    if (!selectedVerse) return null;
+  // const renderToolbar = () => {
+  //   if (!selectedVerses) return null;
 
-    return (
-      <>
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setSelectedVerse(null)}
-        />
-        <VerseToolbar position={toolbarPosition} options={toolbarButtons} />
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       <TouchableOpacity
+  //         style={styles.overlay}
+  //         activeOpacity={1}
+  //         onPress={() => {}}
+  //       />
+  //       <VerseToolbar
+  //         position={toolbarPosition}
+  //         options={verseToolbarOptions}
+  //       />
+  //     </>
+  //   );
+  // };
 
   const renderSearchBar = () => (
     <SearchBar
@@ -421,8 +466,8 @@ function ImmersiveReading(): React.JSX.Element {
   const renderShareCard = () => (
     <ViewShot ref={shareCardRef} options={{format: 'png', quality: 1}}>
       <ShareCard
-        verse={selectedVerse?.text || ''}
-        reference={`马太福音 1:${selectedVerse?.id || 1}`}
+        verse={selectedVerses?.text || ''}
+        reference={`马太福音 1:${selectedVerses?.id || 1}`}
         loading={loadingShare}
         shareInfo={shareInfo || undefined}
       />
@@ -430,13 +475,13 @@ function ImmersiveReading(): React.JSX.Element {
   );
 
   const handleOverlayPress = () => {
-    setSelectedVerse(null);
+    setSelectedVerses(null);
     setShowBottomToolbar(true); // 显示底部工具栏
   };
 
   const handleContentPress = () => {
-    // setShowUI(prev => !prev);
-    setSelectedVerse(null); // 同时关闭段落工具栏
+    setShowUI(prev => !prev);
+    setSelectedVerses(null); // 同时关闭段落工具栏
   };
 
   const handleCoverPress = () => {
@@ -456,11 +501,9 @@ function ImmersiveReading(): React.JSX.Element {
 
   return (
     <View style={[styles.container, {backgroundColor}]}>
-      {showUI && (
-        <View style={[styles.header, {backgroundColor: colors.header}]}>
-          {renderHeader()}
-        </View>
-      )}
+      <View style={[styles.header, {backgroundColor: colors.header}]}>
+        {renderHeader()}
+      </View>
 
       <TouchableOpacity
         activeOpacity={1}
@@ -478,21 +521,28 @@ function ImmersiveReading(): React.JSX.Element {
             </BaseText>
           </View>
 
-          {genealogyData.map((item, index) => {
-            const isHighlighted = highlightedVerses.find(v => v.id === item.id);
-
-            return (
-              <Verse
-                item={item}
-                index={index}
-                isHighlighted={isHighlighted}
-                colors={colors}
-                handleVerseLongPress={handleVerseLongPress}
-                renderToolbar={renderToolbar}
-                selectedVerse={selectedVerse}
-              />
-            );
-          })}
+          {genealogyData.map((item, index) => (
+            <Verse
+              key={item.id}
+              item={item}
+              index={index}
+              colors={colors}
+              toolbarPosition={toolbarPosition}
+              verseToolbarOptions={verseToolbarOptions}
+              handleVerseLongPress={(verse, position) => {
+                setSelectedVerses(verse);
+                setShowBottomToolbar(false);
+                const screenHeight = Dimensions.get('window').height;
+                const positionFromTop = position.y - scrollOffset;
+                const spaceBelow =
+                  screenHeight - (positionFromTop + position.height);
+                setToolbarPosition(
+                  spaceBelow > positionFromTop ? 'bottom' : 'top',
+                );
+              }}
+              selectedVerses={selectedVerses}
+            />
+          ))}
 
           {renderReaders()}
         </ScrollView>
@@ -514,7 +564,7 @@ function ImmersiveReading(): React.JSX.Element {
       </TouchableOpacity>
 
       {renderSearchBar()}
-      {renderToolbar()}
+      {/* {renderToolbar()} */}
       {renderFontMenu(modalFontRef, setFontSize, fontSize)}
       {renderBrightnessControl(modalBrightRef, brightness, setBrightness)}
       {renderBookmarkMenu(modalBookmarkRef)}
@@ -544,12 +594,17 @@ function ImmersiveReading(): React.JSX.Element {
         currentSection,
         setCurrentSection,
       )}
+      <QuoteModal
+        modalRef={modalQuoteRef}
+        onSelect={handleQuoteSelect}
+        onClose={handleQuoteClose}
+      />
 
       <View style={styles.hiddenShareCard}>
-        {selectedVerse && renderShareCard()}
+        {selectedVerses && renderShareCard()}
       </View>
 
-      {selectedVerse && (
+      {selectedVerses && (
         <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
@@ -558,7 +613,7 @@ function ImmersiveReading(): React.JSX.Element {
       )}
 
       {showUI && showBottomToolbar && (
-        <BottomToolbar buttons={toolbarOptions} />
+        <BottomToolbar buttons={bottomToolbarButtons} />
       )}
 
       {showPlayer && (
