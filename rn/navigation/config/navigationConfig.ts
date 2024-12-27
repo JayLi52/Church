@@ -31,6 +31,7 @@ import ReadingList from '@screens/BookManage/ReadingList';
 import AudioPlayer from '@screens/BookManage/AudioPlayer';
 import { CommentList } from '@screens/BookManage/components/CommentList';
 import {CommentDetail} from '@screens/BookManage/components/CommentDetail';
+import LingxiuHome from '@screens/Lingxiu/LingXiuHome';
 
 export const mainTabList: TabItem[] = [
   {
@@ -108,6 +109,11 @@ export const mainTabList: TabItem[] = [
       iconActive: require('@assets/images/tabbar/task_active.png'),
     },
     stackScreens: [
+      {
+        name: 'LingxiuHome',
+        renderComponent: LingxiuHome,
+        options: { headerShown: false },
+      },
       {
         name: 'SpiritualCultivationHomeScreen',
         renderComponent: SpiritualCultivationHomeScreen,

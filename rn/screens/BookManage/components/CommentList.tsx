@@ -12,6 +12,7 @@ import {commonStyles, transformStyles} from '@utils/index';
 import {useNavigation} from '@react-navigation/native';
 import {RootState} from '@store/store';
 import {useSelector} from 'react-redux';
+import {getImageUrl} from '@utils/imgs';
 
 type CommentType = 'mine' | 'others';
 
@@ -67,7 +68,10 @@ export const CommentList = () => {
     {
       id: '1',
       type: 'mine',
-      user: {name: '用户名称文本信息', avatar: ''},
+      user: {
+        name: '用户名称文本信息',
+        avatar: getImageUrl(),
+      },
       content:
         '批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息...',
       date: '24-01-22 14:23',
@@ -77,7 +81,7 @@ export const CommentList = () => {
     {
       id: '2',
       type: 'mine',
-      user: {name: '用户名称文本信息', avatar: ''},
+      user: {name: '用户名称文本信息', avatar: getImageUrl()},
       content:
         '批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息...',
       date: '24-01-22 14:23',
@@ -87,7 +91,7 @@ export const CommentList = () => {
     {
       id: '3',
       type: 'mine',
-      user: {name: '用户名称文本信息', avatar: ''},
+      user: {name: '用户名称文本信息', avatar: getImageUrl()},
       content:
         '批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息...',
       date: '24-01-22 14:23',
@@ -97,7 +101,7 @@ export const CommentList = () => {
     {
       id: '4',
       type: 'mine',
-      user: {name: '用户名称文本信息', avatar: ''},
+      user: {name: '用户名称文本信息', avatar: getImageUrl()},
       content:
         '批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息批注文本内容信息...',
       date: '24-01-22 14:23',
@@ -110,7 +114,7 @@ export const CommentList = () => {
     {
       id: 'p1',
       type: 'others',
-      user: {name: '其他用户A', avatar: ''},
+      user: {name: '其他用户A', avatar: getImageUrl()},
       content: '这是一条公有批注内容...',
       date: '24-01-22 15:30',
       location: '北京 8888KM',
@@ -119,7 +123,7 @@ export const CommentList = () => {
     {
       id: 'p2',
       type: 'others',
-      user: {name: '其他用户B', avatar: ''},
+      user: {name: '其他用户B', avatar: getImageUrl()},
       content: '这也是一条公有批注内容...',
       date: '24-01-22 16:45',
       location: '上海 7777KM',
@@ -203,73 +207,70 @@ export const CommentList = () => {
 
       <ScrollView style={styles.commentList}>
         {comments.map(comment => (
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('BookManageNavigator', {
-                screen: 'CommentDetail',
-              });
-            }}>
-            <View key={comment.id} style={styles.commentItem}>
-              <TouchableOpacity
-                onPress={() => {
-                  // navigation.navigate('UserProfile', {userId: comment.user.id});
-                }}>
-                <Image
-                  source={{
-                    uri: 'http://gips0.baidu.com/it/u=3560029307,576412274&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280',
-                  }}
-                  style={styles.avatar}
-                />
-              </TouchableOpacity>
-              <View style={styles.commentContent}>
-                <View style={styles.commentHeader}>
-                  <BaseText style={styles.userName}>
-                    {comment.user.name}
+          <View key={comment.id} style={styles.commentItem}>
+            <TouchableOpacity
+              key={`avatar-${comment.id}`}
+              onPress={() =>
+                navigation.navigate('UserProfile', {userId: comment.user.id})
+              }>
+              <Image
+                source={{uri: comment.user.avatar}}
+                style={styles.avatar}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              key={`content-${comment.id}`}
+              style={styles.commentContent}
+              onPress={() =>
+                navigation.navigate('BookManageNavigator', {
+                  screen: 'CommentDetail',
+                  params: {
+                    comment,
+                    verse,
+                  },
+                })
+              }>
+              <View style={styles.commentHeader}>
+                <BaseText style={styles.userName}>{comment.user.name}</BaseText>
+                <BaseText style={styles.date}>{comment.date}</BaseText>
+              </View>
+              <BaseText style={styles.commentText}>{comment.content}</BaseText>
+              <View style={styles.commentFooter}>
+                <View style={styles.location}>
+                  <FontAwesome
+                    style={commonStyles.icon}
+                    name="location-dot"
+                    size={12}
+                    color="#999"
+                    iconStyle="solid"
+                  />
+                  <BaseText style={styles.locationText}>
+                    {comment.location}
                   </BaseText>
-                  <BaseText style={styles.date}>{comment.date}</BaseText>
                 </View>
-                <BaseText style={styles.commentText}>
-                  {comment.content}
-                </BaseText>
-                <View style={styles.commentFooter}>
-                  <View style={styles.location}>
-                    <FontAwesome
-                      style={commonStyles.icon}
-                      name="location-dot"
-                      size={12}
-                      color="#999"
-                      iconStyle="solid"
-                    />
-                    <BaseText style={styles.locationText}>
-                      {comment.location}
-                    </BaseText>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.replyButton}
-                    onPress={() => {
-                      setReplyTo({id: comment.id, name: comment.user.name});
-                    }}>
-                    <FontAwesome
-                      style={commonStyles.icon}
-                      name="reply"
-                      size={12}
-                      color="#999"
-                      iconStyle="solid"
-                    />
-                    <BaseText style={styles.replyText}>回复</BaseText>
-                  </TouchableOpacity>
-                  <View style={styles.likes}>
-                    <FontAwesome
-                      style={commonStyles.icon}
-                      name="share"
-                      size={12}
-                      color="#999"
-                      iconStyle="solid"
-                    />
-                    <BaseText style={styles.likesText}>
-                      {comment.likes}
-                    </BaseText>
-                  </View>
+                <TouchableOpacity
+                  style={styles.replyButton}
+                  onPress={() => {
+                    setReplyTo({id: comment.id, name: comment.user.name});
+                  }}>
+                  <FontAwesome
+                    style={commonStyles.icon}
+                    name="reply"
+                    size={12}
+                    color="#999"
+                    iconStyle="solid"
+                  />
+                  <BaseText style={styles.replyText}>回复</BaseText>
+                </TouchableOpacity>
+                <View style={styles.likes}>
+                  <FontAwesome
+                    style={commonStyles.icon}
+                    name="share"
+                    size={12}
+                    color="#999"
+                    iconStyle="solid"
+                  />
+                  <BaseText style={styles.likesText}>{comment.likes}</BaseText>
                 </View>
               </View>
               {comment.type === 'mine' && (
@@ -322,8 +323,8 @@ export const CommentList = () => {
                   </View>
                 </TouchableOpacity>
               )}
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         ))}
       </ScrollView>
 

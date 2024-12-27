@@ -45,7 +45,8 @@ export const initUser = createAsyncThunk<void, void>(
 // 初始化状态
 const initialState = {
     user: {
-        name: '未命名',
+        name: 'testx',
+        avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200',
     },
     isLoggedIn: true,
     isLogIning: false,
@@ -58,7 +59,7 @@ const globalSlice = createSlice({
     name: 'global',
     initialState,
     reducers: {
-        setUser(state, action: PayloadAction<{ name: string }>) {
+        setUser(state, action: PayloadAction<{ name: string; avatar: string }>) {
             state.user = action.payload;
         },
         setIsLoggedIn(state, action: PayloadAction<boolean>) {
@@ -68,7 +69,10 @@ const globalSlice = createSlice({
             state.isLogIning = action.payload;
         },
         resetUser(state) {
-            state.user = { name: '未命名' };
+            state.user = { 
+                name: '未命名',
+                avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200' 
+            };
         },
         setShowPlayer(state, action: PayloadAction<boolean>) {
             state.showPlayer = action.payload;
