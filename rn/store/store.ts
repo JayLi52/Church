@@ -4,6 +4,7 @@ import tabReducer from "./tabSlice";
 import pageReducer from "./pageSlice";
 import statusBarReducer from "./statusBarSlice";
 import bibleReducer from './slices/bibleSlice';
+import bookManageReducer from './slices/bookManageSlice';
 
 export const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
         page: pageReducer,
         statusBar: statusBarReducer,
         bible: bibleReducer,
+        bookManage: bookManageReducer,
     },
 });
 

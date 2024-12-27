@@ -29,6 +29,8 @@ import CompleteQuestion from '@screens/Team/CompleteQuestion';
 import BookIntroTwo from '@screens/ReadingRoom/BookIntroTwo';
 import ReadingList from '@screens/BookManage/ReadingList';
 import AudioPlayer from '@screens/BookManage/AudioPlayer';
+import { CommentList } from '@screens/BookManage/components/CommentList';
+import {CommentDetail} from '@screens/BookManage/components/CommentDetail';
 
 export const mainTabList: TabItem[] = [
   {
@@ -83,6 +85,18 @@ export const mainTabList: TabItem[] = [
         name: 'AudioPlayer',
         renderComponent: AudioPlayer,
         options: { headerShown: false },
+      },
+      {
+        name: 'CommentList',
+        renderComponent: CommentList,
+        options: { headerShown: false },
+      },
+      {
+        name: 'CommentDetail',
+        renderComponent: CommentDetail,
+        options: {
+          headerShown: false,
+        },
       },
     ],
   },

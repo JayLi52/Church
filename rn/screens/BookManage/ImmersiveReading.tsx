@@ -57,6 +57,8 @@ import {
   QuoteModal,
   QuoteOption,
 } from './components/ImmersiveReading/QuoteModal';
+import {ShareModal} from './components/ImmersiveReading/ShareModal';
+import {setVerse} from '@store/slices/bookManageSlice';
 
 const originGenealogyData = [
   {
@@ -211,6 +213,7 @@ function ImmersiveReading(): React.JSX.Element {
   const [selectedVerses, setSelectedVerses] = useState<VerseItem | null>(null);
 
   const modalQuoteRef = useRef<CustomModalRef>(null);
+  const modalCommentRef = useRef<CustomModalRef>(null);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -491,6 +494,11 @@ function ImmersiveReading(): React.JSX.Element {
     });
   };
 
+  const handleShareModalClose = () => {
+    setSelectedVerses(null);
+    setShowBottomToolbar(true);
+  };
+
   useEffect(() => {
     if (showUI) {
       setTimeout(() => {
@@ -501,8 +509,30 @@ function ImmersiveReading(): React.JSX.Element {
 
   useEffect(() => {
     // console.log(123);
-    modalQuoteRef.current?.open();
+    // modalQuoteRef.current?.open();
+    modalCommentRef.current?.open();
   }, []);
+
+  const handleVerseLongPress = (
+    verse: VerseItem,
+    position: {y: number; height: number},
+  ) => {
+    setSelectedVerses(verse);
+    setShowBottomToolbar(false);
+
+    // 存储选中的经文到 Redux
+    dispatch(
+      setVerse({
+        reference: `马太福音 1:${verse.id}`,
+        text: verse.text,
+      }),
+    );
+
+    const screenHeight = Dimensions.get('window').height;
+    const positionFromTop = position.y - scrollOffset;
+    const spaceBelow = screenHeight - (positionFromTop + position.height);
+    setToolbarPosition(spaceBelow > positionFromTop ? 'bottom' : 'top');
+  };
 
   return (
     <View style={[styles.container, {backgroundColor}]}>
@@ -535,15 +565,7 @@ function ImmersiveReading(): React.JSX.Element {
               toolbarPosition={toolbarPosition}
               verseToolbarOptions={verseToolbarOptions}
               handleVerseLongPress={(verse, position) => {
-                setSelectedVerses(verse);
-                setShowBottomToolbar(false);
-                const screenHeight = Dimensions.get('window').height;
-                const positionFromTop = position.y - scrollOffset;
-                const spaceBelow =
-                  screenHeight - (positionFromTop + position.height);
-                setToolbarPosition(
-                  spaceBelow > positionFromTop ? 'bottom' : 'top',
-                );
+                handleVerseLongPress(verse, position);
               }}
               selectedVerses={selectedVerses}
             />
@@ -628,6 +650,16 @@ function ImmersiveReading(): React.JSX.Element {
           title="马太福音第一章"
         />
       )}
+
+      <ShareModal
+        modalRef={modalCommentRef}
+        onClose={() => {
+          console.log('onClose');
+        }}
+        onShare={() => {
+          console.log('onShare');
+        }}
+      />
     </View>
   );
 }
