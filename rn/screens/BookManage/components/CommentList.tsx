@@ -168,8 +168,8 @@ export const CommentList = () => {
             navigation.goBack();
           }}>
           <FontAwesome name="xmark" size={20} color="#333" iconStyle="solid" />
-        </TouchableOpacity> */}
-        <BaseText style={styles.title}>{verse.reference}</BaseText>
+        </TouchableOpacity>
+        <BaseText style={styles.title}>{verse.reference}</BaseText> */}
         <View style={styles.placeholder} />
       </View>
 
@@ -203,118 +203,127 @@ export const CommentList = () => {
 
       <ScrollView style={styles.commentList}>
         {comments.map(comment => (
-          <View key={comment.id} style={styles.commentItem}>
-            <Image
-              source={{
-                uri: 'http://gips0.baidu.com/it/u=3560029307,576412274&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280',
-              }}
-              style={styles.avatar}
-            />
-            <View style={styles.commentContent}>
-              <View style={styles.commentHeader}>
-                <BaseText style={styles.userName}>{comment.user.name}</BaseText>
-                <BaseText style={styles.date}>{comment.date}</BaseText>
-              </View>
-              <BaseText style={styles.commentText}>{comment.content}</BaseText>
-              <View style={styles.commentFooter}>
-                <View style={styles.location}>
-                  <FontAwesome
-                    style={commonStyles.icon}
-                    name="location-dot"
-                    size={12}
-                    color="#999"
-                    iconStyle="solid"
-                  />
-                  <BaseText style={styles.locationText}>
-                    {comment.location}
-                  </BaseText>
-                </View>
-                <TouchableOpacity
-                  style={styles.replyButton}
-                  onPress={() => {
-                    setReplyTo({id: comment.id, name: comment.user.name});
-                  }}>
-                  <FontAwesome
-                    style={commonStyles.icon}
-                    name="reply"
-                    size={12}
-                    color="#999"
-                    iconStyle="solid"
-                  />
-                  <BaseText style={styles.replyText}>回复</BaseText>
-                </TouchableOpacity>
-                <View style={styles.likes}>
-                  <FontAwesome
-                    style={commonStyles.icon}
-                    name="share"
-                    size={12}
-                    color="#999"
-                    iconStyle="solid"
-                  />
-                  <BaseText style={styles.likesText}>{comment.likes}</BaseText>
-                </View>
-              </View>
-            </View>
-            {comment.type === 'mine' && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('BookManageNavigator', {
+                screen: 'CommentDetail',
+              });
+            }}>
+            <View key={comment.id} style={styles.commentItem}>
               <TouchableOpacity
-                style={styles.moreButton}
-                onPress={e => {
-                  e.stopPropagation();
-                  handleMorePress(comment.id);
+                onPress={() => {
+                  // navigation.navigate('UserProfile', {userId: comment.user.id});
                 }}>
-                <FontAwesome
-                  name="ellipsis"
-                  size={16}
-                  color="#999"
-                  iconStyle="solid"
+                <Image
+                  source={{
+                    uri: 'http://gips0.baidu.com/it/u=3560029307,576412274&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280',
+                  }}
+                  style={styles.avatar}
                 />
               </TouchableOpacity>
-            )}
-            {selectedComment === comment.id && (
-              <TouchableOpacity
-                style={styles.actionOverlay}
-                activeOpacity={1}
-                onPress={() => setSelectedComment(null)}>
-                <View style={styles.actionButtons}>
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.shareButton]}
-                    onPress={() => handleActionPress('share')}>
-                    <FontAwesome
-                      name="share"
-                      size={16}
-                      color="#FFB224"
-                      iconStyle="solid"
-                    />
-                    <BaseText style={[styles.actionText, styles.shareText]}>
-                      分享
-                    </BaseText>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.actionButton, styles.deleteButton]}
-                    onPress={() => handleActionPress('delete')}>
-                    <FontAwesome
-                      name="trash"
-                      size={16}
-                      color="#FF4D4F"
-                      iconStyle="solid"
-                    />
-                    <BaseText style={[styles.actionText, styles.deleteText]}>
-                      删除
-                    </BaseText>
-                  </TouchableOpacity>
+              <View style={styles.commentContent}>
+                <View style={styles.commentHeader}>
+                  <BaseText style={styles.userName}>
+                    {comment.user.name}
+                  </BaseText>
+                  <BaseText style={styles.date}>{comment.date}</BaseText>
                 </View>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={styles.commentItem}
-              onPress={() =>
-                navigation.navigate('BookManageNavigator', {
-                  screen: 'CommentDetail',
-                })
-              }>
-              {/* 评论内容... */}
-            </TouchableOpacity>
-          </View>
+                <BaseText style={styles.commentText}>
+                  {comment.content}
+                </BaseText>
+                <View style={styles.commentFooter}>
+                  <View style={styles.location}>
+                    <FontAwesome
+                      style={commonStyles.icon}
+                      name="location-dot"
+                      size={12}
+                      color="#999"
+                      iconStyle="solid"
+                    />
+                    <BaseText style={styles.locationText}>
+                      {comment.location}
+                    </BaseText>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.replyButton}
+                    onPress={() => {
+                      setReplyTo({id: comment.id, name: comment.user.name});
+                    }}>
+                    <FontAwesome
+                      style={commonStyles.icon}
+                      name="reply"
+                      size={12}
+                      color="#999"
+                      iconStyle="solid"
+                    />
+                    <BaseText style={styles.replyText}>回复</BaseText>
+                  </TouchableOpacity>
+                  <View style={styles.likes}>
+                    <FontAwesome
+                      style={commonStyles.icon}
+                      name="share"
+                      size={12}
+                      color="#999"
+                      iconStyle="solid"
+                    />
+                    <BaseText style={styles.likesText}>
+                      {comment.likes}
+                    </BaseText>
+                  </View>
+                </View>
+              </View>
+              {comment.type === 'mine' && (
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={e => {
+                    e.stopPropagation();
+                    handleMorePress(comment.id);
+                  }}>
+                  <FontAwesome
+                    name="ellipsis"
+                    size={16}
+                    color="#999"
+                    iconStyle="solid"
+                  />
+                </TouchableOpacity>
+              )}
+              {selectedComment === comment.id && (
+                <TouchableOpacity
+                  style={styles.actionOverlay}
+                  activeOpacity={1}
+                  onPress={() => setSelectedComment(null)}>
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.shareButton]}
+                      onPress={() => handleActionPress('share')}>
+                      <FontAwesome
+                        name="share"
+                        size={16}
+                        color="#FFB224"
+                        iconStyle="solid"
+                      />
+                      <BaseText style={[styles.actionText, styles.shareText]}>
+                        分享
+                      </BaseText>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.actionButton, styles.deleteButton]}
+                      onPress={() => handleActionPress('delete')}>
+                      <FontAwesome
+                        name="trash"
+                        size={16}
+                        color="#FF4D4F"
+                        iconStyle="solid"
+                      />
+                      <BaseText style={[styles.actionText, styles.deleteText]}>
+                        删除
+                      </BaseText>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
