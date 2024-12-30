@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
-import {transformStyles} from '@utils/index';
+import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import CustomTabs from '@components/Tabs';
 import {ProgressBar} from 'react-native-paper';
@@ -16,31 +16,31 @@ interface Plan {
 
 // 定义计划分类的接口
 interface PlanSection {
-  title: string;     // 分类标题
-  key: string;       // 分类唯一标识
-  days: number;      // 计划天数
-  remainingTime: string;  // 剩余时间
-  data: Plan[];      // 该分类下的具体计划
-  progress: number;  // 整体进度
+  title: string; // 分类标题
+  key: string; // 分类唯一标识
+  days: number; // 计划天数
+  remainingTime: string; // 剩余时间
+  data: Plan[]; // 该分类下的具体计划
+  progress: number; // 整体进度
 }
 
 // 在文件顶部添加路由参数接口
 interface NewPlanProps {
-  route: {
+  route?: {
     params?: {
       mode?: 'create' | 'edit'; // 页面模式：创建/编辑
-      planId?: string;          // 编辑时的计划ID
+      planId?: string; // 编辑时的计划ID
     };
   };
 }
 
-const NewPlan = ({route}: NewPlanProps) => {
+const AdjustPlan = ({route}: NewPlanProps) => {
   // 从路由参数中获取模式，默认为创建模式
-  const mode = route.params?.mode || 'create';
-  
+  const mode = route?.params?.mode || 'create';
+
   // 选中的计划周期（天数）
   const [selectedPeriod, setSelectedPeriod] = useState(180);
-  
+
   // 所有计划数据
   const [allPlans, setAllPlans] = useState<PlanSection[]>([
     {
@@ -147,49 +147,64 @@ const NewPlan = ({route}: NewPlanProps) => {
 
   // 渲染所有计划列表
   const renderAllPlans = () => (
-    <ScrollView style={styles.scrollContainer}>
-      <>
-        {renderTimeOptions()}
+    <View style={styles.planCardContainer}>
+      {renderTimeOptions()}
+      <ScrollView style={styles.scrollContainer}>
         {allPlans.map(section => (
           <View key={section.key} style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
             {renderPlanProgress(section.data)}
           </View>
         ))}
-      </>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 
   // 渲染计划指标
-  const renderPlanMetrics = (plan: PlanSection) => (
+  const renderPlanMetrics = () => (
     <View style={styles.planMetrics}>
       <View style={styles.metricItem}>
-        <FontAwesome name="calendar" size={16} color="#3B8E58" />
-        <Text style={styles.metricText}>{plan.days}天</Text>
+        <FontAwesome
+          name="calendar"
+          size={16}
+          color="#3B8E58"
+          style={commonStyles.icon}
+          iconStyle="solid"
+        />
+        <Text style={styles.metricText}>99天</Text>
       </View>
       <View style={styles.metricItem}>
         <FontAwesome
           name="chart-pie"
           size={16}
           color="#3B8E58"
+          style={commonStyles.icon}
           iconStyle="solid"
         />
-        <Text style={styles.metricText}>{plan.progress}%</Text>
+        <Text style={styles.metricText}>40%</Text>
       </View>
       <View style={styles.metricItem}>
-        <FontAwesome name="clock" size={16} color="#3B8E58" />
-        <Text style={styles.metricText}>{plan.remainingTime}</Text>
+        <FontAwesome
+          name="clock"
+          size={16}
+          color="#3B8E58"
+          style={commonStyles.icon}
+          iconStyle="solid"
+        />
+        <Text style={styles.metricText}>999小时59分</Text>
       </View>
     </View>
   );
 
   // 渲染单个计划分类的详细内容
   const renderPlanCard = (planSection: PlanSection) => (
-    <ScrollView style={styles.scrollContainer}>
-      {renderPlanMetrics(planSection)}
+    <View style={styles.planCardContainer}>
+      {mode === 'edit' && renderPlanMetrics()}
       {renderTimeOptions()}
-      {renderPlanProgress(planSection.data)}
-    </ScrollView>
+      <ScrollView style={styles.scrollContainer}>
+        {renderPlanProgress(planSection.data)}
+      </ScrollView>
+    </View>
   );
 
   // 获取按钮文案
@@ -214,45 +229,65 @@ const NewPlan = ({route}: NewPlanProps) => {
       <Text style={styles.title}>
         {mode === 'create' ? '新建计划' : '调整计划'}
       </Text>
-      <CustomTabs
-        tabs={[
-          {key: 'all', label: '所有', renderItem: renderAllPlans},
-          {
-            key: 'new',
-            label: '新约',
-            renderItem: () => renderPlanCard(allPlans[0]),
-          },
-          {
-            key: 'old',
-            label: '旧约',
-            renderItem: () => renderPlanCard(allPlans[1]),
-          },
-          {
-            key: 'history',
-            label: '历史书',
-            renderItem: () => renderPlanCard(allPlans[2]),
-          },
-          {
-            key: 'poetry',
-            label: '诗歌',
-            renderItem: () => renderPlanCard(allPlans[3]),
-          },
-          {
-            key: 'wisdom',
-            label: '智慧书',
-            renderItem: () => renderPlanCard(allPlans[4]),
-          },
-        ]}
-        onTabChange={key => console.log(key)}
-      />
-      <TouchableOpacity
-        style={[
-          styles.createButton,
-          mode === 'edit' && styles.editButton, // 编辑模式使用不同样式
-        ]}
-        onPress={handleButtonPress}>
-        <Text style={styles.createButtonText}>{getButtonText()}</Text>
-      </TouchableOpacity>
+      <View style={styles.tabsContainer}>
+        <CustomTabs
+          tabs={[
+            {key: 'all', label: '所有', renderItem: renderAllPlans},
+            {
+              key: 'new',
+              label: '新约',
+              renderItem: () => renderPlanCard(allPlans[0]),
+            },
+            {
+              key: 'old',
+              label: '旧约',
+              renderItem: () => renderPlanCard(allPlans[1]),
+            },
+            {
+              key: 'history',
+              label: '历史书',
+              renderItem: () => renderPlanCard(allPlans[2]),
+            },
+            {
+              key: 'poetry',
+              label: '诗歌',
+              renderItem: () => renderPlanCard(allPlans[3]),
+            },
+            {
+              key: 'wisdom',
+              label: '智慧书',
+              renderItem: () => renderPlanCard(allPlans[4]),
+            },
+          ]}
+          onTabChange={key => console.log(key)}
+        />
+      </View>
+      {/* View footer */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={[styles.createButton]}
+          onPress={handleButtonPress}>
+          <FontAwesome
+            style={commonStyles.icon}
+            name="xmark"
+            size={16}
+            color="#333"
+            iconStyle="solid"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.createButton]}
+          onPress={handleButtonPress}>
+          <FontAwesome
+            style={commonStyles.icon}
+            name="check"
+            size={16}
+            color="#333"
+            iconStyle="solid"
+          />
+          <Text style={styles.createButtonText}>{getButtonText()}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -262,14 +297,18 @@ const styles = transformStyles({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    maxHeight: 600,
+  },
+  tabsContainer: {
+    flex: 1,
   },
   scrollContainer: {
     flex: 1,
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 14,
-    // fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: 'bold',
     padding: 16,
     textAlign: 'center',
   },
@@ -285,7 +324,8 @@ const styles = transformStyles({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
-    // padding: 8,
+    paddingHorizontal: 24,
+    backgroundColor: '#fff',
   },
   timeOption: {
     paddingVertical: 8,
@@ -321,13 +361,21 @@ const styles = transformStyles({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 24,
+    paddingHorizontal: 24,
+    backgroundColor: '#fff',
   },
   metricItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
   },
   metricText: {
-    marginLeft: 4,
+    marginLeft: 8,
     color: '#3B8E58',
     fontSize: 14,
   },
@@ -344,20 +392,37 @@ const styles = transformStyles({
     borderRadius: 2,
   },
   createButton: {
-    backgroundColor: '#FF8800',
     margin: 16,
     padding: 12,
     borderRadius: 22,
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
-  editButton: {
-    backgroundColor: '#3B8E58', // 编辑模式使用不同的颜色
-  },
+  // editButton: {
+  //   backgroundColor: '#3B8E58', // 编辑模式使用不同的颜色
+  // },
   createButtonText: {
-    color: '#fff',
+    color: '#333',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  planCardContainer: {
+    flex: 1,
+    // paddingTop: 160,
+  },
 });
 
-export default NewPlan;
+export default AdjustPlan;

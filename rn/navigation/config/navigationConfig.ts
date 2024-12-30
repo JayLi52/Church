@@ -22,7 +22,7 @@ import Devotion from '@screens/Team/Devotion';
 import MinReadingTime from '@screens/Team/MinReadingTime';
 import Topic from '@screens/Team/Topic';
 import SkipTime from '@screens/Team/SkipTime';
-import NewPlan from '@screens/Team/NewPlan';
+import AdjustPlan from '@screens/Team/AdjustPlan';
 import Live from '@screens/Team/Live';
 import AddAnswer from '@screens/Team/AddAnswer';
 import CompleteQuestion from '@screens/Team/CompleteQuestion';
@@ -160,8 +160,8 @@ export const mainTabList: TabItem[] = [
         options: { headerShown: false },
       },
       {
-        name: 'NewPlan',
-        renderComponent: NewPlan,
+        name: 'AdjustPlan',
+        renderComponent: AdjustPlan,
         options: { headerShown: false },
       },
       {

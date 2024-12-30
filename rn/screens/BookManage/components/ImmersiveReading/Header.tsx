@@ -4,6 +4,7 @@ import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {commonStyles, transformStyles} from '@utils/index';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
+import AdjustPlan from '@screens/Team/AdjustPlan';
 
 type HeaderProps = {
   type?: 'default' | 'plan';
@@ -40,9 +41,10 @@ export const Header = ({
     <>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <FontAwesome
+          style={commonStyles.icon}
           name="arrow-left"
           size={20}
-          color={colors.icon}
+          color={'#333'}
           iconStyle="solid"
         />
       </TouchableOpacity>
@@ -54,9 +56,10 @@ export const Header = ({
             {bookTitle} {currentChapter}
           </BaseText>
           <FontAwesome
+            style={commonStyles.icon}
             name="chevron-down"
             size={16}
-            color={colors.icon}
+            color={'#333'}
             iconStyle="solid"
           />
         </TouchableOpacity>
@@ -65,18 +68,20 @@ export const Header = ({
           onPress={() => modalVersionRef?.current?.open()}>
           <BaseText style={styles.versionText}>{currentVersion}</BaseText>
           <FontAwesome
-            name="chevron-down"
+            style={commonStyles.icon}
+            name="book"
             size={16}
-            color={colors.icon}
+            color={'#333'}
             iconStyle="solid"
           />
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={onToggleBookmark}>
         <FontAwesome
+          style={commonStyles.icon}
           name="bookmark"
           size={20}
-          color={isBookmarked ? '#FFB224' : colors.icon}
+          color={isBookmarked ? '#FFB224' : '#333'}
           iconStyle="solid"
         />
       </TouchableOpacity>
@@ -87,6 +92,7 @@ export const Header = ({
     <>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <FontAwesome
+          style={commonStyles.icon}
           name="arrow-left"
           size={20}
           color={'#333'}
@@ -105,20 +111,18 @@ export const Header = ({
           iconStyle="solid"
         />
       </TouchableOpacity>
-      <View style={styles.headerRight}>
-        <TouchableOpacity
-          style={styles.versionButton}
-          onPress={() => modalVersionRef?.current?.open()}>
-          <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
-          <FontAwesome
-            style={commonStyles.icon}
-            name="book"
-            size={16}
-            color={'#333'}
-            iconStyle="solid"
-          />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.versionButton}
+        onPress={() => modalVersionRef?.current?.open()}>
+        <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="book"
+          size={16}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
     </>
   );
 
@@ -129,9 +133,7 @@ export const Header = ({
       </View>
       <CustomModal ref={planModalRef} modalContentWrapStyle={styles.planModal}>
         {/* 计划详情内容 */}
-        <View style={styles.planModalContent}>
-          <BaseText>计划详情...</BaseText>
-        </View>
+        <AdjustPlan />
       </CustomModal>
     </>
   );
@@ -143,9 +145,12 @@ const styles = transformStyles({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
+    paddingVertical: 16,
   },
   headerCenter: {
     alignItems: 'center',
+    flexDirection: 'row',
+    gap: 16,
   },
   chapterButton: {
     flexDirection: 'row',
@@ -161,11 +166,11 @@ const styles = transformStyles({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginTop: 4,
   },
   versionText: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
   },
   versionStatusText: {
     fontSize: 16,

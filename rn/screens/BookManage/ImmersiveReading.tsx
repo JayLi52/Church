@@ -547,39 +547,75 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
   const renderStatusInfo = () => {
     if (!cardStatus) return null;
 
+    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const currentDayIndex = 3; // 假设当前是周四
+
+    // 获取要显示的5天
+    const visibleDays = weekDays.slice(
+      Math.max(0, currentDayIndex - 2),
+      Math.min(weekDays.length, currentDayIndex + 3),
+    );
+
     return (
       <View style={styles.statusContainer}>
-        <View
-          style={[
-            styles.statusBadge,
-            {backgroundColor: CARD_STATUS_CONFIG[status].background},
-          ]}>
-          <FontAwesome
-            name={CARD_STATUS_CONFIG[status].icon}
-            size={16}
-            color={CARD_STATUS_CONFIG[status].iconColor}
-            iconStyle="solid"
-          />
-          <BaseText
-            style={[
-              styles.statusText,
-              {color: CARD_STATUS_CONFIG[status].iconColor},
-            ]}>
-            {cardStatus === 'todo'
-              ? '未完成'
-              : cardStatus === 'pending'
-              ? '待完成'
-              : '已完成'}
-          </BaseText>
+        <View style={styles.planProgress}>
+          <BaseText style={styles.dayCount}>第 99 天</BaseText>
+          <View style={styles.weekDaysContainer}>
+            {visibleDays.map((day, index) => (
+              <View
+                key={day}
+                style={[
+                  styles.dayItem,
+                  index === 2 && styles.activeDayItem, // 中间项为当前日期
+                ]}>
+                <BaseText
+                  style={[styles.dayText, index === 2 && styles.activeDayText]}>
+                  {day}
+                </BaseText>
+                <BaseText
+                  style={[
+                    styles.dateText,
+                    index === 2 && styles.activeDateText,
+                  ]}>
+                  {index + 1 < 10 ? `0${index + 1}` : index + 1}
+                </BaseText>
+              </View>
+            ))}
+          </View>
         </View>
 
-        {cardStatus === 'completed' && (
-          <View style={styles.completionInfo}>
-            <BaseText style={styles.infoText}>
-              {cardData.date} {cardData.location} {cardData.duration}
-            </BaseText>
+        <View style={styles.completionInfo}>
+          <View style={styles.infoItem}>
+            <FontAwesome
+              name="clock"
+              size={16}
+              color="#52C41A"
+              style={styles.infoIcon}
+              iconStyle="solid"
+            />
+            <BaseText style={styles.infoText}>{cardData.date}</BaseText>
           </View>
-        )}
+          <View style={styles.infoItem}>
+            <FontAwesome
+              name="hourglass"
+              size={16}
+              color="#52C41A"
+              style={styles.infoIcon}
+              iconStyle="solid"
+            />
+            <BaseText style={styles.infoText}>{cardData.duration}</BaseText>
+          </View>
+          <View style={styles.infoItem}>
+            <FontAwesome
+              name="location-dot"
+              size={16}
+              color="#52C41A"
+              style={styles.infoIcon}
+              iconStyle="solid"
+            />
+            <BaseText style={styles.infoText}>{cardData.location}</BaseText>
+          </View>
+        </View>
       </View>
     );
   };
@@ -816,13 +852,12 @@ const styles = transformStyles({
   },
   headerContainer: {
     backgroundColor: '#fff',
-    // paddingTop: 44, // 为状态栏预留空间
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    // paddingVertical: 8,
     backgroundColor: '#F6F6F6',
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
@@ -830,28 +865,75 @@ const styles = transformStyles({
     width: '100%',
   },
   statusContainer: {
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
+    backgroundColor: '#fff',
   },
-  statusBadge: {
+  planProgress: {
+    marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    padding: 8,
-    borderRadius: 16,
-    gap: 8,
+    // gap: 8,
   },
-  statusText: {
+  dayCount: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+    marginBottom: 12,
+    width: 100,
+    textAlign: 'center',
+  },
+  weekDaysContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: 16,
+    flex: 1,
+  },
+  dayItem: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  activeDayItem: {
+    backgroundColor: '#FFB224',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  dayText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  activeDayText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  dateText: {
     fontSize: 14,
+    color: '#333',
+  },
+  activeDateText: {
+    color: '#fff',
     fontWeight: 'bold',
   },
   completionInfo: {
-    marginTop: 8,
+    gap: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  infoIcon: {
+    width: 16,
   },
   infoText: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: 14,
+    color: '#52C41A',
   },
 });
 
