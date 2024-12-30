@@ -17,3 +17,23 @@ export const TYPE_ICON_MAP = {
 } as const;
 
 export type CardType = 'question' | 'book' | 'pray'; 
+
+export type CardStatus = 'todo' | 'pending' | 'completed';
+
+export const CARD_STATUS_CONFIG = {
+  todo: {
+    background: '#FFF5E5',
+    icon: 'clock' as const,
+    iconColor: '#FFB224',
+  },
+  pending: {
+    background: '#E6F7FF',
+    icon: 'hourglass' as const,
+    iconColor: '#1890FF',
+  },
+  completed: {
+    background: '#F6FFED',
+    icon: 'circle-check' as const,
+    iconColor: '#52C41A',
+  },
+} as const; 

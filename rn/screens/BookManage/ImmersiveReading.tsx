@@ -59,6 +59,9 @@ import {
 } from './components/ImmersiveReading/QuoteModal';
 import {ShareModal} from './components/ImmersiveReading/ShareModal';
 import {setVerse} from '@store/slices/bookManageSlice';
+import {CARD_STATUS_CONFIG} from '@screens/Lingxiu/constants';
+import {hideTabBar} from '@store/tabSlice';
+import {hideStatusBar} from '@store/statusBarSlice';
 
 const originGenealogyData = [
   {
@@ -172,7 +175,12 @@ type ShareInfo = {
 // 添加 tab 类型定义
 export type TabType = 'chapter' | 'section';
 
-function ImmersiveReading(): React.JSX.Element {
+function ImmersiveReading({route}: {route: any}): React.JSX.Element {
+  const {cardStatus, cardData} = route.params || {};
+
+  // 添加类型断言
+  const status = cardStatus as keyof typeof CARD_STATUS_CONFIG;
+
   const [genealogyData, setGenealogyData] =
     useState<VerseItem[]>(originGenealogyData);
   const navigation = useNavigation();
@@ -510,7 +518,9 @@ function ImmersiveReading(): React.JSX.Element {
   useEffect(() => {
     // console.log(123);
     // modalQuoteRef.current?.open();
-    modalCommentRef.current?.open();
+    // modalCommentRef.current?.open();
+    dispatch(hideTabBar());
+    dispatch(hideStatusBar());
   }, []);
 
   const handleVerseLongPress = (
@@ -534,10 +544,70 @@ function ImmersiveReading(): React.JSX.Element {
     setToolbarPosition(spaceBelow > positionFromTop ? 'bottom' : 'top');
   };
 
+  const renderStatusInfo = () => {
+    if (!cardStatus) return null;
+
+    return (
+      <View style={styles.statusContainer}>
+        <View
+          style={[
+            styles.statusBadge,
+            {backgroundColor: CARD_STATUS_CONFIG[status].background},
+          ]}>
+          <FontAwesome
+            name={CARD_STATUS_CONFIG[status].icon}
+            size={16}
+            color={CARD_STATUS_CONFIG[status].iconColor}
+            iconStyle="solid"
+          />
+          <BaseText
+            style={[
+              styles.statusText,
+              {color: CARD_STATUS_CONFIG[status].iconColor},
+            ]}>
+            {cardStatus === 'todo'
+              ? '未完成'
+              : cardStatus === 'pending'
+              ? '待完成'
+              : '已完成'}
+          </BaseText>
+        </View>
+
+        {cardStatus === 'completed' && (
+          <View style={styles.completionInfo}>
+            <BaseText style={styles.infoText}>
+              {cardData.date} {cardData.location} {cardData.duration}
+            </BaseText>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const renderStatusInfoHeader = () => (
+    <View style={[styles.header, {backgroundColor: colors.header}]}>
+      <Header
+        type="plan"
+        navigation={navigation}
+        colors={colors}
+        planTitle="180天读经计划"
+        modalVersionRef={modalVersionRef}
+        currentVersion={currentVersion.shortName}
+        onPlanPress={() => {
+          // 处理计划点击
+        }}
+      />
+    </View>
+  );
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
-      <View style={[styles.header, {backgroundColor: colors.header}]}>
-        {renderHeader()}
+      <View style={styles.headerContainer}>
+        <View style={[styles.header, {backgroundColor: colors.header}]}>
+          {!cardStatus && renderHeader()}
+          {cardStatus && renderStatusInfoHeader()}
+        </View>
+        {renderStatusInfo()}
       </View>
 
       <TouchableOpacity
@@ -744,6 +814,10 @@ const styles = transformStyles({
     flex: 1,
     marginBottom: 64,
   },
+  headerContainer: {
+    backgroundColor: '#fff',
+    // paddingTop: 44, // 为状态栏预留空间
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -753,12 +827,31 @@ const styles = transformStyles({
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
     paddingHorizontal: 16,
-    width: 390,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 100,
+    width: '100%',
+  },
+  statusContainer: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    padding: 8,
+    borderRadius: 16,
+    gap: 8,
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  completionInfo: {
+    marginTop: 8,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#999',
   },
 });
 

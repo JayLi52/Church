@@ -1,23 +1,27 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {View, TouchableOpacity} from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {commonStyles, transformStyles} from '@utils/index';
-import {CustomModalRef} from '@components/CustomModal';
+import CustomModal, {CustomModalRef} from '@components/CustomModal';
 
 type HeaderProps = {
+  type?: 'default' | 'plan';
   navigation: any;
   colors: any;
   modalVersionRef: React.RefObject<CustomModalRef>;
-  modalChapterRef: React.RefObject<CustomModalRef>;
-  isBookmarked: boolean;
-  onToggleBookmark: () => void;
-  bookTitle: string;
-  currentChapter: number;
+  modalChapterRef?: React.RefObject<CustomModalRef>;
+  isBookmarked?: boolean;
+  onToggleBookmark?: () => void;
+  bookTitle?: string;
+  currentChapter?: number;
   currentVersion: string;
+  planTitle?: string;
+  onPlanPress?: () => void;
 };
 
 export const Header = ({
+  type = 'default',
   navigation,
   colors,
   modalVersionRef,
@@ -27,103 +31,173 @@ export const Header = ({
   bookTitle,
   currentChapter,
   currentVersion,
-}: HeaderProps) => (
-  <View style={styles.header}>
-    <View style={styles.headerLeft}>
+  planTitle = '180天读经计划',
+  onPlanPress,
+}: HeaderProps) => {
+  const planModalRef = useRef<CustomModalRef>(null);
+
+  const renderDefaultHeader = () => (
+    <>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <FontAwesome
+          name="arrow-left"
+          size={20}
+          color={colors.icon}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <View style={styles.headerCenter}>
+        <TouchableOpacity
+          style={styles.chapterButton}
+          onPress={() => modalChapterRef?.current?.open()}>
+          <BaseText style={styles.bookTitle}>
+            {bookTitle} {currentChapter}
+          </BaseText>
+          <FontAwesome
+            name="chevron-down"
+            size={16}
+            color={colors.icon}
+            iconStyle="solid"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.versionButton}
+          onPress={() => modalVersionRef?.current?.open()}>
+          <BaseText style={styles.versionText}>{currentVersion}</BaseText>
+          <FontAwesome
+            name="chevron-down"
+            size={16}
+            color={colors.icon}
+            iconStyle="solid"
+          />
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity onPress={onToggleBookmark}>
         <FontAwesome
-          style={commonStyles.icon}
-          name={'bookmark'}
+          name="bookmark"
           size={20}
-          color={isBookmarked ? '#FFB224' : colors.text}
-          iconStyle={isBookmarked ? 'solid' : 'regular'}
+          color={isBookmarked ? '#FFB224' : colors.icon}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+    </>
+  );
+
+  const renderPlanHeader = () => (
+    <>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <FontAwesome
+          name="arrow-left"
+          size={20}
+          color={'#333'}
+          iconStyle="solid"
         />
       </TouchableOpacity>
       <TouchableOpacity
-        style={styles.chapterButton}
-        onPress={() => modalChapterRef.current?.open()}>
-        <BaseText style={[styles.headerTitle, {color: colors.text}]}>
-          {bookTitle} 第{currentChapter}章
-        </BaseText>
+        style={styles.planButton}
+        onPress={() => planModalRef.current?.open()}>
+        <BaseText style={styles.planTitle}>{planTitle}</BaseText>
         <FontAwesome
+          style={commonStyles.icon}
           name="chevron-down"
-          size={15}
-          color={colors.text}
+          size={16}
+          color={'#333'}
           iconStyle="solid"
         />
       </TouchableOpacity>
-    </View>
+      <View style={styles.headerRight}>
+        <TouchableOpacity
+          style={styles.versionButton}
+          onPress={() => modalVersionRef?.current?.open()}>
+          <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
+          <FontAwesome
+            style={commonStyles.icon}
+            name="book"
+            size={16}
+            color={'#333'}
+            iconStyle="solid"
+          />
+        </TouchableOpacity>
+      </View>
+    </>
+  );
 
-    <View style={styles.headerRight}>
-      <TouchableOpacity
-        style={styles.versionButton}
-        onPress={() => modalVersionRef.current?.open()}>
-        <BaseText style={styles.versionText}>{currentVersion}</BaseText>
-        <FontAwesome
-          style={commonStyles.icon}
-          name="book"
-          size={15}
-          color={colors.text}
-          iconStyle="solid"
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ReadingRoomHomeScreen')}>
-        <FontAwesome
-          style={commonStyles.icon}
-          name="xmark"
-          size={20}
-          color={colors.text}
-          iconStyle="solid"
-        />
-      </TouchableOpacity>
-    </View>
-  </View>
-);
+  return (
+    <>
+      <View style={styles.header}>
+        {type === 'default' ? renderDefaultHeader() : renderPlanHeader()}
+      </View>
+      <CustomModal ref={planModalRef} modalContentWrapStyle={styles.planModal}>
+        {/* 计划详情内容 */}
+        <View style={styles.planModalContent}>
+          <BaseText>计划详情...</BaseText>
+        </View>
+      </CustomModal>
+    </>
+  );
+};
 
 const styles = transformStyles({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    // paddingHorizontal: 16,
     width: '100%',
   },
-  headerLeft: {
-    flexDirection: 'row',
+  headerCenter: {
     alignItems: 'center',
-    gap: 16,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
   },
   chapterButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  headerTitle: {
+  bookTitle: {
     fontSize: 16,
+    color: '#333',
     fontWeight: 'bold',
   },
   versionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  versionTag: {
-    backgroundColor: '#FFB224',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+    gap: 4,
+    marginTop: 4,
   },
   versionText: {
-    color: '#2E2E2E',
-    fontSize: 15,
+    fontSize: 12,
+    color: '#666',
+  },
+  versionStatusText: {
+    fontSize: 16,
+    color: '#333',
     fontWeight: 'bold',
-    marginRight: 4,
+  },
+  planButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  planTitle: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  iconButton: {
+    padding: 4,
+  },
+  planModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  planModalContent: {
+    backgroundColor: '#fff',
+    padding: 16,
+    width: '100%',
   },
 });

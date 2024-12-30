@@ -1,9 +1,15 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import {View, Image, TouchableOpacity} from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {transformStyles} from '@utils/index';
-import {TYPE_ICON_MAP, CardType} from '../constants';
+import {
+  TYPE_ICON_MAP,
+  CardType,
+  CARD_STATUS_CONFIG,
+  CardStatus,
+} from '../constants';
+import {getImageUrl} from '@utils/imgs';
 
 type CardItemProps = {
   title: string;
@@ -15,6 +21,9 @@ type CardItemProps = {
   date?: string;
   location?: string;
   duration?: string;
+  status: CardStatus;
+  showStatusInfo?: boolean;
+  onPress?: () => void;
 };
 
 export const CardItem = ({
@@ -27,15 +36,32 @@ export const CardItem = ({
   date,
   location,
   duration,
+  status,
+  showStatusInfo = true,
+  onPress,
 }: CardItemProps) => (
-  <View style={styles.cardItem}>
+  <TouchableOpacity
+    style={[styles.cardItem, status === 'completed' && styles.completedCard]}
+    onPress={onPress}>
     <View style={styles.cardImageContainer}>
-      <Image source={{uri: image}} style={styles.cardImage} />
+      <Image source={{uri: getImageUrl()}} style={styles.cardImage} />
       <View style={styles.progressOverlay}>
         <BaseText style={styles.progressText}>{progress}%</BaseText>
       </View>
       <View style={styles.progressBar}>
         <View style={[styles.progress, {width: `${progress}%`}]} />
+      </View>
+      <View
+        style={[
+          styles.statusIcon,
+          {backgroundColor: CARD_STATUS_CONFIG[status].background},
+        ]}>
+        <FontAwesome
+          name={CARD_STATUS_CONFIG[status].icon}
+          size={12}
+          color={CARD_STATUS_CONFIG[status].iconColor}
+          iconStyle="solid"
+        />
       </View>
     </View>
     <View style={styles.cardContent}>
@@ -74,7 +100,7 @@ export const CardItem = ({
             {completedCount}人已完成
           </BaseText>
         </View>
-        {(date || location || duration) && (
+        {status === 'completed' && (date || location || duration) && (
           <View style={styles.cardMeta}>
             {date && <BaseText style={styles.metaText}>{date}</BaseText>}
             {location && (
@@ -87,7 +113,7 @@ export const CardItem = ({
         )}
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 );
 
 const styles = transformStyles({
@@ -175,9 +201,9 @@ const styles = transformStyles({
     color: '#52C41A',
   },
   cardFooter: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   memberList: {
     flexDirection: 'row',
@@ -206,5 +232,19 @@ const styles = transformStyles({
   metaText: {
     fontSize: 12,
     color: '#999',
+  },
+  completedCard: {
+    borderColor: '#52C41A',
+    borderWidth: 1,
+  },
+  statusIcon: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

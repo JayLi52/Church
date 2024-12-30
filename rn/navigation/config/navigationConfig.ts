@@ -119,6 +119,11 @@ export const mainTabList: TabItem[] = [
         renderComponent: SpiritualCultivationHomeScreen,
         options: { headerShown: false },
       },
+      {
+        name: 'ImmersiveReadingScreen',
+        renderComponent: ImmersiveReadingScreen,
+        options: { headerShown: false },
+      },
     ],
   },
   {

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@store/store';
 import {transformStyles} from '@utils/index';
 import CustomTabs from '@components/Tabs';
@@ -18,7 +18,9 @@ import CustomModal, {CustomModalRef} from '@components/CustomModal';
 import {Header} from './components/Header';
 import {CardItem} from './components/CardItem';
 import {FixedContent} from './components/FixedContent';
-import {TYPE_ICON_MAP, CardType} from './constants';
+import {TYPE_ICON_MAP, CardType, CardStatus} from './constants';
+import {showTabBar} from '@store/tabSlice';
+import {showStatusBar} from '@store/statusBarSlice';
 
 type TabType = '今日灵修' | '往日学经' | '往日答题' | '往日祷告';
 
@@ -33,6 +35,8 @@ type DateGroup = {
     completedCount: number;
     location?: string;
     duration?: string;
+    date?: string;
+    status: CardStatus;
   }[];
 };
 
@@ -57,96 +61,38 @@ export const LingxiuHome = () => {
     getImageUrl(),
   ];
 
-  const CardItem = ({
-    title,
-    image,
-    progress,
-    type,
-    members,
-    completedCount,
-    date,
-    location,
-    duration,
-  }: {
-    title: string;
-    image?: string;
-    progress: number;
-    type: 'question' | 'book' | 'pray';
-    members: string[];
-    completedCount: number;
-    date?: string;
-    location?: string;
-    duration?: string;
-  }) => (
-    <View style={styles.cardItem}>
-      <View style={styles.cardImageContainer}>
-        <Image
-          source={{uri: image || getImageUrl()}}
-          style={styles.cardImage}
-        />
-        <View style={styles.progressOverlay}>
-          <BaseText style={styles.progressText}>{progress}%</BaseText>
-        </View>
-        <View style={styles.progressBar}>
-          <View style={[styles.progress, {width: `${progress}%`}]} />
-        </View>
-      </View>
-      <View style={styles.cardContent}>
-        <View style={styles.cardHeader}>
-          <View style={styles.titleContainer}>
-            <BaseText style={styles.cardTitle}>{title}</BaseText>
-            {type === 'question' && (
-              <View style={styles.questionTag}>
-                <BaseText style={styles.questionTagText}>+5</BaseText>
-              </View>
-            )}
-          </View>
-          <View
-            style={[
-              styles.typeIcon,
-              {backgroundColor: TYPE_ICON_MAP[type].background},
-            ]}>
-            <FontAwesome
-              name={TYPE_ICON_MAP[type].name}
-              size={16}
-              color={TYPE_ICON_MAP[type].color}
-              iconStyle="solid"
-            />
-          </View>
-        </View>
-        <View style={styles.cardFooter}>
-          <View style={styles.memberList}>
-            {members.map((avatar, index) => (
-              <Image
-                key={index}
-                source={{uri: avatar}}
-                style={[
-                  styles.memberThumb,
-                  index > 0 && styles.overlappingThumb,
-                ]}
-              />
-            ))}
-            <BaseText style={styles.completedCount}>
-              {completedCount}人已完成
-            </BaseText>
-          </View>
-          {(date || location || duration) && (
-            <View style={styles.cardMeta}>
-              {date && <BaseText style={styles.metaText}>{date}</BaseText>}
-              {location && (
-                <BaseText style={styles.metaText}>{location}</BaseText>
-              )}
-              {duration && (
-                <BaseText style={styles.metaText}>{duration}</BaseText>
-              )}
-            </View>
-          )}
-        </View>
-      </View>
-    </View>
-  );
+  // 修改今日灵修的数据
+  const todayItems = [
+    {
+      title: '关于五句节的问题',
+      progress: 65,
+      type: 'question' as CardType,
+      members: [getImageUrl(), getImageUrl(), getImageUrl()],
+      completedCount: 9999,
+      status: 'todo' as CardStatus,
+    },
+    {
+      title: '晨祷',
+      progress: 30,
+      type: 'pray' as CardType,
+      members: [getImageUrl()],
+      completedCount: 9999,
+      status: 'pending' as CardStatus,
+    },
+    {
+      title: '马太福音第一章',
+      progress: 100,
+      type: 'book' as CardType,
+      members: [getImageUrl(), getImageUrl()],
+      completedCount: 9999,
+      status: 'completed' as CardStatus,
+      date: '2024-08-10',
+      location: '四川成都',
+      duration: '34分钟',
+    },
+  ];
 
-  // 修改往日学经的 tab 内容
+  // 修改往日学经的数据
   const historyGroups: DateGroup[] = [
     {
       date: '昨日, 08.18',
@@ -157,6 +103,18 @@ export const LingxiuHome = () => {
           type: 'book',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'todo',
+        },
+        {
+          title: '马太福音第二章12-23节',
+          progress: 100,
+          type: 'book',
+          members: [getImageUrl(), getImageUrl()],
+          completedCount: 9999,
+          status: 'completed',
+          date: '2024-08-10',
+          location: '四川成都',
+          duration: '34分钟',
         },
       ],
     },
@@ -171,6 +129,7 @@ export const LingxiuHome = () => {
           completedCount: 9999,
           location: '四川成都',
           duration: '34分钟',
+          status: 'completed',
         },
         {
           title: '马太福音第二章1-11节',
@@ -178,6 +137,10 @@ export const LingxiuHome = () => {
           type: 'book',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
+          date: '2024-08-10',
+          location: '四川成都',
+          duration: '34分钟',
         },
       ],
     },
@@ -194,6 +157,7 @@ export const LingxiuHome = () => {
           type: 'question',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
         {
           title: '关于马太福音的问题',
@@ -201,6 +165,7 @@ export const LingxiuHome = () => {
           type: 'question',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
       ],
     },
@@ -213,6 +178,7 @@ export const LingxiuHome = () => {
           type: 'question',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
       ],
     },
@@ -229,6 +195,7 @@ export const LingxiuHome = () => {
           type: 'question',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
         {
           title: '晨祷',
@@ -236,6 +203,7 @@ export const LingxiuHome = () => {
           type: 'pray',
           members: [getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
       ],
     },
@@ -248,6 +216,7 @@ export const LingxiuHome = () => {
           type: 'book',
           members: [getImageUrl(), getImageUrl(), getImageUrl()],
           completedCount: 9999,
+          status: 'completed',
         },
       ],
     },
@@ -265,6 +234,7 @@ export const LingxiuHome = () => {
           members: [getImageUrl()],
           completedCount: 9999,
           date: '2024-08-10 13:30',
+          status: 'completed',
         },
         {
           title: '主日祷告',
@@ -273,6 +243,7 @@ export const LingxiuHome = () => {
           members: [getImageUrl(), getImageUrl()],
           completedCount: 9999,
           date: '2024-08-10 09:30',
+          status: 'completed',
         },
       ],
     },
@@ -287,6 +258,7 @@ export const LingxiuHome = () => {
           completedCount: 9999,
           date: '2024-08-10 20:30',
           location: '四川成都',
+          status: 'completed',
         },
       ],
     },
@@ -298,21 +270,14 @@ export const LingxiuHome = () => {
       label: '今日灵修',
       renderItem: () => (
         <ScrollView>
-          <CardItem
-            title="关于五句节的问题"
-            progress={65}
-            type="question"
-            members={[getImageUrl(), getImageUrl(), getImageUrl()]}
-            completedCount={9999}
-          />
-          <CardItem
-            title="晨祷"
-            progress={65}
-            type="pray"
-            members={[getImageUrl()]}
-            completedCount={9999}
-            date="2024-08-10 13:30"
-          />
+          {todayItems.map((item, index) => (
+            <CardItem
+              key={index}
+              {...item}
+              onPress={() => handleCardPress(item)}
+              showStatusInfo={true}
+            />
+          ))}
         </ScrollView>
       ),
     },
@@ -327,13 +292,9 @@ export const LingxiuHome = () => {
               {group.items.map((item, itemIndex) => (
                 <CardItem
                   key={itemIndex}
-                  title={item.title}
-                  progress={item.progress}
-                  type={item.type}
-                  members={item.members}
-                  completedCount={item.completedCount}
-                  location={item.location}
-                  duration={item.duration}
+                  {...item}
+                  onPress={() => handleCardPress(item)}
+                  showStatusInfo={false}
                 />
               ))}
             </View>
@@ -357,6 +318,7 @@ export const LingxiuHome = () => {
                   type={item.type}
                   members={item.members}
                   completedCount={item.completedCount}
+                  status={item.status}
                 />
               ))}
             </View>
@@ -382,6 +344,7 @@ export const LingxiuHome = () => {
                   completedCount={item.completedCount}
                   date={item.date}
                   location={item.location}
+                  status={item.status}
                 />
               ))}
             </View>
@@ -390,6 +353,32 @@ export const LingxiuHome = () => {
       ),
     },
   ];
+
+  const handleCardPress = (item: any) => {
+    navigation.navigate('OrganizationTask', {
+      screen: 'ImmersiveReadingScreen',
+      params: {
+        cardStatus: item.status,
+        cardData: item,
+      },
+    });
+  };
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // StatusBar.setBarStyle('dark-content')
+    // navigation.navigate('BookManageNavigator', {
+    //   screen: 'CommentList'
+    // });
+    dispatch(showTabBar());
+    dispatch(showStatusBar());
+  }, []);
+
+  useFocusEffect(() => {
+    dispatch(showTabBar());
+    dispatch(showStatusBar());
+  });
 
   return (
     <View style={styles.container}>
@@ -457,6 +446,7 @@ export const LingxiuHome = () => {
                     type={item.type}
                     members={item.members}
                     completedCount={item.completedCount}
+                    status={item.status}
                   />
                 ))}
               </View>
@@ -559,10 +549,10 @@ const styles = transformStyles({
     height: 4,
     backgroundColor: '#F6F6F6',
   },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#52C41A',
-  },
+  // progressBar: {
+  //   height: '100%',
+  //   backgroundColor: '#52C41A',
+  // },
   prayerInfo: {
     padding: 12,
   },
@@ -629,6 +619,7 @@ const styles = transformStyles({
     left: 0,
     right: 0,
     height: 4,
+    width: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   progress: {
