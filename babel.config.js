@@ -14,6 +14,7 @@ module.exports = {
           '@services': './rn/services',
           '@store': './rn/store',
           '@hooks': './rn/hooks',
+          '@mock': './rn/mock',
         },
       },
     ],

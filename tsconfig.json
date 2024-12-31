@@ -10,7 +10,8 @@
       "@services/*": ["rn/services/*"],
       "@assets/*": ["assets/*"],
       "@store/*": ["rn/store/*"],
-      "@hooks/*": ["rn/hooks/*"]
+      "@hooks/*": ["rn/hooks/*"],
+      "@mock/*": ["rn/mock/*"]
     }
   }
 }

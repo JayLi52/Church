@@ -21,7 +21,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
-import {transformStyles} from '@utils/index';
+import {commonStyles, transformStyles} from '@utils/index';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
 import Slider from '@react-native-community/slider';
 import Toast from 'react-native-root-toast';
@@ -63,54 +63,7 @@ import {setVerse} from '@store/slices/bookManageSlice';
 import {CARD_STATUS_CONFIG} from '@screens/Lingxiu/constants';
 import {hideTabBar} from '@store/tabSlice';
 import {hideStatusBar} from '@store/statusBarSlice';
-
-const originGenealogyData = [
-  {
-    id: 1,
-    text: '亚伯拉罕的后裔，大卫的子孙、耶稣基督的家谱。',
-    commentCount: 0,
-  },
-  {
-    id: 2,
-    text: '亚伯拉罕生以撒，以撒生雅各，雅各生犹大和他的弟兄。',
-    commentCount: 99,
-  },
-  {
-    id: 3,
-    text: '犹大从他玛氏生法勒斯和谢拉。法勒斯生希斯仑，希斯仑生亚兰。',
-    commentCount: 0,
-  },
-  {
-    id: 4,
-    text: '亚兰生亚米拿达，亚米拿达生拿顺，拿顺生撒门。',
-    commentCount: 0,
-  },
-  {
-    id: 5,
-    text: '撒门从喇合氏生波阿斯，波阿斯从路得氏生俄备得，俄备得生耶西。',
-    commentCount: 0,
-  },
-  {
-    id: 6,
-    text: '耶西生大卫王。大卫从乌利亚的妻子生所罗门。',
-    commentCount: 89,
-  },
-  {
-    id: 7,
-    text: '所罗门生罗波安，罗波安生亚比雅，亚比雅生亚撒。',
-    commentCount: 999,
-  },
-  {
-    id: 8,
-    text: '亚撒生约沙法，约沙法生约兰，约兰生乌西亚。',
-    commentCount: 0,
-  },
-  {
-    id: 9,
-    text: '乌西亚生约坦，约坦生亚哈斯，亚哈希西家。',
-    commentCount: 0,
-  },
-];
+import mockData from '../../mock/genealogyData.json';
 
 const readers = [
   {
@@ -182,8 +135,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
   // 添加类型断言
   const status = cardStatus as keyof typeof CARD_STATUS_CONFIG;
 
-  const [genealogyData, setGenealogyData] =
-    useState<VerseItem[]>(originGenealogyData);
+  const [genealogyData, setGenealogyData] = useState(mockData.verses);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const {currentVersion, versions, isPlaying, showPlayer, currentLanguage} =
@@ -259,7 +211,9 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
   const handleHighlight = () => {
     setGenealogyData(prev =>
       prev.map(item =>
-        selectedVerses?.id === item.id ? {...item, isHighlighted: true} : item,
+        selectedVerses?.id === item.id
+          ? {...item, isHighlighted: !item.isHighlighted}
+          : item,
       ),
     );
     setSelectedVerses(null);
@@ -351,35 +305,28 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
     setShowBottomToolbar(true);
   };
 
-  const handleTranslate = async () => {
-    try {
-      // 这里应该调用实际的翻译 API
-      // const translatedText = await translateText(selectedVerses[0].text);
-      const translatedText = await String(selectedVerses?.text || '');
-      setGenealogyData(prev =>
-        prev.map(item =>
-          selectedVerses?.id === item.id
-            ? {
-                ...item,
-                isTranslated: true,
-                translation: translatedText,
-              }
-            : item,
-        ),
-      );
-    } catch (error) {
-      Toast.show('翻译失败，请重试', {
-        duration: Toast.durations.SHORT,
-      });
-    }
+  const handleTranslate = () => {
+    setGenealogyData(prev =>
+      prev.map(item =>
+        selectedVerses?.id === item.id
+          ? {...item, isTranslated: !item.isTranslated}
+          : item,
+      ),
+    );
+    setSelectedVerses(null);
     setShowBottomToolbar(true);
   };
 
   const verseToolbarOptions = [
     {
       icon: 'highlighter',
-      label: '高亮',
+      label: selectedVerses?.isHighlighted ? '取消高亮' : '高亮',
       onPress: handleHighlight,
+    },
+    {
+      icon: 'language',
+      label: selectedVerses?.isTranslated ? '隐藏翻译' : '显示翻译',
+      onPress: handleTranslate,
     },
     {
       icon: 'copy',
@@ -396,11 +343,6 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
       icon: 'quote-right',
       label: '引用',
       onPress: handleQuote,
-    },
-    {
-      icon: 'language',
-      label: '翻译',
-      onPress: handleTranslate,
     },
   ];
 

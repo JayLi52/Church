@@ -157,7 +157,7 @@ const styles = transformStyles({
   translation: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    marginTop: 8,
     fontStyle: 'italic',
   },
   verseQuoting: {

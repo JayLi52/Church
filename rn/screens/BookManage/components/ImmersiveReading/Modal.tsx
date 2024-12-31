@@ -7,6 +7,7 @@ import {ScrollView, TextInput, TouchableOpacity, View} from 'react-native';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import type {TabType} from '../../ImmersiveReading';
 import {VersionModal} from './VersionModal';
+import {BibleVersion} from '@store/slices/bibleSlice';
 
 export const renderFontMenu = (
   modalFontRef: RefObject<CustomModalRef>,
@@ -145,12 +146,7 @@ export const renderSearchResults = (
           selectionColor={'#FFB224'}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <FontAwesome
-            name="search"
-            size={20}
-            color="#fff"
-            // iconStyle="solid"
-          />
+          <FontAwesome name="search" size={20} color="#fff" iconStyle="solid" />
         </TouchableOpacity>
       </View>
       <ScrollView style={styles.searchResults}>

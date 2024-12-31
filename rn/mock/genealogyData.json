@@ -1,0 +1,104 @@
+    {
+  "verses": [
+    {
+      "id": 1,
+      "text": "亚伯拉罕的后裔，大卫的子孙、耶稣基督的家谱。",
+      "translation": "The book of the generation of Jesus Christ, the son of David, the son of Abraham.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 2,
+      "text": "亚伯拉罕生以撒，以撒生雅各，雅各生犹大和他的弟兄。",
+      "translation": "Abraham begat Isaac; and Isaac begat Jacob; and Jacob begat Judas and his brethren.",
+      "commentCount": 99,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 3,
+      "text": "犹大从他玛氏生法勒斯和谢拉。法勒斯生希斯仑，希斯仑生亚兰。",
+      "translation": "And Judas begat Phares and Zara of Thamar; and Phares begat Esrom; and Esrom begat Aram.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 4,
+      "text": "亚兰生亚斯他以，亚斯他以生拿单，拿单生麦基舒亚。",
+      "translation": "And Aram begat Aminadab; and Aminadab begat Naashon; and Naashon begat Salmon.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 5,
+      "text": "麦基舒亚生米力巴，米力巴生米雅大，米雅大生亚拿突。",
+      "translation": "And Salmon begat Booz of Rachab; and Booz begat Obed of Ruth; and Obed begat Jesse.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 6,
+      "text": "亚拿突生撒门，撒门生波阿斯。",
+      "translation": "And Jesse begat David.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 7,
+      "text": "波阿斯生俄备得，俄备得生耶西。",
+      "translation": "And Booz begat Obed; and Obed begat Jesse.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 8,
+      "text": "耶西生大卫。",
+      "translation": "And Jesse begat David.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 9,
+      "text": "大卫生所罗门。",
+      "translation": "And David begat Solomon.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    },
+    {
+      "id": 10,
+      "text": "所罗门生罗波安，罗波安生亚比雅，亚比雅生亚撒，亚撒生约沙法。",
+      "translation": "And Solomon begat Rehoboam; and Rehoboam begat Abia; and Abia begat Asa; and Asa begat Jehoshaphat.",
+      "commentCount": 0,
+      "isTranslated": false,
+      "isHighlighted": false,
+      "isQuoted": false,
+      "isQuoting": false
+    }
+  ]
+} 
