@@ -35,6 +35,8 @@ import LingxiuHome from '@screens/Lingxiu/LingXiuHome';
 import TeamQuestion from '@screens/Team/TeamQuestions';
 import QuestionDetail from '@screens/Team/QuestionDetail';
 import AnsweredList from '@screens/Team/AnsweredList';
+import AnswerDetail from '@screens/Team/AnswerDetail';
+import UserProfile from '@screens/UserCenter/UserProfile';
 
 export const mainTabList: TabItem[] = [
   {
@@ -142,6 +144,11 @@ export const mainTabList: TabItem[] = [
         renderComponent: AnsweredList,
         options: { headerShown: false },
       },
+      {
+        name: 'AnswerDetail',
+        renderComponent: AnswerDetail,
+        options: { headerShown: false },
+      },
     ],
   },
   {
@@ -152,6 +159,11 @@ export const mainTabList: TabItem[] = [
       iconActive: require('@assets/images/tabbar/chat_active.png'),
     },
     stackScreens: [
+      {
+        name: 'UserProfile',
+        renderComponent: UserProfile,
+        options: { headerShown: false },
+      },
       {
         name: 'HomeScreen',
         renderComponent: HomeScreen,

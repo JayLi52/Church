@@ -32,23 +32,23 @@ const AnsweredList = () => {
     // ... 其他已答题目
   ];
 
-  const renderAnswerCard = (question: AnsweredQuestion) => (
+  const renderAnswerCard = (answeredQuestion: AnsweredQuestion) => (
     <TouchableOpacity
-      key={question.id}
+      key={answeredQuestion.id}
       style={styles.card}
       onPress={() => {
         navigation.navigate('OrganizationTask', {
-          screen: 'QuestionDetail',
+          screen: 'AnswerDetail',
           params: {
-            id: question.id,
+            id: answeredQuestion.id,
             mode: 'view',
           },
         });
       }}>
       <View style={styles.cardHeader}>
-        <BaseText style={styles.title}>{question.title}</BaseText>
+        <BaseText style={styles.title}>{answeredQuestion.title}</BaseText>
         <View style={styles.avatarList}>
-          {question.members.map((avatar, index) => (
+          {answeredQuestion.members.map((avatar, index) => (
             <Image
               key={index}
               source={{uri: avatar}}
@@ -58,14 +58,12 @@ const AnsweredList = () => {
         </View>
       </View>
       <View style={styles.answerPreview}>
-        <BaseText numberOfLines={2} style={styles.answerText}>
-          {question.answer}
-        </BaseText>
+        <BaseText style={styles.answerText}>{answeredQuestion.answer}</BaseText>
       </View>
       <View style={styles.cardFooter}>
-        <BaseText style={styles.metaText}>{question.date}</BaseText>
-        <BaseText style={styles.metaText}>{question.location}</BaseText>
-        <BaseText style={styles.metaText}>{question.duration}</BaseText>
+        <BaseText style={styles.metaText}>{answeredQuestion.date}</BaseText>
+        <BaseText style={styles.metaText}>{answeredQuestion.location}</BaseText>
+        <BaseText style={styles.metaText}>{answeredQuestion.duration}</BaseText>
       </View>
     </TouchableOpacity>
   );

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigation, useRoute } from "@react-navigation/native"
+import React, {useState, useEffect} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   StyleSheet,
   View,
@@ -8,18 +8,18 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  Modal
-} from 'react-native'
-import BaseText from '@components/BaseText'
-import { transformStyles } from '@utils/index';
-import { useSelector } from 'react-redux';
-import { RootState } from '@store/store';
+  Modal,
+} from 'react-native';
+import BaseText from '@components/BaseText';
+import {transformStyles} from '@utils/index';
+import {useSelector} from 'react-redux';
+import {RootState} from '@store/store';
 
 function Header(): React.JSX.Element {
-  const img = 'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/library/202109/412/c6fad46958dce4b483dbf65a15b23f84.png';
-  const name = "教会基本信息"
+  const avatar = useSelector((state: RootState) => state.global.user.avatar);
+  const name = useSelector((state: RootState) => state.global.user.name);
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const route = useRoute();
 
   const [isVisible, setIsVisible] = useState(false); // 控制弹层可见性
@@ -32,24 +32,38 @@ function Header(): React.JSX.Element {
 
   return (
     <View style={styles.container}>
-      {
-        pageType === 'church' ? <View style={styles.churchBox}>
-          <Image style={styles.churchIcon} source={{ uri: img }} />
+      {pageType === 'team' ? (
+        <View style={styles.churchBox}>
+          <Image style={styles.churchIcon} source={{uri: avatar}} />
           <BaseText style={styles.churchText}>{name}</BaseText>
-        </View> : <View></View>
-      }
+        </View>
+      ) : (
+        <View></View>
+      )}
 
       <View style={styles.rightBox}>
-        <TouchableOpacity style={styles.rightIcon} onPress={() => {
-          navigation.navigate('Organization', { screen: 'OrganizationCalendar' })
-        }}>
+        <TouchableOpacity
+          style={styles.rightIcon}
+          onPress={() => {
+            navigation.navigate('Organization', {
+              screen: 'OrganizationCalendar',
+            });
+          }}>
           <Image
-            source={route.name === 'OrganizationCalendar' ? require('@assets/images/common/Calendar_active.png') : require('@assets/images/common/Calendar.png')} // 替换为你的图标
+            source={
+              route.name === 'OrganizationCalendar'
+                ? require('@assets/images/common/Calendar_active.png')
+                : require('@assets/images/common/Calendar.png')
+            } // 替换为你的图标
           />
         </TouchableOpacity>
         <TouchableOpacity style={styles.rightIcon} onPress={toggleModal}>
           <Image
-            source={isVisible ? require('@assets/images/common/More_Feature_active.png') : require('@assets/images/common/More_Feature.png')} // 替换为你的图标
+            source={
+              isVisible
+                ? require('@assets/images/common/More_Feature_active.png')
+                : require('@assets/images/common/More_Feature.png')
+            } // 替换为你的图标
           />
         </TouchableOpacity>
       </View>
@@ -59,20 +73,22 @@ function Header(): React.JSX.Element {
         visible={isVisible}
         transparent={true}
         animationType="fade" // 弹层动画
-        onRequestClose={toggleModal}
-      >
+        onRequestClose={toggleModal}>
         <TouchableOpacity style={styles.overlay} onPress={toggleModal}>
           <View style={styles.popup}>
             {[
               {
-                'btnText': '小组管理',
+                btnText: '小组管理',
                 onPress: () => {
-                  console.log("点击了管理选项1")
+                  console.log('点击了管理选项1');
                 },
-                key: 'xiaozu'
+                key: 'xiaozu',
               },
             ].map(item => (
-              <TouchableOpacity key={item.key} style={styles.popupOption} onPress={item.onPress}>
+              <TouchableOpacity
+                key={item.key}
+                style={styles.popupOption}
+                onPress={item.onPress}>
                 <Text style={styles.popupOptionText}>{item.btnText}</Text>
               </TouchableOpacity>
             ))}
@@ -80,7 +96,7 @@ function Header(): React.JSX.Element {
         </TouchableOpacity>
       </Modal>
     </View>
-  )
+  );
 }
 
 const styles = transformStyles({
@@ -96,7 +112,7 @@ const styles = transformStyles({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   churchIcon: {
     width: 42,
@@ -105,16 +121,16 @@ const styles = transformStyles({
     borderColor: '#FFF',
     borderWidth: 1,
     borderStyle: 'solid',
-    marginRight: 8
+    marginRight: 8,
   },
   churchText: {
     color: '#2E2E2E',
-    fontSize: 16
+    fontSize: 16,
   },
   rightBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   rightIcon: {
     width: 44,
@@ -135,7 +151,7 @@ const styles = transformStyles({
     // padding: 16,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 10,
@@ -155,6 +171,6 @@ const styles = transformStyles({
     fontSize: 14,
     color: '#2E2E2E',
   },
-})
+});
 
-export default Header
+export default Header;

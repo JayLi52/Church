@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, StatusBar, View} from 'react-native';
 
-import Header from '@components/Header';
+import Header from '@components/CommonHeader';
 import Statistics from './components/Statistics';
 import BookCase from './components/BookCase';
 import {transformStyles} from '@utils/index';

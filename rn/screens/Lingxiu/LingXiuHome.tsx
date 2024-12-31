@@ -15,7 +15,7 @@ import {transformStyles} from '@utils/index';
 import CustomTabs from '@components/Tabs';
 import {getImageUrl} from '@utils/imgs';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
-import {Header} from './components/Header';
+import Header from '@components/CommonHeader';
 import {CardItem} from './components/CardItem';
 import {FixedContent} from './components/FixedContent';
 import {TYPE_ICON_MAP, CardType, CardStatus} from './constants';
@@ -382,11 +382,12 @@ export const LingxiuHome = () => {
 
   return (
     <View style={styles.container}>
-      <Header
+      {/* <Header
         user={user}
         onSchedule={() => console.log('schedule')}
         onExit={() => setShowExitModal(true)}
-      />
+      /> */}
+      <Header />
       <FixedContent
         onMorningPrayerPress={() => morningPrayerModalRef.current?.open()}
         memberAvatars={memberAvatars}

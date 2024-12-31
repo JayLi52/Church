@@ -1,22 +1,58 @@
-import React from 'react'
-import {
-  StyleSheet,
-  Text
-} from 'react-native'
+import React, {useState} from 'react';
+import {StyleSheet, Text, TextProps, TouchableOpacity} from 'react-native';
 
-function BaseText(props: {
-  children: React.ReactNode
-  style?: any
-}): React.JSX.Element {
-  return (
-    <Text style={[styles.text, props.style]}>{props.children}</Text>
-  )
+interface BaseTextProps extends TextProps {
+  children: React.ReactNode;
+  style?: any;
+  isFirstLineIndent?: boolean;
+  useExpanded?: boolean;
+  lines?: number;
+}
+
+function BaseText(props: BaseTextProps): React.JSX.Element {
+  const {
+    style,
+    children,
+    isFirstLineIndent = false,
+    useExpanded = false,
+    lines = 3,
+    // onCollapse,
+    ...rest
+  } = props;
+
+  const [expanded, setExpanded] = useState(false);
+
+  return useExpanded ? (
+    <TouchableOpacity onPress={() => setExpanded(true)}>
+      <Text
+        style={[styles.text, style]}
+        numberOfLines={expanded ? undefined : lines}
+        {...rest}>
+        {isFirstLineIndent && '    '}
+        {children}
+        {expanded && (
+          <Text onPress={() => setExpanded(false)} style={styles.collapseText}>
+            {' '}
+            收起
+          </Text>
+        )}
+      </Text>
+    </TouchableOpacity>
+  ) : (
+    <Text style={[styles.text, style]} {...rest}>
+      {isFirstLineIndent && '    '}
+      {children}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({
   text: {
-    fontFamily: 'PingFang SC'
-  }
-})
+    fontFamily: 'PingFang SC',
+  },
+  collapseText: {
+    color: '#FFB224',
+  },
+});
 
-export default BaseText
+export default BaseText;
