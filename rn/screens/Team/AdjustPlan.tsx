@@ -5,6 +5,9 @@ import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import CustomTabs from '@components/Tabs';
 import {ProgressBar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {RootState} from '@store/store';
+import MinReadingTime from './MinReadingTime';
 
 // 定义单个计划的接口
 interface Plan {
@@ -12,6 +15,7 @@ interface Plan {
   name: string;
   progress: number;
   selected?: boolean;
+  date?: string;
 }
 
 // 定义计划分类的接口
@@ -32,11 +36,20 @@ interface NewPlanProps {
       planId?: string; // 编辑时的计划ID
     };
   };
+  onClose: () => void;
 }
 
-const AdjustPlan = ({route}: NewPlanProps) => {
-  // 从路由参数中获取模式，默认为创建模式
-  const mode = route?.params?.mode || 'create';
+const AdjustPlan = ({route, onClose}: NewPlanProps) => {
+  const userRole = useSelector((state: RootState) => state.global.user.role);
+  const mode = route?.params?.mode || 'edit';
+  const modalMinReadingTimeRef = useRef<CustomModalRef>(null);
+
+  // 添加组员可选择的计划类型
+  const memberPlanTypes = [
+    {key: 'plan1', label: '计划1'},
+    {key: 'plan2', label: '计划2'},
+    {key: 'plan3', label: '计划3'},
+  ];
 
   // 选中的计划周期（天数）
   const [selectedPeriod, setSelectedPeriod] = useState(180);
@@ -48,7 +61,7 @@ const AdjustPlan = ({route}: NewPlanProps) => {
       key: 'new',
       data: [
         {id: '3', name: '创世记', progress: 0.75},
-        {id: '4', name: '出埃及记', progress: 0.5},
+        {id: '4', name: '出埃及记', progress: 0.5, selected: true},
       ],
       days: 180,
       remainingTime: '100天',
@@ -59,7 +72,7 @@ const AdjustPlan = ({route}: NewPlanProps) => {
       key: 'old',
       data: [
         {id: '3', name: '创世记', progress: 0.75},
-        {id: '4', name: '出埃及记', progress: 0.5},
+        {id: '4', name: '出埃及记', progress: 0.5, selected: true},
       ],
       days: 180,
       remainingTime: '100天',
@@ -91,8 +104,8 @@ const AdjustPlan = ({route}: NewPlanProps) => {
     },
   ]);
 
-  const modalRef = useRef<CustomModalRef>(null);
-  const [selectedPlans, setSelectedPlans] = useState<number[]>([]);
+  const [initialPlans] = useState<number[]>([0, 1, 2]); // 保存初始选中的计划
+  const [selectedPlans, setSelectedPlans] = useState<number[]>(initialPlans);
 
   useEffect(() => {
     // 初始化选中前三个计划
@@ -122,6 +135,39 @@ const AdjustPlan = ({route}: NewPlanProps) => {
     </View>
   );
 
+  // 处理计划选择
+  const handlePlanSelect = (planId: string) => {
+    setAllPlans(prevPlans =>
+      prevPlans.map(section => ({
+        ...section,
+        data: section.data.map(plan => {
+          if (plan.id === planId) {
+            const isSelected = !plan.selected;
+            const planIndex = parseInt(plan.id);
+
+            // 更新 selectedPlans
+            if (isSelected) {
+              setSelectedPlans(prev => [...prev, planIndex]);
+            } else {
+              setSelectedPlans(prev => prev.filter(id => id !== planIndex));
+            }
+
+            return {...plan, selected: isSelected};
+          }
+          return plan;
+        }),
+      })),
+    );
+  };
+
+  // 检查是否可以调整计划
+  const canAdjustPlan = () => {
+    return (
+      JSON.stringify(selectedPlans.sort()) !==
+      JSON.stringify(initialPlans.sort())
+    );
+  };
+
   // 渲染计划进度条
   const renderPlanProgress = (plans: Plan[]) => (
     <>
@@ -129,9 +175,7 @@ const AdjustPlan = ({route}: NewPlanProps) => {
         <TouchableOpacity
           key={plan.id}
           style={[styles.planCard, plan.selected && styles.planCardSelected]}
-          onPress={() => {
-            console.log('selectedPlans', selectedPlans);
-          }}>
+          onPress={() => handlePlanSelect(plan.id)}>
           <View style={styles.progressContainer}>
             <Text style={styles.planName}>{plan.name}</Text>
             <ProgressBar
@@ -139,6 +183,7 @@ const AdjustPlan = ({route}: NewPlanProps) => {
               style={styles.progressBar}
               color="#059973"
             />
+            <Text style={styles.timeSlice}>{plan.timeSlice || '999h'}</Text>
           </View>
         </TouchableOpacity>
       ))}
@@ -216,7 +261,7 @@ const AdjustPlan = ({route}: NewPlanProps) => {
   const handleButtonPress = () => {
     if (mode === 'create') {
       // 创建计划逻辑
-      modalRef.current?.open();
+      modalMinReadingTimeRef.current?.open();
     } else {
       // 调整计划逻辑
       console.log('调整计划', selectedPlans);
@@ -224,14 +269,35 @@ const AdjustPlan = ({route}: NewPlanProps) => {
     }
   };
 
+  // 处理计划创建/调整完成
+  const handlePlanComplete = () => {
+    if (mode === 'create') {
+      modalMinReadingTimeRef.current?.open();
+    } else {
+      onClose();
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {mode === 'create' ? '新建计划' : '调整计划'}
+        {userRole === 'leader'
+          ? mode === 'create'
+            ? '新建计划'
+            : '调整计划'
+          : '选择计划'}
       </Text>
       <View style={styles.tabsContainer}>
         <CustomTabs
           tabs={[
+            // 如果是组员，添加计划类型选项
+            ...(userRole === 'member'
+              ? memberPlanTypes.map(type => ({
+                  key: type.key,
+                  label: type.label,
+                  renderItem: () => renderAllPlans(),
+                }))
+              : []),
             {key: 'all', label: '所有', renderItem: renderAllPlans},
             {
               key: 'new',
@@ -262,32 +328,57 @@ const AdjustPlan = ({route}: NewPlanProps) => {
           onTabChange={key => console.log(key)}
         />
       </View>
-      {/* View footer */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.createButton]}
-          onPress={handleButtonPress}>
+        <TouchableOpacity style={styles.createButton} onPress={onClose}>
           <FontAwesome
             style={commonStyles.icon}
             name="xmark"
-            size={16}
+            size={18}
             color="#333"
             iconStyle="solid"
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.createButton]}
-          onPress={handleButtonPress}>
-          <FontAwesome
-            style={commonStyles.icon}
-            name="check"
-            size={16}
-            color="#333"
-            iconStyle="solid"
-          />
-          <Text style={styles.createButtonText}>{getButtonText()}</Text>
-        </TouchableOpacity>
+        {userRole === 'leader' && (
+          <TouchableOpacity
+            style={[
+              styles.createButton,
+              !canAdjustPlan() && styles.createButtonDisabled,
+            ]}
+            onPress={handlePlanComplete}
+            disabled={!canAdjustPlan()}>
+            <FontAwesome
+              style={commonStyles.icon}
+              name="check"
+              size={18}
+              color={canAdjustPlan() ? '#333' : '#999'}
+              iconStyle="solid"
+            />
+            <Text
+              style={[
+                styles.createButtonText,
+                !canAdjustPlan() && styles.createButtonTextDisabled,
+              ]}>
+              {mode === 'create' ? '创建计划' : '调整计划'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      {/* 最小阅读时间弹窗 */}
+      <CustomModal ref={modalMinReadingTimeRef}>
+        <MinReadingTime
+          onConfirm={time => {
+            console.log('设置最小阅读时间:', time);
+            modalMinReadingTimeRef.current?.close();
+            onClose();
+          }}
+          onSkip={() => {
+            console.log('使用默认最小阅读时间: 30min');
+            modalMinReadingTimeRef.current?.close();
+            onClose();
+          }}
+        />
+      </CustomModal>
     </View>
   );
 };
@@ -353,6 +444,9 @@ const styles = transformStyles({
     padding: 16,
     marginBottom: 12,
     elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   planCardSelected: {
     backgroundColor: '#E8F5E9',
@@ -381,15 +475,27 @@ const styles = transformStyles({
   },
   progressContainer: {
     marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
   },
   planName: {
     fontSize: 16,
-    marginBottom: 8,
+    // marginBottom: 8,
     color: '#2E2E2E',
+    width: 50,
   },
   progressBar: {
     height: 4,
     borderRadius: 2,
+    // flex: 1,
+    width: 200,
+  },
+  timeSlice: {
+    fontSize: 16,
+    color: '#666',
+    // marginTop: 8,
   },
   createButton: {
     margin: 16,
@@ -422,6 +528,17 @@ const styles = transformStyles({
   planCardContainer: {
     flex: 1,
     // paddingTop: 160,
+  },
+  dateText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 8,
+  },
+  createButtonDisabled: {
+    opacity: 0.5,
+  },
+  createButtonTextDisabled: {
+    color: '#999',
   },
 });
 

@@ -25,13 +25,14 @@ export const VerseToolbar = ({position, options}: VerseToolbarProps) => (
         : {top: '150%', marginTop: 8},
     ]}>
     {options.map((option, index) => (
-      <Pressable
+      <TouchableOpacity
         key={index}
         style={[
           styles.toolbarButton,
           option.disabled && styles.toolbarButtonDisabled,
         ]}
         onPress={() => {
+          console.log('option.onPress', option.onPress);
           option.onPress();
         }}
         disabled={option.disabled}>
@@ -42,7 +43,7 @@ export const VerseToolbar = ({position, options}: VerseToolbarProps) => (
           iconStyle="solid"
         />
         <BaseText style={styles.toolbarButtonText}>{option.label}</BaseText>
-      </Pressable>
+      </TouchableOpacity>
     ))}
   </View>
 );

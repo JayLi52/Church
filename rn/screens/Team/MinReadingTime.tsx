@@ -1,157 +1,128 @@
-import CustomModal, {CustomModalRef} from '@components/CustomModal';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import {transformStyles} from '@utils/index';
-import React, {useRef, useState} from 'react';
-import {View, Text, Button, TextInput, TouchableOpacity} from 'react-native';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 
-const MinReadingTime = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<any>(); // 默认时间
+type MinReadingTimeProps = {
+  onConfirm: (time: number) => void;
+  onSkip: () => void;
+};
 
-  const modalRef = useRef<CustomModalRef>(null);
+const MinReadingTime = ({onConfirm, onSkip}: MinReadingTimeProps) => {
+  const [selectedTime, setSelectedTime] = useState(30); // 默认30分钟
+  const [customTime, setCustomTime] = useState<string | null>(null);
 
-  const handleSetTime = () => {
-    // 设置时间的逻辑
-    modalRef.current?.close();
-  };
+  const timeOptions = [5, 10, 15, 30];
 
   return (
-    <View>
-      <Text>最小阅读时间</Text>
-      <Button
-        title="设置时间"
-        onPress={() => {
-          modalRef.current?.open();
-        }}
-      />
-
-      <CustomModal
-        ref={modalRef}
-        modalContentWrapStyle={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-        }}>
-        <View style={styles.modalContent}>
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => modalRef.current?.close()}
-              style={styles.closeButton}>
-              <FontAwesome
-                color={'#000'}
-                name="xmark"
-                size={24}
-                iconStyle="solid"
-              />
-            </TouchableOpacity>
-            <Text style={styles.title}>跳过</Text>
-          </View>
-          <View style={styles.timeOptions}>
-            {['5', '10', '15', '30'].map(time => (
-              <TouchableOpacity
-                key={time}
-                onPress={() => setSelectedTime(Number(time))}
-                style={[styles.optionButton, selectedTime === Number(time) && styles.optionButtonActive]}>
-                <Text style={styles.optionText}>{time}分钟</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.inputWrap}>
-
-          <TextInput
-            value={selectedTime}
-            placeholder='输入阅读时间'
-            onChangeText={text => setSelectedTime(Number(text))}
-            style={styles.input}
-            selectionColor={'#FF8800'}
-          />
-          <Text style={styles.inputUnit}>分钟</Text>
-          </View>
-          <TouchableOpacity style={styles.button} onPress={handleSetTime}>
-            <Text style={styles.buttonText}>确认</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>设置最小阅读时间</Text>
+      <View style={styles.optionsContainer}>
+        {timeOptions.map(time => (
+          <TouchableOpacity
+            key={time}
+            style={[
+              styles.timeOption,
+              selectedTime === time && styles.timeOptionActive,
+            ]}
+            onPress={() => setSelectedTime(time)}>
+            <Text
+              style={[
+                styles.timeOptionText,
+                selectedTime === time && styles.timeOptionTextActive,
+              ]}>
+              {time}分钟
+            </Text>
           </TouchableOpacity>
-        </View>
-      </CustomModal>
+        ))}
+      </View>
+      <TextInput
+        style={styles.timeInput}
+        placeholder="请输入分钟数"
+        value={customTime?.toString() || ''}
+        onChangeText={text => setCustomTime(text)}
+        selectionColor="#FFB224"
+      />
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.skipButton} onPress={onSkip}>
+          <Text style={styles.skipText}>跳过</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.confirmButton}
+          onPress={() => onConfirm(selectedTime)}>
+          <Text style={styles.confirmText}>确定</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = transformStyles({
-  modalContent: {
-    padding: 20,
+  container: {
+    padding: 16,
     backgroundColor: '#fff',
-    borderRadius: 10,
-    width: 390,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  closeButton: {
-    // position: 'absolute',
-    // top: 10,
-    // right: 10,
+    borderRadius: 8,
   },
   title: {
     fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
-  timeOptions: {
+  optionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 24,
   },
-  optionButton: {
-    // padding: 10,
+  timeOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     backgroundColor: '#F6F6F6',
-    borderRadius: 10,
-    width: 66,
-    height: 44,
-    color: '#2E2E2E',
-    elevation: 1,
+    borderRadius: 20,
+    minWidth: 80,
+    alignItems: 'center',
   },
-  optionButtonActive: {
+  timeOptionActive: {
     backgroundColor: '#FFF7E8',
     borderColor: '#FFB224',
     borderWidth: 1,
   },
-  optionText: {
+  timeOptionText: {
     color: '#2E2E2E',
-    fontSize: 16,
-    textAlign: 'center',
-    lineHeight: 44,
+    fontSize: 14,
   },
-  inputWrap: {
+  timeOptionTextActive: {
+    color: '#FF8800',
+  },
+  footer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
+    justifyContent: 'flex-end',
+    gap: 12,
   },
-  input: {
-    // borderWidth: 1,
-    // borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 10,
-    // marginBottom: 20,
-    // flex: 1,
-    width: 270,
-    fontSize: 16,
+  skipButton: {
+    padding: 8,
+  },
+  skipText: {
+    color: '#999',
+  },
+  confirmButton: {
+    backgroundColor: '#FFB224',
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+    borderRadius: 20,
+  },
+  confirmText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  timeInput: {
     backgroundColor: '#F6F6F6',
-  },
-  inputUnit: {
-    fontSize: 16,
-    marginLeft: 21,
-    color: '#000000',
-  },
-  button: {
-    backgroundColor: '#FF8800',
-    paddingVertical: 12,
-    borderRadius: 22,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    textAlign: 'center',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 24,
+    fontSize: 14,
+    color: '#2E2E2E',
   },
 });
 

@@ -133,7 +133,7 @@ export const Header = ({
       </View>
       <CustomModal ref={planModalRef} modalContentWrapStyle={styles.planModal}>
         {/* 计划详情内容 */}
-        <AdjustPlan />
+        <AdjustPlan onClose={() => planModalRef.current?.close()} />
       </CustomModal>
     </>
   );

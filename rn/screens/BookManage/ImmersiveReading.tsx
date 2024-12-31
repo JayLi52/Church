@@ -15,6 +15,7 @@ import {
   TextInput,
   Dimensions,
   Share,
+  Text,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import BaseText from '@components/BaseText';
@@ -266,6 +267,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
   };
 
   const handleCopy = () => {
+    console.log('handleCopy');
     const textToCopy = selectedVerses?.text || '';
     Clipboard.setString(textToCopy);
     Toast.show('复制成功', {
@@ -485,10 +487,10 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
     </ViewShot>
   );
 
-  const handleOverlayPress = () => {
-    setSelectedVerses(null);
-    setShowBottomToolbar(true); // 显示底部工具栏
-  };
+  // const handleOverlayPress = () => {
+  //   setSelectedVerses(null);
+  //   setShowBottomToolbar(true); // 显示底部工具栏
+  // };
 
   const handleContentPress = () => {
     setShowUI(prev => !prev);
@@ -636,6 +638,27 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
     </View>
   );
 
+  const renderTimingButton = () => {
+    if (cardStatus !== 'pending') return null;
+
+    return (
+      <View style={styles.timingContainer}>
+        <View style={styles.timingContent}>
+          <Text style={styles.timingText}>23: 59: 34</Text>
+          <TouchableOpacity style={styles.timingButton}>
+            <FontAwesome
+              name="rotate-right"
+              size={20}
+              color="#333"
+              style={commonStyles.icon}
+              iconStyle="solid"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
       <View style={styles.headerContainer}>
@@ -645,7 +668,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         </View>
         {renderStatusInfo()}
       </View>
-
+      {renderTimingButton()}
       <TouchableOpacity
         activeOpacity={1}
         style={styles.contentContainer}
@@ -737,13 +760,13 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         {selectedVerses && renderShareCard()}
       </View>
 
-      {selectedVerses && (
+      {/* {selectedVerses && (
         <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
           onPress={handleOverlayPress}
         />
-      )}
+      )} */}
 
       {showUI && showBottomToolbar && (
         <BottomToolbar buttons={bottomToolbarButtons} />
@@ -934,6 +957,36 @@ const styles = transformStyles({
   infoText: {
     fontSize: 14,
     color: '#52C41A',
+  },
+  timingContainer: {
+    position: 'absolute',
+    top: 120,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    alignItems: 'center',
+  },
+  timingContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 24,
+    gap: 12,
+  },
+  timingText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  timingButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

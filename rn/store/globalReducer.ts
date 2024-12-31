@@ -34,7 +34,7 @@ export const initUser = createAsyncThunk<void, void>(
     async (_, { dispatch }) => {
         try {
             const res = await GetUserInfo({});
-            dispatch(setUser({ name: res.user?.nickName || '未登录' }));
+            dispatch(setUser({ name: res.user?.nickName || '未登录', avatar: res.user?.avatar || '', role: res.user?.role || 'leader' }));
         } catch (error) {
             console.error('initUser error', error);
             throw error; // 抛出错误供调用者处理
@@ -47,6 +47,7 @@ const initialState = {
     user: {
         name: 'testx',
         avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200',
+        role: 'leader',
     },
     isLoggedIn: true,
     isLogIning: false,
@@ -59,7 +60,7 @@ const globalSlice = createSlice({
     name: 'global',
     initialState,
     reducers: {
-        setUser(state, action: PayloadAction<{ name: string; avatar: string }>) {
+        setUser(state, action: PayloadAction<{ name: string; avatar: string; role: string }>) {
             state.user = action.payload;
         },
         setIsLoggedIn(state, action: PayloadAction<boolean>) {
@@ -71,7 +72,8 @@ const globalSlice = createSlice({
         resetUser(state) {
             state.user = { 
                 name: '未命名',
-                avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200' 
+                avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200',
+                role: 'leader',
             };
         },
         setShowPlayer(state, action: PayloadAction<boolean>) {
