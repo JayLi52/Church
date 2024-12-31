@@ -47,7 +47,7 @@ const initialState = {
     user: {
         name: 'testx',
         avatar: 'http://gips3.baidu.com/it/u=3892227616,2240763844&fm=3028&app=3028&f=JPEG&fmt=auto?w=3200&h=3200',
-        role: 'leader',
+        role: 'member',
     },
     isLoggedIn: true,
     isLogIning: false,

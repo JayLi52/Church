@@ -8,6 +8,7 @@ import {ProgressBar} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {RootState} from '@store/store';
 import MinReadingTime from './MinReadingTime';
+import Toast from 'react-native-root-toast';
 
 // 定义单个计划的接口
 interface Plan {
@@ -16,6 +17,7 @@ interface Plan {
   progress: number;
   selected?: boolean;
   date?: string;
+  timeSlice?: string;
 }
 
 // 定义计划分类的接口
@@ -39,7 +41,43 @@ interface NewPlanProps {
   onClose: () => void;
 }
 
+const PlanTabs = ({
+  selectedPlan,
+  onSelectPlan,
+}: {
+  selectedPlan: string;
+  onSelectPlan: (plan: string) => void;
+}) => {
+  const plans = ['计划1', '计划2', '计划3'];
+
+  return (
+    <View style={styles.planTabsContainer}>
+      {plans.map((plan, index) => (
+        <TouchableOpacity
+          key={plan}
+          style={[
+            styles.planTab,
+            selectedPlan === plan && styles.planTabActive,
+            index === 0 && styles.planTabFirst,
+            index === plans.length - 1 && styles.planTabLast,
+          ]}
+          onPress={() => onSelectPlan(plan)}>
+          <Text
+            style={[
+              styles.planTabText,
+              selectedPlan === plan && styles.planTabTextActive,
+            ]}>
+            {plan}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
 const AdjustPlan = ({route, onClose}: NewPlanProps) => {
+  const [selectedPlan, setSelectedPlan] = useState('计划1');
+  const [currentPlan, setCurrentPlan] = useState('计划1');
   const userRole = useSelector((state: RootState) => state.global.user.role);
   const mode = route?.params?.mode || 'edit';
   const modalMinReadingTimeRef = useRef<CustomModalRef>(null);
@@ -163,8 +201,10 @@ const AdjustPlan = ({route, onClose}: NewPlanProps) => {
   // 检查是否可以调整计划
   const canAdjustPlan = () => {
     return (
-      JSON.stringify(selectedPlans.sort()) !==
-      JSON.stringify(initialPlans.sort())
+      (userRole === 'leader' &&
+        JSON.stringify(selectedPlans.sort()) !==
+          JSON.stringify(initialPlans.sort())) ||
+      (userRole === 'member' && selectedPlan !== currentPlan)
     );
   };
 
@@ -270,12 +310,38 @@ const AdjustPlan = ({route, onClose}: NewPlanProps) => {
   };
 
   // 处理计划创建/调整完成
-  const handlePlanComplete = () => {
-    if (mode === 'create') {
-      modalMinReadingTimeRef.current?.open();
+  const handlePlanComplete = async () => {
+    if (userRole === 'member') {
+      try {
+        // TODO: 调用接口更新计划
+        await mockUpdatePlan(selectedPlan);
+        setCurrentPlan(selectedPlan);
+        Toast.show('计划更新成功', {
+          duration: Toast.durations.SHORT,
+        });
+        onClose();
+      } catch (error) {
+        Toast.show('计划更新失败，请重试', {
+          duration: Toast.durations.SHORT,
+        });
+      }
     } else {
-      onClose();
+      // 组长的创建/调整计划逻辑
+      if (mode === 'create') {
+        modalMinReadingTimeRef.current?.open();
+      } else {
+        onClose();
+      }
     }
+  };
+
+  // Mock API 调用
+  const mockUpdatePlan = async (plan: string) => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1000);
+    });
   };
 
   return (
@@ -287,17 +353,12 @@ const AdjustPlan = ({route, onClose}: NewPlanProps) => {
             : '调整计划'
           : '选择计划'}
       </Text>
+      {userRole === 'member' && (
+        <PlanTabs selectedPlan={selectedPlan} onSelectPlan={setSelectedPlan} />
+      )}
       <View style={styles.tabsContainer}>
         <CustomTabs
           tabs={[
-            // 如果是组员，添加计划类型选项
-            ...(userRole === 'member'
-              ? memberPlanTypes.map(type => ({
-                  key: type.key,
-                  label: type.label,
-                  renderItem: () => renderAllPlans(),
-                }))
-              : []),
             {key: 'all', label: '所有', renderItem: renderAllPlans},
             {
               key: 'new',
@@ -359,6 +420,31 @@ const AdjustPlan = ({route, onClose}: NewPlanProps) => {
                 !canAdjustPlan() && styles.createButtonTextDisabled,
               ]}>
               {mode === 'create' ? '创建计划' : '调整计划'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {userRole === 'member' && (
+          <TouchableOpacity
+            style={[
+              styles.createButton,
+              !canAdjustPlan() && styles.createButtonDisabled,
+            ]}
+            onPress={handlePlanComplete}
+            disabled={!canAdjustPlan()}>
+            <FontAwesome
+              style={commonStyles.icon}
+              name="check"
+              size={18}
+              color={canAdjustPlan() ? '#333' : '#999'}
+              iconStyle="solid"
+            />
+            <Text
+              style={[
+                styles.createButtonText,
+                !canAdjustPlan() && styles.createButtonTextDisabled,
+              ]}>
+              {canAdjustPlan() ? '执行计划' : '执行中'}
             </Text>
           </TouchableOpacity>
         )}
@@ -539,6 +625,50 @@ const styles = transformStyles({
   },
   createButtonTextDisabled: {
     color: '#999',
+  },
+  planTabsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    // paddingHorizontal: 16,
+    padding: 4,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 24,
+    marginHorizontal: 'auto',
+    marginBottom: 16,
+    elevation: 2,
+    width: 210,
+  },
+  planTab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  planTabActive: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  planTabFirst: {
+    marginRight: 4,
+  },
+  planTabLast: {
+    marginLeft: 4,
+  },
+  planTabText: {
+    fontSize: 14,
+    color: '#7A7A7A',
+    // fontWeight: 'bold',
+  },
+  planTabTextActive: {
+    color: '#FF8800',
+    fontWeight: 'bold',
   },
 });
 

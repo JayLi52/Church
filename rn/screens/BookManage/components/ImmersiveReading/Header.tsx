@@ -5,6 +5,8 @@ import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {commonStyles, transformStyles} from '@utils/index';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
 import AdjustPlan from '@screens/Team/AdjustPlan';
+import {useSelector} from 'react-redux';
+import {RootState} from '@store/store';
 
 type HeaderProps = {
   type?: 'default' | 'plan';
@@ -88,7 +90,7 @@ export const Header = ({
     </>
   );
 
-  const renderPlanHeader = () => (
+  const renderPersonalPlanHeader = () => (
     <>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <FontAwesome
@@ -125,6 +127,136 @@ export const Header = ({
       </TouchableOpacity>
     </>
   );
+
+  const renderTeamPlanHeader = () => (
+    <>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="arrow-left"
+          size={20}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.planButton}
+        onPress={() => planModalRef.current?.open()}>
+        <BaseText style={styles.planTitle}>{planTitle}</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="chevron-down"
+          size={16}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.versionButton}
+        onPress={() => {
+          // modalVersionRef?.current?.open();
+        }}>
+        <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="book"
+          size={16}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.teamQuestion}
+        onPress={() => {
+          navigation.navigate('OrganizationTask', {
+            screen: 'TeamQuestion',
+          });
+        }}>
+        <BaseText style={styles.questionText}>习题</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="chevron-down"
+          size={14}
+          color="#333"
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+    </>
+  );
+
+  const renderTeamLeaderPlanHeader = () => (
+    <>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="arrow-left"
+          size={20}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.planButton}
+        onPress={() => planModalRef.current?.open()}>
+        <BaseText style={styles.planTitle}>{planTitle}</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="chevron-down"
+          size={16}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.versionButton}
+        onPress={() => {
+          modalVersionRef?.current?.open();
+        }}>
+        <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="book"
+          size={16}
+          color={'#333'}
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.teamQuestion}
+        onPress={() => {
+          navigation.navigate('OrganizationTask', {
+            screen: 'TeamQuestion',
+          });
+        }}>
+        <BaseText style={styles.questionText}>习题</BaseText>
+        <FontAwesome
+          style={commonStyles.icon}
+          name="chevron-down"
+          size={14}
+          color="#333"
+          iconStyle="solid"
+        />
+      </TouchableOpacity>
+    </>
+  );
+
+  const pageType = useSelector((state: RootState) => state.page.pageType);
+  const user = useSelector((state: RootState) => state.global.user);
+
+  const renderPlanHeader = () => {
+    console.log('user', user.role, pageType);
+
+    if (pageType === 'personal') {
+      return renderPersonalPlanHeader();
+    } else if (pageType === 'team' && user.role === 'member') {
+      return renderTeamPlanHeader();
+    } else if (pageType === 'team' && user.role === 'leader') {
+      console.log('小组组长');
+
+      return renderTeamLeaderPlanHeader();
+    }
+    return renderDefaultHeader();
+  };
 
   return (
     <>
@@ -204,5 +336,15 @@ const styles = transformStyles({
     backgroundColor: '#fff',
     padding: 16,
     width: '100%',
+  },
+  teamQuestion: {
+    flexDirection: 'row',
+    gap: 5,
+  },
+  questionText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: 'bold',
+    // marginTop: 4,
   },
 });

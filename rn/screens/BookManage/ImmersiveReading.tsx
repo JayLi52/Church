@@ -64,6 +64,7 @@ import {CARD_STATUS_CONFIG} from '@screens/Lingxiu/constants';
 import {hideTabBar} from '@store/tabSlice';
 import {hideStatusBar} from '@store/statusBarSlice';
 import mockData from '../../mock/genealogyData.json';
+import CountDown from './components/ImmersiveReading/CountDown';
 
 const readers = [
   {
@@ -175,6 +176,8 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
 
   const modalQuoteRef = useRef<CustomModalRef>(null);
   const modalCommentRef = useRef<CustomModalRef>(null);
+
+  const [showCountdown, setShowCountdown] = useState(true);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -601,6 +604,20 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
     );
   };
 
+  const handleCountdownFinish = () => {
+    setShowCountdown(false);
+    // 可以在这里添加其他逻辑，比如更新计划状态等
+    Toast.show('学习完成！', {
+      duration: Toast.durations.SHORT,
+    });
+    navigation.goBack();
+  };
+
+  const handleCountdownTick = (remainingTime: number) => {
+    // 可以在这里处理每秒的回调，比如更新状态、记录时间等
+    // console.log('剩余时间:', remainingTime);
+  };
+
   return (
     <View style={[styles.container, {backgroundColor}]}>
       <View style={styles.headerContainer}>
@@ -731,6 +748,16 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
           console.log('onShare');
         }}
       />
+
+      {showCountdown && (
+        <CountDown
+          initialTime={24 * 60} // 24分钟最小阅读时长
+          onFinish={handleCountdownFinish}
+          onTick={remainingTime => {
+            // console.log('剩余时间:', remainingTime);
+          }}
+        />
+      )}
     </View>
   );
 }

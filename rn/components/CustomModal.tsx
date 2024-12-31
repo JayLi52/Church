@@ -34,7 +34,7 @@ const CustomModal = forwardRef<CustomModalRef, CustomModalProps>(
       close: () => setIsVisible(false),
     }));
 
-    console.log('isVisible', isVisible);
+    // console.log('isVisible', isVisible);
 
     return (
       <Modal

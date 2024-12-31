@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface PageState {
-    pageType: 'personal' | 'church'; // 页面类型
+    pageType: 'personal' | 'church' | 'team'; // 页面类型
     data: Record<string, any>;       // 页面数据（如统计、标题等）
 }
 
 const initialState: PageState = {
-    pageType: 'church', // 默认显示教会页面
+    pageType: 'team', // 默认显示教会页面
     data: {},
 };
 

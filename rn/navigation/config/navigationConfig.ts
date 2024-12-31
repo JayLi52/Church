@@ -32,6 +32,9 @@ import AudioPlayer from '@screens/BookManage/AudioPlayer';
 import { CommentList } from '@screens/BookManage/components/CommentList';
 import {CommentDetail} from '@screens/BookManage/components/CommentDetail';
 import LingxiuHome from '@screens/Lingxiu/LingXiuHome';
+import TeamQuestion from '@screens/Team/TeamQuestions';
+import QuestionDetail from '@screens/Team/QuestionDetail';
+import AnsweredList from '@screens/Team/AnsweredList';
 
 export const mainTabList: TabItem[] = [
   {
@@ -122,6 +125,21 @@ export const mainTabList: TabItem[] = [
       {
         name: 'ImmersiveReadingScreen',
         renderComponent: ImmersiveReadingScreen,
+        options: { headerShown: false },
+      },
+      {
+        name: 'TeamQuestion',
+        renderComponent: TeamQuestion,
+        options: { headerShown: false },
+      },
+      {
+        name: 'QuestionDetail',
+        renderComponent: QuestionDetail,
+        options: { headerShown: false },
+      },
+      {
+        name: 'AnsweredList',
+        renderComponent: AnsweredList,
         options: { headerShown: false },
       },
     ],
