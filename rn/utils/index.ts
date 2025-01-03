@@ -99,8 +99,8 @@ export const commonStyles = {
         backgroundColor: '#FF8800',
     },
     icon: {
-        marginTop: 4,
-    },
+        top: 2,
+    } as TextStyle,
 };
 
 export const validateEmail = (input: string) => {

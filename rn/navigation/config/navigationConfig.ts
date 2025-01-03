@@ -1,7 +1,6 @@
 import HomeScreen from '@screens/HomeScreen';
 import SpiritualCultivationHomeScreen from '@screens/SpiritualCultivation/SpiritualCultivationHomeScreen';
 import MineScreen from '@screens/UserCenter/MineHome';
-import MallScreen from '@screens/UserCenter/MallHome';
 import LoginScreen from '@screens/Auth/LoginScreen';
 import Logining from '@screens/Auth/Logining';
 import MineHome from '@screens/UserCenter/MineHome';
@@ -18,7 +17,7 @@ import VersionManageScreen from '@screens/BookManage/VersionManage';
 import BookIntro from '@screens/BookManage/BookIntro';
 import ReadingRoomSearch from '@screens/ReadingRoom/ReadingRoomSearch';
 import { TabItem } from '@components/Navigator';
-import Devotion from '@screens/Team/Devotion';
+import UserReadingDetail from '@screens/Team/UserReadingDetail';
 import MinReadingTime from '@screens/Team/MinReadingTime';
 import Topic from '@screens/Team/Topic';
 import SkipTime from '@screens/Team/SkipTime';
@@ -37,19 +36,32 @@ import QuestionDetail from '@screens/Team/QuestionDetail';
 import AnsweredList from '@screens/Team/AnsweredList';
 import AnswerDetail from '@screens/Team/AnswerDetail';
 import UserProfile from '@screens/UserCenter/UserProfile';
+import {useTabBarLabel} from '@hooks/useTabBarLabel';
+import LingxiuHomeManage from '@screens/Lingxiu/LingxiuHomeManage';
+import { useSelector } from 'react-redux';
+import { RootState } from '@store/store';
 
-export const mainTabList: TabItem[] = [
-  {
+export const useMainTabList = (): TabItem[] => {
+  const getLabel = useTabBarLabel({
+    BookManageNavigator: '书籍',
+    OrganizationTask: '灵修',
+    OrganizationChat: '培训',
+    Organization: '活动',
+    OrganizationTopic: '讨论',
+  });
+  const pageType = useSelector((state: RootState) => state.page.pageType);
+
+  return [{
     name: 'BookManageNavigator',
     options: {
-      tabBarLabel: '书籍',
+      tabBarLabel: getLabel('BookManageNavigator'),
       iconDefault: require('@assets/images/tabbar/book_default.png'),
       iconActive: require('@assets/images/tabbar/book_active.png'),
     },
     stackScreens: [
       {
-        name: 'ReadingRoomHomeScreen',
-        renderComponent: ReadingRoomHomeScreen,
+        name: 'BookIndex',
+        renderComponent: pageType === 'teamManage' ? VersionManageScreen : ReadingRoomHomeScreen,
         options: { headerShown: false },
       },
       {
@@ -109,14 +121,14 @@ export const mainTabList: TabItem[] = [
   {
     name: 'OrganizationTask',
     options: {
-      tabBarLabel: '灵修',
+      tabBarLabel: getLabel('OrganizationTask'),
       iconDefault: require('@assets/images/tabbar/task_default.png'),
       iconActive: require('@assets/images/tabbar/task_active.png'),
     },
     stackScreens: [
       {
         name: 'LingxiuHome',
-        renderComponent: LingxiuHome,
+        renderComponent: pageType === 'teamManage' ? LingxiuHomeManage : LingxiuHome,
         options: { headerShown: false },
       },
       {
@@ -174,11 +186,16 @@ export const mainTabList: TabItem[] = [
   {
     name: 'Organization',
     options: {
-      tabBarLabel: '活动',
+      tabBarLabel: getLabel('Organization'),
       iconDefault: require('@assets/images/tabbar/organization.png'),
       iconActive: require('@assets/images/tabbar/organization_active.png'),
     },
     stackScreens: [
+      {
+        name: 'OrganizationIndex',
+        renderComponent: pageType === 'teamManage' ? OrganizationManager : OrganizationManager,
+        options: { headerShown: false },
+      },
       {
         name: 'CompleteQuestion',
         renderComponent: CompleteQuestion,
@@ -200,15 +217,11 @@ export const mainTabList: TabItem[] = [
         options: { headerShown: false },
       },
       {
-        name: 'Devotion',
-        renderComponent: Devotion,
+        name: 'UserReadingDetail',
+        renderComponent: UserReadingDetail,
         options: { headerShown: false },
       },
-      {
-        name: 'OrganizationManager',
-        renderComponent: OrganizationManager,
-        options: { headerShown: false },
-      },
+      
       {
         name: 'OrganizationCalendar',
         renderComponent: CalendarScreen,
@@ -261,9 +274,10 @@ export const mainTabList: TabItem[] = [
       },
     ],
   },
-];
+  ];
+};
 
-export const mineTabList = [
+export const useMineTabList = (): TabItem[] => [
   {
     name: 'MineProfile',
     options: {
@@ -346,15 +360,13 @@ export const mineTabList = [
   },
 ];
 
-export const authTabList = [
+export const useAuthTabList = (): TabItem[] => [
   {
     name: 'Login',
     renderComponent: LoginScreen,
-    options: { headerShown: false },
   },
   {
     name: 'Logining',
     renderComponent: Logining,
-    options: { headerShown: false },
   },
 ];

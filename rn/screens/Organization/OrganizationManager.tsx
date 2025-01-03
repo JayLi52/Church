@@ -11,13 +11,10 @@ import {
 import ProfileHeader from './component/ProfileHeader';
 import {transformStyles} from '@utils/index';
 import Tabs from '@components/Tabs';
-import MemberCard from './component/MemberCard1';
+import MemberCard from './component/MemberCard';
 import Header from '@components/CommonHeader';
 
 const HEADER_DATA = [
-  // { title: '总分享次数', value: '9999' },
-  // { title: '总点击次数', value: '9999' },
-  // { title: '新注册用户', value: '9999' },
   {title: '成立时长', value: '99年 100天'},
   {title: '现有成员', value: '9999'},
   {title: '事工数量', value: '9999'},
@@ -119,7 +116,7 @@ const HeaderCard = ({title, value, style}) => (
 // );
 
 const handleAddMember = () => {
-  Alert.alert('提示', '添加新成员功能待实现');
+  // Alert.alert('提示', '添加新成员功能待实现');
 };
 
 const OrganizationManager = () => {
@@ -183,8 +180,9 @@ const OrganizationManager = () => {
             label: '成员',
             renderItem: () => (
               <View style={styles.memberContainer}>
-                {/* todo 添加新成员按钮 浮动在FlatList上面 */}
                 <FlatList
+                  style={{flex: 1}}
+                  contentContainerStyle={{paddingBottom: 80}}
                   data={MEMBERS}
                   renderItem={({item}) => <MemberCard item={item} />}
                   keyExtractor={item => item.id}
@@ -284,7 +282,8 @@ const styles = transformStyles({
   // 成员信息卡片
   memberContainer: {
     flex: 1,
-    height: 491,
+    // height: 491,
+    // position: 'relative',
   },
   memberCard: {
     flexDirection: 'row',
@@ -304,7 +303,7 @@ const styles = transformStyles({
   // 修改浮动按钮样式
   floatingButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 200,
     right: 100,
     width: 190, // 按钮宽度
     height: 50, // 按钮高度
@@ -318,6 +317,7 @@ const styles = transformStyles({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     flexDirection: 'row', // 让内容横向排列
+    zIndex: 1000,
   },
   floatingButtonText: {
     fontSize: 16, // 修改文字大小

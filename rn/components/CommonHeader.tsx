@@ -1,19 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Pressable,
-  Image,
-  TouchableOpacity,
-  Text,
-  Modal,
-} from 'react-native';
+import {View, Image, TouchableOpacity, Text, Animated} from 'react-native';
 import BaseText from '@components/BaseText';
-import {transformStyles} from '@utils/index';
-import {useSelector} from 'react-redux';
+import {commonStyles, transformStyles} from '@utils/index';
+import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '@store/store';
+import FontAwesome from '@react-native-vector-icons/fontawesome6';
+import {setPageType} from '@store/pageSlice';
 
 function Header(): React.JSX.Element {
   const avatar = useSelector((state: RootState) => state.global.user.avatar);
@@ -22,17 +15,97 @@ function Header(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const [isVisible, setIsVisible] = useState(false); // 控制弹层可见性
+  const [isVisible, setIsVisible] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => setIsVisible(false));
+  };
 
   const toggleModal = () => {
-    setIsVisible(!isVisible);
+    if (isVisible) {
+      fadeOut();
+    } else {
+      setIsVisible(true);
+      fadeIn();
+    }
   };
 
   const pageType = useSelector((state: RootState) => state.page.pageType);
+  const role = useSelector((state: RootState) => state.global.user.role);
+
+  const dispatch = useDispatch();
+  // 根据角色和页面类型计算弹层按钮
+  const modalBtns = React.useMemo(() => {
+    let btns: any[] = [];
+
+    if (role === 'leader' && pageType === 'teamMember') {
+      btns = [
+        {
+          key: 'groupManage',
+          title: '小组管理',
+          icon: 'users',
+          onPress: () => {
+            dispatch(setPageType('teamManage'));
+            setIsVisible(false);
+          },
+        },
+      ];
+    } else if (role === 'leader' && pageType === 'teamManage') {
+      btns = [
+        {
+          key: 'spreadStats',
+          title: '传播统计',
+          icon: 'chart-simple',
+          onPress: () => {
+            navigation.navigate('Organization', {
+              screen: 'SpreadStatsAnswer',
+            });
+            setIsVisible(false);
+          },
+        },
+        {
+          key: 'exitManage',
+          title: '退出管理',
+          icon: 'right-from-bracket',
+          onPress: () => {
+            dispatch(setPageType('teamMember'));
+            setIsVisible(false);
+          },
+        },
+      ];
+    } else {
+      btns = [
+        {
+          key: 'exitManage',
+          title: '成员按钮',
+          icon: 'right-from-bracket',
+          onPress: () => {
+            dispatch(setPageType('teamMember'));
+            setIsVisible(false);
+          },
+        },
+      ];
+    }
+
+    return btns;
+  }, [role, pageType, navigation]);
 
   return (
     <View style={styles.container}>
-      {pageType === 'team' ? (
+      {['team', 'teamManage', 'teamMember'].includes(pageType) ? (
         <View style={styles.churchBox}>
           <Image style={styles.churchIcon} source={{uri: avatar}} />
           <BaseText style={styles.churchText}>{name}</BaseText>
@@ -57,44 +130,58 @@ function Header(): React.JSX.Element {
             } // 替换为你的图标
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.rightIcon} onPress={toggleModal}>
+        <TouchableOpacity onPress={toggleModal}>
           <Image
+            style={styles.rightIcon}
             source={
               isVisible
                 ? require('@assets/images/common/More_Feature_active.png')
                 : require('@assets/images/common/More_Feature.png')
-            } // 替换为你的图标
+            }
           />
         </TouchableOpacity>
       </View>
 
-      {/* 弹层 */}
-      <Modal
-        visible={isVisible}
-        transparent={true}
-        animationType="fade" // 弹层动画
-        onRequestClose={toggleModal}>
-        <TouchableOpacity style={styles.overlay} onPress={toggleModal}>
-          <View style={styles.popup}>
-            {[
+      {isVisible && (
+        <>
+          <TouchableOpacity
+            style={styles.overlay}
+            activeOpacity={1}
+            onPress={fadeOut}
+          />
+          <Animated.View
+            style={[
+              styles.popup,
               {
-                btnText: '小组管理',
-                onPress: () => {
-                  console.log('点击了管理选项1');
-                },
-                key: 'xiaozu',
+                opacity: fadeAnim,
+                transform: [
+                  {
+                    translateY: fadeAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
               },
-            ].map(item => (
+            ]}>
+            {modalBtns.map(btn => (
               <TouchableOpacity
-                key={item.key}
+                key={btn.key}
                 style={styles.popupOption}
-                onPress={item.onPress}>
-                <Text style={styles.popupOptionText}>{item.btnText}</Text>
+                onPress={btn.onPress}>
+                <FontAwesome
+                  style={commonStyles.icon}
+                  name={btn.icon}
+                  size={16}
+                  color="#2E2E2E"
+                  iconStyle="solid"
+                />
+                <Text style={styles.popupOptionText}>{btn.title}</Text>
               </TouchableOpacity>
             ))}
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          </Animated.View>
+        </>
+      )}
     </View>
   );
 }
@@ -137,35 +224,39 @@ const styles = transformStyles({
     height: 44,
   },
   overlay: {
-    flex: 1,
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)', // 半透明背景
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    // top: 62,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1009,
   },
   popup: {
+    position: 'absolute',
+    right: 8,
+    top: 62,
     width: 100,
     backgroundColor: '#fff',
-    // borderRadius: 10,
-    // padding: 16,
+    borderRadius: 4,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 10,
-    position: 'absolute',
-    right: 0,
-    top: 62,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
+    zIndex: 1010,
   },
   popupOption: {
     paddingVertical: 8,
     width: '100%',
     alignItems: 'center',
     height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    gap: 8,
+    elevation: 10,
   },
   popupOptionText: {
     fontSize: 14,

@@ -15,7 +15,7 @@ import OrganizationHeader from '@components/CommonHeader';
 import {transformStyles} from '@utils/index';
 
 const CalendarScreen = ({navigation}) => {
-  useBackHandler();
+  // useBackHandler();
   const currentDate = dayjs().format('YYYY-MM-DD'); // 获取当前日期
   const [markedDates, setMarkedDates] = useState({
     '2024-09-12': {selected: true, marked: true, selectedColor: '#1E90FF'},

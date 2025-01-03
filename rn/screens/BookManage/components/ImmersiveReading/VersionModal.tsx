@@ -34,6 +34,7 @@ export const VersionModal = ({
   return (
     <CustomModal
       ref={modalRef}
+      slideDirection="top"
       modalContentWrapStyle={{
         position: 'absolute',
         top: 0,

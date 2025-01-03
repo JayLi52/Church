@@ -469,19 +469,58 @@ const AdjustPlan = ({route, onClose}: NewPlanProps) => {
   );
 };
 
+const AdjustPlanModal = ({
+  planModalRef,
+}: {
+  planModalRef: React.RefObject<CustomModalRef>;
+}) => {
+  return (
+    <CustomModal
+      slideDirection={'top'}
+      ref={planModalRef}
+      modalContentWrapStyle={styles.planModal}>
+      {/* 计划详情内容 */}
+      <AdjustPlan onClose={() => planModalRef.current?.close()} />
+    </CustomModal>
+  );
+};
+
 // 样式定义
 const styles = transformStyles({
-  container: {
-    flex: 1,
+  planModal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    // right: 0,
+    // backgroundColor: 'transparent',
+  },
+  planModalContent: {
     backgroundColor: '#fff',
-    maxHeight: 600,
+    padding: 16,
+    width: '100%',
+  },
+  container: {
+    backgroundColor: '#fff',
+    width: 390,
+    // maxHeight: 800,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   tabsContainer: {
-    flex: 1,
+    height: 600,
+    overflow: 'hidden',
   },
   scrollContainer: {
-    flex: 1,
     paddingHorizontal: 24,
+    paddingBottom: 80,
   },
   title: {
     fontSize: 16,
@@ -568,20 +607,17 @@ const styles = transformStyles({
   },
   planName: {
     fontSize: 16,
-    // marginBottom: 8,
     color: '#2E2E2E',
     width: 50,
   },
   progressBar: {
     height: 4,
     borderRadius: 2,
-    // flex: 1,
     width: 200,
   },
   timeSlice: {
     fontSize: 16,
     color: '#666',
-    // marginTop: 8,
   },
   createButton: {
     margin: 16,
@@ -591,9 +627,6 @@ const styles = transformStyles({
     flexDirection: 'row',
     gap: 8,
   },
-  // editButton: {
-  //   backgroundColor: '#3B8E58', // 编辑模式使用不同的颜色
-  // },
   createButtonText: {
     color: '#333',
     fontSize: 16,
@@ -610,10 +643,11 @@ const styles = transformStyles({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 8,
+    zIndex: 1,
   },
   planCardContainer: {
     flex: 1,
-    // paddingTop: 160,
   },
   dateText: {
     fontSize: 12,
@@ -629,7 +663,6 @@ const styles = transformStyles({
   planTabsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    // paddingHorizontal: 16,
     padding: 4,
     backgroundColor: '#F6F6F6',
     borderRadius: 24,
@@ -664,7 +697,6 @@ const styles = transformStyles({
   planTabText: {
     fontSize: 14,
     color: '#7A7A7A',
-    // fontWeight: 'bold',
   },
   planTabTextActive: {
     color: '#FF8800',
@@ -672,4 +704,4 @@ const styles = transformStyles({
   },
 });
 
-export default AdjustPlan;
+export default AdjustPlanModal;

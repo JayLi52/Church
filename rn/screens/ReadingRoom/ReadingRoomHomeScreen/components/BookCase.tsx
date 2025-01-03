@@ -12,6 +12,155 @@ const TimeIcon = require('@assets/images/readingroom/time.png');
 const DefaultImage =
   'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png';
 
+// 添加不同类型的模拟数据
+const MOCK_BOOKS_MAP = {
+  // 收藏
+  0: [
+    {
+      id: 1,
+      name: '约翰福音',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 85,
+      viewCount: 1232,
+      readingTime: 2451,
+      readerCount: 12543,
+    },
+    {
+      id: 2,
+      name: '马太福音',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 92,
+      viewCount: 986,
+      readingTime: 1877,
+      readerCount: 9876,
+    },
+  ],
+  // 新约
+  2: [
+    {
+      id: 3,
+      name: '马太福音',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 45,
+      viewCount: 2341,
+      readingTime: 3210,
+      readerCount: 15678,
+    },
+    {
+      id: 4,
+      name: '马可福音',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 30,
+      viewCount: 1876,
+      readingTime: 2654,
+      readerCount: 13245,
+    },
+    {
+      id: 5,
+      name: '路加福音',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 15,
+      viewCount: 1543,
+      readingTime: 1987,
+      readerCount: 11234,
+    },
+  ],
+  // 旧约
+  1: [
+    {
+      id: 6,
+      name: '创世记',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 65,
+      viewCount: 3421,
+      readingTime: 4532,
+      readerCount: 21543,
+    },
+    {
+      id: 7,
+      name: '出埃及记',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 40,
+      viewCount: 2876,
+      readingTime: 3654,
+      readerCount: 18765,
+    },
+    {
+      id: 8,
+      name: '利未记',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 25,
+      viewCount: 2143,
+      readingTime: 2987,
+      readerCount: 15432,
+    },
+  ],
+  // 历史书
+  3: [
+    {
+      id: 9,
+      name: '约书亚记',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 55,
+      viewCount: 1765,
+      readingTime: 2345,
+      readerCount: 13567,
+    },
+    {
+      id: 10,
+      name: '士师记',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 35,
+      viewCount: 1432,
+      readingTime: 1876,
+      readerCount: 11234,
+    },
+  ],
+  // 诗歌
+  4: [
+    {
+      id: 11,
+      name: '诗篇',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 70,
+      viewCount: 4532,
+      readingTime: 5643,
+      readerCount: 25678,
+    },
+    {
+      id: 12,
+      name: '箴言',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 45,
+      viewCount: 3654,
+      readingTime: 4321,
+      readerCount: 20987,
+    },
+    {
+      id: 13,
+      name: '传道书',
+      coverImage:
+        'https://bpy-store.oss-cn-hangzhou.aliyuncs.com/ppc/6d/6db1c05dd40a0c514418dc8b4b4034e7/WX20210622-161842.png',
+      progress: 30,
+      viewCount: 2987,
+      readingTime: 3456,
+      readerCount: 17654,
+    },
+  ],
+};
+
 function TabList(props: any): React.JSX.Element {
   const {onTabChange} = props;
   const navigation = useNavigation();
@@ -78,12 +227,18 @@ function BookItem(props: any): React.JSX.Element {
       <View style={styles.bookItem}>
         <View style={styles.bookItemLeft}>
           <View style={styles.bookItemBgWrap}>
-            <Image style={styles.bookItemBg} source={{uri: DefaultImage}} />
-            <BaseText style={styles.bookItemProgressText}>65%</BaseText>
+            <Image style={styles.bookItemBg} source={{uri: data.coverImage}} />
+            <BaseText style={styles.bookItemProgressText}>
+              {data.progress}%
+            </BaseText>
           </View>
           <View style={styles.bookItemProgressWrap}>
             <View style={styles.bookItemProgress} />
-            <View style={[styles.bookItemPregressInner, {width: 40}]}></View>
+            <View
+              style={[
+                styles.bookItemPregressInner,
+                {width: data.progress * 0.9},
+              ]}></View>
           </View>
         </View>
         <View>
@@ -95,7 +250,7 @@ function BookItem(props: any): React.JSX.Element {
                 source={ViewIcon}
               />
               <BaseText style={styles.bookItemStatisticsItemText}>
-                999次
+                {data.viewCount}次
               </BaseText>
             </View>
             <View style={styles.bookItemStatisticsItem}>
@@ -104,12 +259,14 @@ function BookItem(props: any): React.JSX.Element {
                 source={TimeIcon}
               />
               <BaseText style={styles.bookItemStatisticsItemText}>
-                1923分钟
+                {data.readingTime}分钟
               </BaseText>
             </View>
           </View>
           <View style={styles.bookItemReaders}>
-            <BaseText style={styles.bookItemReadersText}>9999人已读</BaseText>
+            <BaseText style={styles.bookItemReadersText}>
+              {data.readerCount}人已读
+            </BaseText>
           </View>
         </View>
       </View>
@@ -118,31 +275,21 @@ function BookItem(props: any): React.JSX.Element {
 }
 
 function BookCase(): React.JSX.Element {
-  const [bookList, setBookList] = useState([]);
-  const [currentTab, setCurrentTab] = useState(2);
-  const onTabChange = (tab: any) => {
+  const [bookList, setBookList] = useState(MOCK_BOOKS_MAP[1]); // 默认显示旧约
+  const [currentTab, setCurrentTab] = useState(1);
+
+  const onTabChange = (tab: number) => {
     setCurrentTab(tab);
+    setBookList(MOCK_BOOKS_MAP[tab] || []);
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await GetAllChapters({
-          partId: currentTab,
-        });
-        setBookList(res.data || []);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    fetchData();
-  }, [currentTab]);
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <TabList onTabChange={onTabChange} />
         <ScrollView style={styles.listWrap}>
           {bookList.map(item => (
-            <BookItem key={(item as any).name} data={item} />
+            <BookItem key={item.id} data={item} />
           ))}
         </ScrollView>
       </View>

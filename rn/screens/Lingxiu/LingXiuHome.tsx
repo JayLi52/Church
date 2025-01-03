@@ -42,10 +42,24 @@ type DateGroup = {
 
 export const LingxiuHome = () => {
   const navigation = useNavigation();
-  const [activeTab, setActiveTab] = useState<TabType>('今日灵修');
   const [showExitModal, setShowExitModal] = useState(false);
-  const user = useSelector((state: RootState) => state.global.user);
   const morningPrayerModalRef = useRef<CustomModalRef>(null);
+  const pageType = useSelector((state: RootState) => state.page.pageType);
+  useEffect(() => {
+    if (pageType === 'team') {
+      navigation.navigate('OrganizationTask', {
+        screen: 'LingxiuHome',
+      });
+    }
+  }, [pageType, navigation]);
+
+  useFocusEffect(() => {
+    if (pageType === 'team') {
+      navigation.navigate('OrganizationTask', {
+        screen: 'LingxiuHome',
+      });
+    }
+  });
 
   const handleExit = () => {
     // TODO: 处理退出小组逻辑
@@ -360,6 +374,7 @@ export const LingxiuHome = () => {
       params: {
         cardStatus: item.status,
         cardData: item,
+        from: 'LingxiuHome',
       },
     });
   };
@@ -395,7 +410,9 @@ export const LingxiuHome = () => {
       <View style={styles.tabsContainer}>
         <CustomTabs
           tabs={tabs}
-          onTabChange={key => setActiveTab(key as TabType)}
+          onTabChange={key => {
+            console.log(key);
+          }}
         />
       </View>
       {/* Exit Modal */}
@@ -412,7 +429,7 @@ export const LingxiuHome = () => {
                 color="#FF4D4F"
                 iconStyle="solid"
               />
-              <BaseText style={styles.exitText}>退出小组</BaseText>
+              <BaseText style={styles.exitText}>退出管理</BaseText>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

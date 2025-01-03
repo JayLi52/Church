@@ -15,6 +15,7 @@ type QuoteModalProps = {
   modalRef: React.RefObject<CustomModalRef>;
   onClose: () => void;
   onSelect: (option: QuoteOption) => void;
+  navigation: any;
 };
 
 const quoteOptions: QuoteOption[] = [
@@ -30,7 +31,12 @@ const quoteOptions: QuoteOption[] = [
   },
 ];
 
-export const QuoteModal = ({modalRef, onClose, onSelect}: QuoteModalProps) => (
+export const QuoteModal = ({
+  modalRef,
+  onClose,
+  onSelect,
+  navigation,
+}: QuoteModalProps) => (
   <CustomModal
     ref={modalRef}
     modalContentWrapStyle={{
@@ -59,6 +65,9 @@ export const QuoteModal = ({modalRef, onClose, onSelect}: QuoteModalProps) => (
             onPress={() => {
               onSelect(option);
               modalRef.current?.close();
+              // navigation.navigate('BookManageNavigator', {
+              //   screen: 'CommentList',
+              // });
             }}>
             <View style={styles.optionContent}>
               <View style={styles.optionHeader}>
@@ -94,6 +103,7 @@ const styles = transformStyles({
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     width: 390,
+    paddingBottom: 50,
   },
   header: {
     flexDirection: 'row',

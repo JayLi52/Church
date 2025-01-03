@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,10 +13,11 @@ import BaseText from '@components/BaseText';
 import Header from '@components/CommonHeader';
 import CustomTabs from '@components/Tabs';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {hideTabBar, showTabBar} from '@store/tabSlice';
 import {resetStatusBar} from '@store/statusBarSlice';
 import {useTabBarControl} from '@hooks/useTabBarControl';
+import {RootState} from '@store/store';
 
 const DATA = [
   {

@@ -8,10 +8,10 @@ import {transformStyles} from '@utils/index';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {showStatusBar} from '@store/statusBarSlice';
 import {showTabBar} from '@store/tabSlice';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '@store/store';
 
 function ReadingRoomHomeScreen(): React.JSX.Element {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   useEffect(() => {
     // StatusBar.setBarStyle('dark-content')

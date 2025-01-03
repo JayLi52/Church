@@ -20,7 +20,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {commonStyles, transformStyles} from '@utils/index';
 import CustomModal, {CustomModalRef} from '@components/CustomModal';
 import Slider from '@react-native-community/slider';
@@ -65,6 +65,7 @@ import {hideTabBar} from '@store/tabSlice';
 import {hideStatusBar} from '@store/statusBarSlice';
 import mockData from '../../mock/genealogyData.json';
 import CountDown from './components/ImmersiveReading/CountDown';
+import AdjustPlanModal from '@screens/Team/AdjustPlan';
 
 const readers = [
   {
@@ -131,7 +132,12 @@ type ShareInfo = {
 export type TabType = 'chapter' | 'section';
 
 function ImmersiveReading({route}: {route: any}): React.JSX.Element {
-  const {cardStatus, cardData} = route.params || {};
+  const {cardStatus, from} = route.params || {};
+  const cardData = {
+    date: '2024-01-22 14:23',
+    duration: '10:00',
+    location: '北京',
+  };
 
   // 添加类型断言
   const status = cardStatus as keyof typeof CARD_STATUS_CONFIG;
@@ -176,6 +182,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
 
   const modalQuoteRef = useRef<CustomModalRef>(null);
   const modalCommentRef = useRef<CustomModalRef>(null);
+  const planModalRef = useRef<CustomModalRef>(null);
 
   const [showCountdown, setShowCountdown] = useState(true);
 
@@ -575,6 +582,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         colors={colors}
         planTitle="180天读经计划"
         modalVersionRef={modalVersionRef}
+        planModalRef={planModalRef}
         currentVersion={currentVersion.shortName}
         onPlanPress={() => {
           // 处理计划点击
@@ -584,6 +592,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
   );
 
   const renderTimingButton = () => {
+    if (from !== 'LingxiuHome') return null;
     if (cardStatus !== 'pending') return null;
 
     return (
@@ -622,12 +631,14 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
     <View style={[styles.container, {backgroundColor}]}>
       <View style={styles.headerContainer}>
         <View style={[styles.header, {backgroundColor: colors.header}]}>
+          {/* {renderHeader()} */}
           {!cardStatus && renderHeader()}
+          {/* 灵修阅读头部 */}
           {cardStatus && renderStatusInfoHeader()}
         </View>
         {renderStatusInfo()}
       </View>
-      {renderTimingButton()}
+      {/* {renderTimingButton()} */}
       <TouchableOpacity
         activeOpacity={1}
         style={styles.contentContainer}
@@ -656,6 +667,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
                 handleVerseLongPress(verse, position);
               }}
               selectedVerses={selectedVerses}
+              navigation={navigation}
             />
           ))}
 
@@ -663,20 +675,22 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         </ScrollView>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.floatingButton, {backgroundColor: colors.background}]}
-        onPress={() =>
-          navigation.navigate('BookManageNavigator', {
-            screen: 'AudioPlayer',
-          })
-        }>
-        <FontAwesome
-          name="headphones"
-          size={20}
-          color="#FFB224"
-          iconStyle="solid"
-        />
-      </TouchableOpacity>
+      {from !== 'LingxiuHome' && (
+        <TouchableOpacity
+          style={[styles.floatingButton, {backgroundColor: colors.background}]}
+          onPress={() =>
+            navigation.navigate('BookManageNavigator', {
+              screen: 'AudioPlayer',
+            })
+          }>
+          <FontAwesome
+            name="headphones"
+            size={20}
+            color="#FFB224"
+            iconStyle="solid"
+          />
+        </TouchableOpacity>
+      )}
 
       {renderSearchBar()}
       {/* {renderToolbar()} */}
@@ -713,6 +727,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         modalRef={modalQuoteRef}
         onSelect={handleQuoteSelect}
         onClose={handleQuoteClose}
+        navigation={navigation}
       />
 
       <View style={styles.hiddenShareCard}>
@@ -749,7 +764,7 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
         }}
       />
 
-      {showCountdown && (
+      {showCountdown && cardStatus === 'pending' && from === 'LingxiuHome' && (
         <CountDown
           initialTime={24 * 60} // 24分钟最小阅读时长
           onFinish={handleCountdownFinish}
@@ -758,6 +773,8 @@ function ImmersiveReading({route}: {route: any}): React.JSX.Element {
           }}
         />
       )}
+
+      <AdjustPlanModal planModalRef={planModalRef} />
     </View>
   );
 }
@@ -853,7 +870,7 @@ const styles = transformStyles({
     backgroundColor: '#F6F6F6',
     borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     width: '100%',
   },
   statusContainer: {

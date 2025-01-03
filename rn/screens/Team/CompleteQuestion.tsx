@@ -13,7 +13,10 @@ interface CompleteQuestionProps {
   };
 }
 
-const CompleteQuestion: React.FC<CompleteQuestionProps> = ({navigation, route}) => {
+const CompleteQuestion: React.FC<CompleteQuestionProps> = ({
+  navigation,
+  route,
+}) => {
   const {mode = 'answer', assigned = true} = route.params ?? {};
 
   const [answer, setAnswer] = useState('');
@@ -23,16 +26,13 @@ const CompleteQuestion: React.FC<CompleteQuestionProps> = ({navigation, route}) 
   const renderCompletedUsers = () => (
     <View style={styles.usersContainer}>
       <View style={styles.avatarList}>
-        {[1, 2, 3].map((id) => (
+        {[1, 2, 3].map(id => (
           <Image
             key={id}
             source={{
               uri: `http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024`,
             }}
-            style={[
-              styles.avatar,
-              {marginLeft: id > 1 ? -10 : 0},
-            ]}
+            style={[styles.avatar, {marginLeft: id > 1 ? -10 : 0}]}
           />
         ))}
       </View>
@@ -58,10 +58,20 @@ const CompleteQuestion: React.FC<CompleteQuestionProps> = ({navigation, route}) 
         return (
           <View style={styles.bottomContainer}>
             <View style={styles.timerContainer}>
-              <FontAwesome name="clock" size={16} color="#666" iconStyle="solid" />
+              <FontAwesome
+                name="clock"
+                size={16}
+                color="#666"
+                iconStyle="solid"
+              />
               <Text style={styles.timerText}>{timeLeft}</Text>
               <TouchableOpacity style={styles.refreshButton}>
-                <FontAwesome name="rotate" size={16} color="#666" iconStyle="solid" />
+                <FontAwesome
+                  name="rotate"
+                  size={16}
+                  color="#666"
+                  iconStyle="solid"
+                />
               </TouchableOpacity>
             </View>
             <TouchableOpacity style={styles.submitButton}>
@@ -90,7 +100,12 @@ const CompleteQuestion: React.FC<CompleteQuestionProps> = ({navigation, route}) 
             </TouchableOpacity>
           )}
           <TouchableOpacity style={styles.refreshButton}>
-            <FontAwesome name="rotate" size={16} color="#666" iconStyle="solid" />
+            <FontAwesome
+              name="rotate"
+              size={16}
+              color="#666"
+              iconStyle="solid"
+            />
           </TouchableOpacity>
         </View>
       );
@@ -101,7 +116,12 @@ const CompleteQuestion: React.FC<CompleteQuestionProps> = ({navigation, route}) 
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FontAwesome name="book-open" size={20} color="#333" iconStyle="solid" />
+          <FontAwesome
+            name="book-open"
+            size={20}
+            color="#333"
+            iconStyle="solid"
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>1/5题</Text>
         <TouchableOpacity onPress={() => navigation.goBack()}>

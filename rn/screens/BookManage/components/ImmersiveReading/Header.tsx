@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Text} from 'react-native';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {commonStyles, transformStyles} from '@utils/index';
@@ -21,6 +21,7 @@ type HeaderProps = {
   currentVersion: string;
   planTitle?: string;
   onPlanPress?: () => void;
+  planModalRef?: React.RefObject<CustomModalRef>;
 };
 
 export const Header = ({
@@ -36,9 +37,8 @@ export const Header = ({
   currentVersion,
   planTitle = '180天读经计划',
   onPlanPress,
+  planModalRef,
 }: HeaderProps) => {
-  const planModalRef = useRef<CustomModalRef>(null);
-
   const renderDefaultHeader = () => (
     <>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -103,7 +103,7 @@ export const Header = ({
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.planButton}
-        onPress={() => planModalRef.current?.open()}>
+        onPress={() => planModalRef?.current?.open()}>
         <BaseText style={styles.planTitle}>{planTitle}</BaseText>
         <FontAwesome
           style={commonStyles.icon}
@@ -141,7 +141,9 @@ export const Header = ({
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.planButton}
-        onPress={() => planModalRef.current?.open()}>
+        onPress={() => {
+          planModalRef?.current?.open();
+        }}>
         <BaseText style={styles.planTitle}>{planTitle}</BaseText>
         <FontAwesome
           style={commonStyles.icon}
@@ -154,7 +156,7 @@ export const Header = ({
       <TouchableOpacity
         style={styles.versionButton}
         onPress={() => {
-          // modalVersionRef?.current?.open();
+          modalVersionRef?.current?.open();
         }}>
         <BaseText style={styles.versionStatusText}>{currentVersion}</BaseText>
         <FontAwesome
@@ -197,7 +199,7 @@ export const Header = ({
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.planButton}
-        onPress={() => planModalRef.current?.open()}>
+        onPress={() => planModalRef?.current?.open()}>
         <BaseText style={styles.planTitle}>{planTitle}</BaseText>
         <FontAwesome
           style={commonStyles.icon}
@@ -248,12 +250,13 @@ export const Header = ({
 
     if (pageType === 'personal') {
       return renderPersonalPlanHeader();
-    } else if (pageType === 'team' && user.role === 'member') {
+      // return <></>;
+    } else if (pageType === 'teamMember') {
       return renderTeamPlanHeader();
-    } else if (pageType === 'team' && user.role === 'leader') {
-      console.log('小组组长');
-
+      // return <></>;
+    } else if (pageType === 'teamManage' && user.role === 'leader') {
       return renderTeamLeaderPlanHeader();
+      // return <></>;
     }
     return renderDefaultHeader();
   };
@@ -263,10 +266,6 @@ export const Header = ({
       <View style={styles.header}>
         {type === 'default' ? renderDefaultHeader() : renderPlanHeader()}
       </View>
-      <CustomModal ref={planModalRef} modalContentWrapStyle={styles.planModal}>
-        {/* 计划详情内容 */}
-        <AdjustPlan onClose={() => planModalRef.current?.close()} />
-      </CustomModal>
     </>
   );
 };
@@ -278,6 +277,7 @@ const styles = transformStyles({
     alignItems: 'center',
     width: '100%',
     paddingVertical: 16,
+    paddingHorizontal: 16,
   },
   headerCenter: {
     alignItems: 'center',
@@ -326,16 +326,6 @@ const styles = transformStyles({
   },
   iconButton: {
     padding: 4,
-  },
-  planModal: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  planModalContent: {
-    backgroundColor: '#fff',
-    padding: 16,
-    width: '100%',
   },
   teamQuestion: {
     flexDirection: 'row',

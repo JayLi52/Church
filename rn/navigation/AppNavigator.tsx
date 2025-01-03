@@ -5,8 +5,11 @@ import TabNavigator, {StackNavigator} from '@components/Navigator';
 import {useSelector} from 'react-redux';
 import LoadingSpinner from '@components/LoadingSpinner';
 import {RootState} from '@store/store';
-import {authTabList, mainTabList, mineTabList} from './config/navigationConfig';
-import {Text, View} from 'react-native';
+import {
+  useAuthTabList,
+  useMainTabList,
+  useMineTabList,
+} from './config/navigationConfig';
 
 const Stack = createNativeStackNavigator();
 const customTheme = {
@@ -22,6 +25,9 @@ const AppNavigator = () => {
     (state: RootState) => state.global,
   );
   const [isLoading, setIsLoading] = React.useState(true);
+  const mainTabList = useMainTabList();
+  const authTabList = useAuthTabList();
+  const mineTabList = useMineTabList();
 
   React.useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -32,7 +38,7 @@ const AppNavigator = () => {
 
   const getNavigator = () => {
     if (!isLoggedIn) {
-      return <StackNavigator screens={authTabList} />;
+      return <StackNavigator screens={authTabList as any} />;
     }
     return isPersonalPage ? (
       <TabNavigator tabList={mineTabList} />

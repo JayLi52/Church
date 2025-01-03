@@ -241,6 +241,7 @@ export const renderChapterModal = (
   return (
     <CustomModal
       ref={modalChapterRef}
+      slideDirection="top"
       modalContentWrapStyle={{
         position: 'absolute',
         top: 0,
@@ -374,6 +375,7 @@ const styles = transformStyles({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+    paddingHorizontal: 20,
   },
   menuTitle: {
     fontSize: 16,

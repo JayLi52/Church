@@ -1,58 +1,72 @@
-import React from 'react'
-import { BottomTabBarProps, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
+import React from 'react';
 import {
-  StyleSheet,
-  Pressable,
-  View,
-  Image
-} from 'react-native'
-import BaseText from '@components/BaseText'
-import { transformStyles } from '@utils/index'
-import { useSelector } from 'react-redux'
-import { RootState } from '@store/store'
+  BottomTabBarProps,
+  BottomTabNavigationOptions,
+} from '@react-navigation/bottom-tabs';
+import {Pressable, View, Image} from 'react-native';
+import BaseText from '@components/BaseText';
+import {transformStyles} from '@utils/index';
+import {useSelector} from 'react-redux';
+import {RootState} from '@store/store';
+import {useMainTabList} from '../navigation/config/navigationConfig';
 
 interface CustomTabOptions extends BottomTabNavigationOptions {
-  iconDefault?: any,
-  iconActive?: any,
-  tabBarLabel: string
+  iconDefault?: any;
+  iconActive?: any;
+  tabBarLabel: string;
 }
 
-function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const isTabBarVisible = useSelector((state: RootState) => state.tab.isVisible);
+function CustomTabBar({state, descriptors, navigation}: BottomTabBarProps) {
+  const isTabBarVisible = useSelector(
+    (state: RootState) => state.tab.isVisible,
+  );
+  const mainTabList = useMainTabList();
 
   return (
-    <View style={[styles.tabBar, {
-      display: isTabBarVisible ? 'flex' : 'none'
-    }]}>
-      {
-        state.routes.map((route, index) => {
-          const options = descriptors[route.key].options as CustomTabOptions
-          const isFocused = state.index === index
-          const onPress = () => {
-            const event = navigation.emit({
-              type: 'tabPress',
-              target: route.key,
-              canPreventDefault: true
-            })
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, {
-                screen: route.state?.routeNames[0]
-              })
-            }
+    <View
+      style={[
+        styles.tabBar,
+        {
+          display: isTabBarVisible ? 'flex' : 'none',
+        },
+      ]}>
+      {state.routes.map((route, index) => {
+        const options = descriptors[route.key].options as CustomTabOptions;
+        const isFocused = state.index === index;
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, {
+              screen: route.state?.routeNames[0],
+            });
           }
-          const IconSource = isFocused ? options.iconActive : options.iconDefault
-          return (
-            <Pressable key={index} onPressIn={onPress} style={[isFocused ? styles.tabBarButtonActive : styles.tabBarButton]}>
-              <Image style={[isFocused ? styles.tabBarIconActive : styles.tabBarIcon]} source={IconSource} />
-              {
-                isFocused && <BaseText style={styles.tabBarText}>{options.tabBarLabel}</BaseText>
-              }
-            </Pressable>
-          )
-        })
-      }
+        };
+        const IconSource = isFocused ? options.iconActive : options.iconDefault;
+        return (
+          <Pressable
+            key={index}
+            onPressIn={onPress}
+            style={[
+              isFocused ? styles.tabBarButtonActive : styles.tabBarButton,
+            ]}>
+            <Image
+              style={[isFocused ? styles.tabBarIconActive : styles.tabBarIcon]}
+              source={IconSource}
+            />
+            {isFocused && (
+              <BaseText style={styles.tabBarText}>
+                {options.tabBarLabel}
+              </BaseText>
+            )}
+          </Pressable>
+        );
+      })}
     </View>
-  )
+  );
 }
 
 const styles = transformStyles({
@@ -67,7 +81,7 @@ const styles = transformStyles({
     shadowColor: 'black',
     shadowOffset: {
       width: 0,
-      height: -4
+      height: -4,
     },
     shadowOpacity: 1,
     shadowRadius: 10,
@@ -90,26 +104,26 @@ const styles = transformStyles({
     justifyContent: 'space-between',
     fontSize: 12,
     paddingRight: 12,
-    position: 'relative'
+    position: 'relative',
   },
   tabBarIcon: {
     width: 44,
-    height: 44
+    height: 44,
   },
   tabBarIconActive: {
     width: 44,
     height: 44,
     position: 'absolute',
     left: 0,
-    top: -5
+    top: -5,
   },
   tabBarText: {
     color: '#fff',
     fontWeight: 'bold',
     width: 20,
     fontSize: 10,
-    textAlign: 'center'
-  }
-})
+    textAlign: 'center',
+  },
+});
 
-export default CustomTabBar
+export default CustomTabBar;

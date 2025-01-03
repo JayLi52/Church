@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Pressable} from 'react-native';
 import BaseText from '@components/BaseText';
 import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
@@ -27,6 +27,7 @@ type VerseProps = {
   selectedVerses: VerseItem | null;
   toolbarPosition: 'top' | 'bottom';
   verseToolbarOptions: any;
+  navigation: any;
 };
 
 export const Verse = ({
@@ -37,6 +38,7 @@ export const Verse = ({
   selectedVerses,
   toolbarPosition,
   verseToolbarOptions,
+  navigation,
 }: VerseProps) => {
   if (item.isSelected && item.isHighlighted) {
     console.log('item', item.id, item.isSelected, item.isHighlighted);
@@ -68,7 +70,13 @@ export const Verse = ({
             {item.isTranslated && (
               <BaseText style={styles.translation}>{item.translation}</BaseText>
             )}
-            <View style={styles.commentContainer}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('BookManageNavigator', {
+                  screen: 'CommentList',
+                });
+              }}
+              style={styles.commentContainer}>
               <FontAwesome
                 style={[commonStyles.icon, styles.commentIcon]}
                 name="comment-dots"
@@ -79,7 +87,7 @@ export const Verse = ({
               <BaseText style={styles.commentText}>
                 {item.commentCount}
               </BaseText>
-            </View>
+            </Pressable>
           </BaseText>
         </View>
       </TouchableOpacity>
