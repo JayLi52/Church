@@ -73,6 +73,7 @@ const styles = transformStyles({
   wrapper: {
     height: '100%',
     flexDirection: 'column',
+    flex: 1,
   },
   scrollView: {
     height: 60,

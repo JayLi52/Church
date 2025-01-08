@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {transformStyles} from '@utils/index';
 import Header from '@components/CommonHeader';
@@ -15,6 +16,14 @@ import {RootState} from '@store/store';
 import {useSelector} from 'react-redux';
 import {getImageUrl} from '@utils/imgs';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
+import {NavigationProp} from '@react-navigation/native';
+
+type RootStackParamList = {
+  OrganizationTask: {
+    screen: string;
+  };
+  // ... 其他路由参数
+};
 
 const LingxiuHomeManage = () => {
   const stats = {
@@ -60,7 +69,7 @@ const LingxiuHomeManage = () => {
     },
   ];
   const pageType = useSelector((state: RootState) => state.page.pageType);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   useEffect(() => {
     if (pageType === 'team') {
       navigation.navigate('OrganizationTask', {
@@ -193,10 +202,73 @@ const AnswerContent = () => {
       participants: [getImageUrl(), getImageUrl()],
       participantsCount: 9999,
     },
+    {
+      id: '4',
+      title: '关于五旬节的问题',
+      status: '已结束',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl()],
+      participantsCount: 9999,
+    },
+    {
+      id: '5',
+      title: '关于五旬节的问题',
+      status: '已结束',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl()],
+      participantsCount: 9999,
+    },
+    {
+      id: '6',
+      title: '使徒行传的问题',
+      status: '进行中',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl()],
+      participantsCount: 8888,
+    },
+    {
+      id: '7',
+      title: '关于保罗的问题',
+      status: '已结束',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl(), getImageUrl()],
+      participantsCount: 7777,
+    },
+    {
+      id: '8',
+      title: '耶稣的比喻问题',
+      status: '进行中',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl()],
+      participantsCount: 6666,
+    },
+    {
+      id: '9',
+      title: '登山宝训的问题',
+      status: '已结束',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl()],
+      participantsCount: 5555,
+    },
+    {
+      id: '10',
+      title: '约翰福音的问题',
+      status: '进行中',
+      date: '2024-08-11',
+      endDate: '2024-08-21',
+      participants: [getImageUrl(), getImageUrl(), getImageUrl()],
+      participantsCount: 4444,
+    },
   ];
 
   const [showDelete, setShowDelete] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const handleLongPress = (id: string) => {
     setSelectedId(id);
@@ -228,65 +300,68 @@ const AnswerContent = () => {
 
   return (
     <View style={styles.questionList}>
-      {questions.map(question => (
-        <TouchableOpacity
-          key={question.id}
-          style={styles.questionCard}
-          onLongPress={() => handleLongPress(question.id)}
-          activeOpacity={0.7}>
-          <View style={styles.questionHeader}>
-            <Text style={styles.questionTitle}>{question.title}</Text>
-            <Text
-              style={[
-                styles.statusTag,
-                {color: question.status === '已结束' ? '#9E9E9E' : '#4CAF50'},
-              ]}>
-              {question.status}
-            </Text>
-          </View>
-          <View style={styles.questionFooter}>
-            <Text style={styles.dateText}>
-              开始日期：{question.date}
-              {'\n'}
-              结束日期：{question.endDate}
-            </Text>
-            <View style={styles.participantsBox}>
-              <View style={styles.avatarStack}>
-                {question.participants.slice(0, 3).map((avatar, index) => (
-                  <Image
-                    key={index}
-                    source={{uri: avatar}}
-                    style={[styles.participantAvatar, {right: index * 15}]}
-                  />
-                ))}
-              </View>
-              <Text style={styles.participantsCount}>
-                {question.participantsCount}人
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {questions.map(question => (
+          <TouchableOpacity
+            key={question.id}
+            style={styles.questionCard}
+            onLongPress={() => handleLongPress(question.id)}
+            activeOpacity={0.7}>
+            <View style={styles.questionHeader}>
+              <Text style={styles.questionTitle}>{question.title}</Text>
+              <Text
+                style={[
+                  styles.statusTag,
+                  {color: question.status === '已结束' ? '#9E9E9E' : '#4CAF50'},
+                ]}>
+                {question.status}
               </Text>
             </View>
-          </View>
-          {showDelete && selectedId === question.id && (
-            <TouchableOpacity
-              style={styles.deleteOverlay}
-              activeOpacity={1}
-              onPress={handleClose}>
-              <View style={styles.deleteButtonContainer}>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={handleDelete}>
-                  <FontAwesome
-                    name="trash-can"
-                    size={16}
-                    color="#FF6E40"
-                    iconStyle="regular"
-                  />
-                  <Text style={styles.deleteText}>删除</Text>
-                </TouchableOpacity>
+            <View style={styles.questionFooter}>
+              <Text style={styles.dateText}>
+                开始日期：{question.date}
+                {'\n'}
+                结束日期：{question.endDate}
+              </Text>
+              <View style={styles.participantsBox}>
+                <View style={styles.avatarStack}>
+                  {question.participants.slice(0, 3).map((avatar, index) => (
+                    <Image
+                      key={index}
+                      source={{uri: avatar}}
+                      style={[styles.participantAvatar, {right: index * 15}]}
+                    />
+                  ))}
+                </View>
+                <Text style={styles.participantsCount}>
+                  {question.participantsCount}人
+                </Text>
               </View>
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
-      ))}
+            </View>
+            {showDelete && selectedId === question.id && (
+              <TouchableOpacity
+                style={styles.deleteOverlay}
+                activeOpacity={1}
+                onPress={handleClose}>
+                <View style={styles.deleteButtonContainer}>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={handleDelete}>
+                    <FontAwesome
+                      name="trash-can"
+                      size={16}
+                      color="#FF6E40"
+                      iconStyle="regular"
+                    />
+                    <Text style={styles.deleteText}>删除</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => console.log('添加习题')}>
@@ -410,6 +485,7 @@ const styles = transformStyles({
   },
   questionList: {
     padding: 16,
+    flex: 1,
   },
   questionCard: {
     backgroundColor: '#fff',
