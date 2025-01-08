@@ -71,7 +71,7 @@ function Header(): React.JSX.Element {
           icon: 'chart-simple',
           onPress: () => {
             navigation.navigate('Organization', {
-              screen: 'SpreadStatsAnswer',
+              screen: 'SpreadStats',
             });
             setIsVisible(false);
           },

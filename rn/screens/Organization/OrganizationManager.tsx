@@ -303,7 +303,7 @@ const styles = transformStyles({
   // 修改浮动按钮样式
   floatingButton: {
     position: 'absolute',
-    bottom: 200,
+    bottom: 20,
     right: 100,
     width: 190, // 按钮宽度
     height: 50, // 按钮高度

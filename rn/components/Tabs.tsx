@@ -78,7 +78,7 @@ const styles = transformStyles({
   scrollView: {
     height: 60,
     flexGrow: 0,
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   scrollContainer: {
     flexDirection: 'row',

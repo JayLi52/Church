@@ -9,7 +9,7 @@ import OrganizationManager from '@screens/Organization/OrganizationManager';
 import CalendarScreen from '@screens/Schedule';
 import ScheduleList from '@screens/Schedule/list';
 import MapViewContainer from '@screens/MapView';
-import SpreadStatsAnswerScreen from '@screens/SpreadStats/answer';
+import SpreadStatsScreen from '@screens/SpreadStats';
 import AnnotationList from '@screens/BookManage/AnnotationList';
 import ReadingRoomHomeScreen from '@screens/ReadingRoom/ReadingRoomHomeScreen';
 import ImmersiveReadingScreen from '@screens/BookManage/ImmersiveReading';
@@ -40,6 +40,7 @@ import {useTabBarLabel} from '@hooks/useTabBarLabel';
 import LingxiuHomeManage from '@screens/Lingxiu/LingxiuHomeManage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@store/store';
+import MemberSpreadDetail from '@screens/SpreadStats/MemberSpreadDetail';
 
 export const useMainTabList = (): TabItem[] => {
   const getLabel = useTabBarLabel({
@@ -238,8 +239,13 @@ export const useMainTabList = (): TabItem[] => {
         options: { headerShown: false },
       },
       {
-        name: 'SpreadStatsAnswer',
-        renderComponent: SpreadStatsAnswerScreen,
+        name: 'SpreadStats',
+        renderComponent: SpreadStatsScreen,
+        options: { headerShown: false },
+      },
+      {
+        name: 'MemberSpreadDetail',
+        renderComponent: MemberSpreadDetail,
         options: { headerShown: false },
       },
       {
