@@ -17,16 +17,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import {hideStatusBar, setTranslucent} from '@store/statusBarSlice';
 import {useDispatch} from 'react-redux';
 import {hideTabBar} from '@store/tabSlice';
+import CommonShareCard from '@components/CommonShareCard';
 
 function BookIntroScreen(): React.JSX.Element {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState(false);
+  const [showShareCard, setShowShareCard] = useState(false);
 
   useEffect(() => {
     dispatch(setTranslucent());
     dispatch(hideTabBar());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -36,7 +38,9 @@ function BookIntroScreen(): React.JSX.Element {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <TouchableOpacity style={styles.headerButton}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => navigation.goBack()}>
               <FontAwesome
                 name="book"
                 size={18}
@@ -94,9 +98,7 @@ function BookIntroScreen(): React.JSX.Element {
       <View style={styles.interactionContainer}>
         <TouchableOpacity
           style={styles.interactionBox}
-          onPress={() => {
-            console.log('分享按钮被点击');
-          }}>
+          onPress={() => setShowShareCard(true)}>
           <FontAwesome
             name="share"
             size={20}
@@ -106,6 +108,18 @@ function BookIntroScreen(): React.JSX.Element {
           <BaseText style={styles.interactionCount}>{9999}</BaseText>
         </TouchableOpacity>
       </View>
+
+      <CommonShareCard
+        type="book"
+        title="马太福音"
+        description="反映四福音书均记载了耶稣在世的事迹..."
+        onShare={() => {
+          console.log('分享');
+          setShowShareCard(false);
+        }}
+        visible={showShareCard}
+        onDismiss={() => setShowShareCard(false)}
+      />
     </>
   );
 }

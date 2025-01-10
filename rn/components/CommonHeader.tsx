@@ -106,10 +106,16 @@ function Header(): React.JSX.Element {
   return (
     <View style={styles.container}>
       {['team', 'teamManage', 'teamMember'].includes(pageType) ? (
-        <View style={styles.churchBox}>
+        <TouchableOpacity
+          style={styles.churchBox}
+          onPress={() => {
+            navigation.navigate('OrganizationTopic', {
+              screen: 'UserProfile',
+            });
+          }}>
           <Image style={styles.churchIcon} source={{uri: avatar}} />
           <BaseText style={styles.churchText}>{name}</BaseText>
-        </View>
+        </TouchableOpacity>
       ) : (
         <View></View>
       )}

@@ -14,6 +14,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import {hideStatusBar, setTranslucent} from '@store/statusBarSlice';
 import {useDispatch} from 'react-redux';
 import {hideTabBar} from '@store/tabSlice';
+import ShareCard, {ShareCardProps} from '../../components/CommonShareCard';
+import {getImageUrl} from '@utils/imgs';
 
 function BookIntroScreen(): React.JSX.Element {
   const dispatch = useDispatch();
@@ -27,6 +29,10 @@ function BookIntroScreen(): React.JSX.Element {
   }, []);
 
   const [isLiked, setIsLiked] = useState(false); // 添加点赞状态
+  const [modalVisible, setModalVisible] = useState(false);
+  const [shareCardData, setShareCardData] = useState<ShareCardProps | null>(
+    null,
+  );
 
   return (
     <>
@@ -36,7 +42,11 @@ function BookIntroScreen(): React.JSX.Element {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <TouchableOpacity style={styles.headerButton}>
+            <TouchableOpacity
+              style={styles.headerButton}
+              onPress={() => {
+                navigation.goBack();
+              }}>
               <FontAwesome
                 name="book"
                 size={18}
@@ -113,9 +123,25 @@ function BookIntroScreen(): React.JSX.Element {
           style={styles.interactionBox}
           onPress={() => {
             console.log('分享按钮被点击');
-            navigation.navigate('BookManageNavigator', {
-              screen: 'ReadingListScreen',
-            });
+            // navigation.navigate('BookManageNavigator', {
+            //   screen: 'ReadingListScreen',
+            // });
+            const shareCardProps = {
+              type: 'book' as const,
+              title: '马太福音',
+              description:
+                '反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事...',
+              onShare: () => {
+                // 处理分享逻辑
+              },
+              metadata: {
+                author: '马太',
+                date: '2024-01-20',
+              },
+            };
+
+            setModalVisible(true);
+            setShareCardData(shareCardProps);
           }}>
           <FontAwesome
             name="share"
@@ -126,6 +152,22 @@ function BookIntroScreen(): React.JSX.Element {
           <BaseText style={styles.interactionCount}>{9999}</BaseText>
         </TouchableOpacity>
       </View>
+
+      <ShareCard
+        type="book"
+        title="马太福音"
+        description="反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事..."
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        onShare={() => {
+          console.log('分享');
+        }}
+        metadata={{
+          author: '马太',
+          date: '2024-01-20',
+        }}
+        imageUrl={getImageUrl()}
+      />
     </>
   );
 }

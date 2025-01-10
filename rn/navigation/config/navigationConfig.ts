@@ -165,26 +165,6 @@ export const useMainTabList = (): TabItem[] => {
     ],
   },
   {
-    name: 'OrganizationChat',
-    options: {
-      tabBarLabel: '培训',
-      iconDefault: require('@assets/images/tabbar/chat_default.png'),
-      iconActive: require('@assets/images/tabbar/chat_active.png'),
-    },
-    stackScreens: [
-      {
-        name: 'UserProfile',
-        renderComponent: UserProfile,
-        options: { headerShown: false },
-      },
-      {
-        name: 'HomeScreen',
-        renderComponent: HomeScreen,
-        options: { headerShown: false },
-      },
-    ],
-  },
-  {
     name: 'Organization',
     options: {
       tabBarLabel: getLabel('Organization'),
@@ -274,6 +254,11 @@ export const useMainTabList = (): TabItem[] => {
     },
     stackScreens: [
       {
+        name: 'UserProfile',
+        renderComponent: UserProfile,
+        options: { headerShown: false },
+      },
+      {
         name: 'OrganizationTopicHome',
         renderComponent: HomeScreen,
         options: { headerShown: false },
@@ -328,6 +313,11 @@ export const useMineTabList = (): TabItem[] => [
     },
     stackScreens: [
       {
+        name: 'UserProfile',
+        renderComponent: MineScreen,
+        options: { headerShown: false },
+      },
+      {
         name: 'SocialHome',
         renderComponent: MineScreen,
         options: { headerShown: false },
@@ -369,10 +359,28 @@ export const useMineTabList = (): TabItem[] => [
 export const useAuthTabList = (): TabItem[] => [
   {
     name: 'Login',
-    renderComponent: LoginScreen,
+    options: {
+      tabBarLabel: '登录',
+    },
+    stackScreens: [
+      {
+        name: 'LoginScreen',
+        renderComponent: LoginScreen,
+        options: { headerShown: false },
+      }
+    ]
   },
   {
     name: 'Logining',
-    renderComponent: Logining,
+    options: {
+      tabBarLabel: '登录中',
+    },
+    stackScreens: [
+      {
+        name: 'LoginingScreen',
+        renderComponent: Logining,
+        options: { headerShown: false },
+      }
+    ]
   },
 ];
