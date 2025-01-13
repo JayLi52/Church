@@ -1,58 +1,124 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useMemo} from 'react';
 import {
   Image,
   Text,
   TouchableOpacity,
   View,
-  Alert,
-  StyleSheet,
   Animated,
+  PanResponder,
+  Pressable,
 } from 'react-native';
 import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
 
-const MemberCard = ({item}) => {
+interface MemberCardProps {
+  item: {
+    id: string;
+    name: string;
+    avatar: string;
+    role: '同工' | '平信徒' | '小组长';
+    days: string;
+    joinDate: string;
+    location: string;
+    distance: string;
+    date: string;
+  };
+}
+
+const MemberCard: React.FC<MemberCardProps> = ({item}) => {
   const navigation = useNavigation();
-  const [showDelete, setShowDelete] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0];
+  const pan = useRef(new Animated.Value(0)).current;
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleLongPress = () => {
-    setShowDelete(true);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  };
+  const panResponder = useMemo(() => {
+    return PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        const disableDrag =
+          (isOpen && gestureState.dx < 0) || (!isOpen && gestureState.dx > 0);
 
-  const handleClose = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => setShowDelete(false));
-  };
+        return (
+          !disableDrag && Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
+        );
+      },
+      onPanResponderGrant: () => {
+        const currentIsOpen = isOpen;
+        pan.setOffset(currentIsOpen ? -80 : 0);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        const x = gestureState.dx;
+        if (x >= -80 && x <= 80) {
+          pan.setValue(x);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        const currentIsOpen = isOpen;
+        pan.flattenOffset();
+
+        if (currentIsOpen) {
+          if (gestureState.dx > 40) {
+            Animated.spring(pan, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+            setIsOpen(false);
+          } else {
+            Animated.spring(pan, {
+              toValue: -80,
+              useNativeDriver: true,
+            }).start();
+          }
+        } else {
+          if (gestureState.dx < -40) {
+            Animated.spring(pan, {
+              toValue: -80,
+              useNativeDriver: true,
+            }).start();
+            setIsOpen(true);
+          } else {
+            Animated.spring(pan, {
+              toValue: 0,
+              useNativeDriver: true,
+            }).start();
+          }
+        }
+      },
+    });
+  }, [isOpen, pan]);
 
   const handleDelete = () => {
-    Alert.alert('提示', '确定要删除该成员吗？', [
-      {
-        text: '取消',
-        style: 'cancel',
-        onPress: handleClose,
-      },
-      {
-        text: '确定',
-        style: 'destructive',
-        onPress: () => {
-          // TODO: 处理删除逻辑
-          handleClose();
-        },
-      },
-    ]);
+    // Alert.alert('提示', '确定要删除该成员吗？', [
+    //   {
+    //     text: '取消',
+    //     style: 'cancel',
+    //     onPress: () => {
+    //       Animated.spring(pan, {
+    //         toValue: 0,
+    //         useNativeDriver: true,
+    //       }).start();
+    //       setIsOpen(false);
+    //     },
+    //   },
+    //   {
+    //     text: '确定',
+    //     style: 'destructive',
+    //     onPress: () => {
+    //       // TODO: 处理删除逻辑
+    //       console.log('删除成员:', item.id);
+    //     },
+    //   },
+    // ]);
   };
 
   const handlePress = () => {
+    // if (isOpen) {
+    //   Animated.spring(pan, {
+    //     toValue: 0,
+    //     useNativeDriver: true,
+    //   }).start();
+    //   setIsOpen(false);
+    //   return;
+    // }
     navigation.navigate('Organization', {
       screen: 'UserReadingDetail',
       params: {
@@ -69,75 +135,75 @@ const MemberCard = ({item}) => {
   };
 
   return (
-    <TouchableOpacity
-      onLongPress={handleLongPress}
-      onPress={handlePress}
-      activeOpacity={0.7}
-      style={styles.memberCard}>
-      <View style={styles.memberGradient}>
-        <Image source={{uri: item.avatar}} style={styles.avatar} />
-      </View>
-
-      <View style={styles.memberContent}>
-        <Text style={styles.memberName}>{item.name}</Text>
-        <Text
-          style={[
-            styles.memberRole,
-            {
-              backgroundColor: titleBg[item.role],
-            },
-          ]}>
-          {item.role}
-        </Text>
-        <Text style={styles.memberInfo}>
-          {item.days} {item.joinDate}
-        </Text>
-        <Text style={styles.memberDetails}>
-          {item.location} | {item.distance} | {item.date}
-        </Text>
-      </View>
-
-      {showDelete && (
+    <View style={styles.container}>
+      <View style={{flex: 1, overflow: 'hidden', borderRadius: 8}}>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+          <FontAwesome
+            style={commonStyles.icon}
+            name="trash-can"
+            size={16}
+            color="#FF4D4F"
+            iconStyle="regular"
+          />
+          <Text style={styles.deleteText}>删除</Text>
+        </TouchableOpacity>
         <Animated.View
           style={[
-            styles.deleteOverlay,
+            styles.memberCard,
             {
-              opacity: fadeAnim,
+              transform: [{translateX: pan}],
             },
-          ]}>
-          <TouchableOpacity
-            activeOpacity={1}
-            style={styles.overlayTouchable}
-            onPress={handleClose}>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={handleDelete}>
-              <FontAwesome
-                style={commonStyles.icon}
-                name="trash-can"
-                size={16}
-                color="#FF6E40"
-                iconStyle="regular"
-              />
-              <Text style={styles.deleteText}>删除</Text>
-            </TouchableOpacity>
-          </TouchableOpacity>
+          ]}
+          {...panResponder.panHandlers}>
+          <Pressable onPress={handlePress} style={styles.cardContent}>
+            <View style={styles.memberGradient}>
+              <Image source={{uri: item.avatar}} style={styles.avatar} />
+            </View>
+
+            <View style={styles.memberContent}>
+              <View style={styles.memberInfo}>
+                <Text style={styles.memberName}>{item.name}</Text>
+                <Text
+                  style={[
+                    styles.memberRole,
+                    {
+                      backgroundColor: titleBg[item.role],
+                    },
+                  ]}>
+                  {item.role}
+                </Text>
+              </View>
+              <Text style={styles.memberInfo}>
+                {item.days} {item.joinDate}
+              </Text>
+              <Text style={styles.memberDetails}>
+                {item.location} | {item.distance} | {item.date}
+              </Text>
+            </View>
+          </Pressable>
         </Animated.View>
-      )}
-    </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
 const styles = transformStyles({
-  // 成员卡片
-  memberCard: {
+  container: {
+    marginVertical: 8,
     flexDirection: 'row',
+  },
+  memberCard: {
+    flex: 1,
     backgroundColor: '#fff',
     borderRadius: 8,
-    marginVertical: 8,
     overflow: 'hidden',
+    zIndex: 1,
+    position: 'relative',
+  },
+  cardContent: {
+    flexDirection: 'row',
     padding: 16,
-    backgroundImage: 'linear-gradient(to right, #fff, #FFA500)',
+    backgroundColor: '#fff',
   },
   memberGradient: {
     width: 48,
@@ -154,57 +220,57 @@ const styles = transformStyles({
   },
   memberContent: {
     flex: 1,
+    justifyContent: 'flex-start',
+    gap: 4,
   },
   memberName: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    // fontWeight: 'bold',
+    // flex: 0,
+    // marginBottom: 4,
   },
   memberRole: {
     fontSize: 14,
     color: '#fff',
-    padding: 4,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-    marginBottom: 8,
+    // padding: 4,
+    // borderRadius: 4,
+    // alignSelf: 'flex-start',
+    // marginBottom: 8,
     paddingHorizontal: 8,
+    paddingBottom: 3,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   memberInfo: {
     fontSize: 14,
     color: '#555',
-    marginBottom: 4,
+    // marginBottom: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    justifyContent: 'flex-start',
   },
   memberDetails: {
     fontSize: 12,
     color: '#999',
     marginTop: 4,
   },
-  deleteOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 8,
-  },
-  overlayTouchable: {
-    flex: 1,
+  deleteButton: {
+    width: 80,
+    // backgroundColor: '#FF4D4F',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  deleteButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    padding: 12,
     borderRadius: 8,
-    gap: 8,
+    position: 'absolute',
+    right: -10,
+    top: 0,
+    bottom: 0,
   },
   deleteText: {
-    color: '#FF6E40',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 12,
+    marginTop: 4,
   },
 });
 
