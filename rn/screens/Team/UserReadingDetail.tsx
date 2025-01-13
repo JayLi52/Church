@@ -394,13 +394,15 @@ const styles = transformStyles({
   recordCard: {
     backgroundColor: '#FFFFFF',
     // margin: 16,
-    padding: 16,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    // borderRadius: 8,
     // marginTop: 8,
-    // borderRadius: 4,
+    borderRadius: 4,
     borderWidth: 1,
     borderColor: '#ECECEC',
-    margin: 20,
+    marginHorizontal: 20,
+    marginVertical: 10,
     // shadowColor: '#000',
     // shadowOffset: {width: 0, height: 1},
     // shadowOpacity: 0.05,
@@ -628,12 +630,13 @@ const styles = transformStyles({
   },
   recordHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 8,
     alignItems: 'center',
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   recordTitle: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 

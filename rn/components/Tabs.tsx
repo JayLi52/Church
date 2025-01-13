@@ -92,6 +92,7 @@ const styles = transformStyles({
   activeTab: {
     // borderBottomWidth: 2,
     // borderBottomColor: '#FF8800',
+    // fontSize: 18,
   },
   tabText: {
     fontSize: 16,
@@ -99,7 +100,9 @@ const styles = transformStyles({
   },
   activeText: {
     color: '#000',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: -5,
   },
   activeIndicator: {
     width: 20,
