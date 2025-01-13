@@ -1,16 +1,17 @@
-import React, {useState, useRef, useMemo} from 'react';
+import React from 'react';
 import {
   Image,
   Text,
   TouchableOpacity,
   View,
   Animated,
-  PanResponder,
   Pressable,
+  Alert,
 } from 'react-native';
 import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
+import {useSwipeToDelete} from '@hooks/useSwipeToDelete';
 
 interface MemberCardProps {
   item: {
@@ -28,97 +29,10 @@ interface MemberCardProps {
 
 const MemberCard: React.FC<MemberCardProps> = ({item}) => {
   const navigation = useNavigation();
-  const pan = useRef(new Animated.Value(0)).current;
-  const [isOpen, setIsOpen] = useState(false);
-
-  const panResponder = useMemo(() => {
-    return PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        const disableDrag =
-          (isOpen && gestureState.dx < 0) || (!isOpen && gestureState.dx > 0);
-
-        return (
-          !disableDrag && Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
-        );
-      },
-      onPanResponderGrant: () => {
-        const currentIsOpen = isOpen;
-        pan.setOffset(currentIsOpen ? -80 : 0);
-      },
-      onPanResponderMove: (_, gestureState) => {
-        const x = gestureState.dx;
-        if (x >= -80 && x <= 80) {
-          pan.setValue(x);
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        const currentIsOpen = isOpen;
-        pan.flattenOffset();
-
-        if (currentIsOpen) {
-          if (gestureState.dx > 40) {
-            Animated.spring(pan, {
-              toValue: 0,
-              useNativeDriver: true,
-            }).start();
-            setIsOpen(false);
-          } else {
-            Animated.spring(pan, {
-              toValue: -80,
-              useNativeDriver: true,
-            }).start();
-          }
-        } else {
-          if (gestureState.dx < -40) {
-            Animated.spring(pan, {
-              toValue: -80,
-              useNativeDriver: true,
-            }).start();
-            setIsOpen(true);
-          } else {
-            Animated.spring(pan, {
-              toValue: 0,
-              useNativeDriver: true,
-            }).start();
-          }
-        }
-      },
-    });
-  }, [isOpen, pan]);
-
-  const handleDelete = () => {
-    // Alert.alert('提示', '确定要删除该成员吗？', [
-    //   {
-    //     text: '取消',
-    //     style: 'cancel',
-    //     onPress: () => {
-    //       Animated.spring(pan, {
-    //         toValue: 0,
-    //         useNativeDriver: true,
-    //       }).start();
-    //       setIsOpen(false);
-    //     },
-    //   },
-    //   {
-    //     text: '确定',
-    //     style: 'destructive',
-    //     onPress: () => {
-    //       // TODO: 处理删除逻辑
-    //       console.log('删除成员:', item.id);
-    //     },
-    //   },
-    // ]);
-  };
+  const {pan, panResponder, closeSwipe} = useSwipeToDelete();
 
   const handlePress = () => {
-    // if (isOpen) {
-    //   Animated.spring(pan, {
-    //     toValue: 0,
-    //     useNativeDriver: true,
-    //   }).start();
-    //   setIsOpen(false);
-    //   return;
-    // }
+    closeSwipe();
     navigation.navigate('Organization', {
       screen: 'UserReadingDetail',
       params: {
@@ -126,6 +40,23 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
         userName: item.name,
       },
     });
+  };
+
+  const handleDelete = () => {
+    Alert.alert('提示', '确定要删除该成员吗？', [
+      {
+        text: '取消',
+        style: 'cancel',
+      },
+      {
+        text: '确定',
+        style: 'destructive',
+        onPress: () => {
+          // TODO: 处理删除逻辑
+          console.log('删除成员:', item.id);
+        },
+      },
+    ]);
   };
 
   const titleBg = {
@@ -137,7 +68,12 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
   return (
     <View style={styles.container}>
       <View style={{flex: 1, overflow: 'hidden', borderRadius: 8}}>
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => {
+            closeSwipe();
+            handleDelete();
+          }}>
           <FontAwesome
             style={commonStyles.icon}
             name="trash-can"
@@ -225,17 +161,10 @@ const styles = transformStyles({
   },
   memberName: {
     fontSize: 16,
-    // fontWeight: 'bold',
-    // flex: 0,
-    // marginBottom: 4,
   },
   memberRole: {
     fontSize: 14,
     color: '#fff',
-    // padding: 4,
-    // borderRadius: 4,
-    // alignSelf: 'flex-start',
-    // marginBottom: 8,
     paddingHorizontal: 8,
     paddingBottom: 3,
     borderRadius: 11,
@@ -245,7 +174,6 @@ const styles = transformStyles({
   memberInfo: {
     fontSize: 14,
     color: '#555',
-    // marginBottom: 4,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -258,7 +186,6 @@ const styles = transformStyles({
   },
   deleteButton: {
     width: 80,
-    // backgroundColor: '#FF4D4F',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
@@ -268,8 +195,8 @@ const styles = transformStyles({
     bottom: 0,
   },
   deleteText: {
-    color: '#fff',
     fontSize: 12,
+    color: '#FF4D4F',
     marginTop: 4,
   },
 });
