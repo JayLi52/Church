@@ -1,22 +1,73 @@
 import {transformStyles} from '@utils/index';
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  ImageBackground,
-} from 'react-native';
-import {ProgressBar} from 'react-native-paper';
+import {View, Text, Image, ScrollView, ImageBackground} from 'react-native';
 import CustomTabs from '@components/Tabs';
+import BaseText from '@components/BaseText';
+import LinearGradient from 'react-native-linear-gradient';
+import {getImageUrl} from '@utils/imgs';
+
+const AVATAR_SIZE = 20;
+const AVATAR_OVERLAP = 8; // 头像重叠的距离
+
+const formatNumber = (num: number) => {
+  if (num >= 9999) {
+    return '999+';
+  }
+  if (num >= 1000) {
+    return `${Math.floor(num / 1000)}k`;
+  }
+  return num;
+};
+
+const StackedAvatars = ({count}: {count: number}) => {
+  // 最多显示3个头像
+  const displayCount = Math.min(3, count);
+  const remainingCount = count > 3 ? count - 3 : 0;
+
+  return (
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      {[...Array(displayCount)].map((_, index) => (
+        <View
+          key={index}
+          style={{
+            marginLeft: index === 0 ? 0 : -AVATAR_OVERLAP,
+            borderRadius: AVATAR_SIZE / 2,
+            zIndex: displayCount - index, // 确保左边的头像在上层
+          }}>
+          <Image
+            source={{
+              uri: getImageUrl(),
+            }}
+            style={{
+              width: AVATAR_SIZE,
+              height: AVATAR_SIZE,
+              borderRadius: AVATAR_SIZE / 2,
+            }}
+          />
+        </View>
+      ))}
+      {remainingCount > 0 && (
+        <BaseText style={styles.remainingText}>{remainingCount}人</BaseText>
+      )}
+    </View>
+  );
+};
 
 const UserReadingDetail = () => {
-  const plans = [
+  const teamPlans = [
     {
       id: '1',
       title: '90天阅读旧约',
       progress: 1,
+      date: '2024-08-11 至 2024-08-21',
+    },
+  ];
+
+  const userPlans = [
+    {
+      id: '1',
+      title: '90天阅读旧约',
+      progress: 0.6,
       date: '2024-08-11 至 2024-08-21',
     },
   ];
@@ -55,17 +106,6 @@ const UserReadingDetail = () => {
     tags: ['同工', '姊妹'],
   };
 
-  const formatNumber = (num: string) => {
-    const n = parseInt(num);
-    if (n >= 9999) {
-      return '999+';
-    }
-    if (n >= 1000) {
-      return `${Math.floor(n / 1000)}k`;
-    }
-    return num;
-  };
-
   const stats = {
     study: {
       participationCount: formatNumber('9999'),
@@ -83,8 +123,8 @@ const UserReadingDetail = () => {
     completed: '#4CAF50', // 已答 - 绿色
     pending: '#FF9800', // 未答 - 橙色
     waiting: '#9E9E9E', // 待答 - 灰色
-    同工: '#66AEFF', // 蓝色
-    姊妹: '#FF69B4', // 粉色
+    同工: '#508BBC', // 蓝色
+    姊妹: '#DABA80', // 粉色
     平信徒: '#1B6CC7', // 深蓝
     小组长: '#0C4380', // 深蓝偏紫
   };
@@ -144,23 +184,30 @@ const UserReadingDetail = () => {
       <View style={styles.plansContainer}>
         <Text style={styles.sectionTitle}>小组学经计划</Text>
         <View style={styles.planList}>
-          {plans.map(plan => (
+          {teamPlans.map(plan => (
             <View key={plan.id} style={styles.planCard}>
-              <Text style={styles.planTitle}>{plan.title}</Text>
+              <BaseText style={styles.planTitle}>{plan.title}</BaseText>
               <View style={styles.progressContainer}>
-                <Text>进度: {plan.progress * 100}%</Text>
-                <ProgressBar
-                  progress={plan.progress}
-                  color="#059973"
-                  style={styles.progressBar}
-                />
+                <BaseText style={styles.progressText}>进度:</BaseText>
+                <BaseText style={styles.progressTextBold}>
+                  {plan.progress * 100}%
+                </BaseText>
+                <View style={styles.progressBarContainer}>
+                  <LinearGradient
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 0}}
+                    colors={['#059973', '#BAE3A8']}
+                    style={[
+                      styles.progressBarGradient,
+                      {width: `${plan.progress * 100}%`},
+                    ]}
+                  />
+                </View>
               </View>
               <View style={styles.planFooter}>
-                <Text style={styles.date}>日期：{plan.date}</Text>
+                <BaseText style={styles.date}>日期：{plan.date}</BaseText>
                 <View style={styles.participantsContainer}>
-                  <Text style={styles.participantCount}>
-                    {formatNumber('9999')}人
-                  </Text>
+                  <StackedAvatars count={9999} />
                 </View>
               </View>
             </View>
@@ -168,23 +215,30 @@ const UserReadingDetail = () => {
         </View>
         <Text style={styles.sectionTitle}>个人学经计划</Text>
         <View style={styles.planList}>
-          {plans.map(plan => (
+          {userPlans.map(plan => (
             <View key={plan.id} style={styles.planCard}>
-              <Text style={styles.planTitle}>{plan.title}</Text>
+              <BaseText style={styles.planTitle}>{plan.title}</BaseText>
               <View style={styles.progressContainer}>
-                <Text>进度: {plan.progress * 100}%</Text>
-                <ProgressBar
-                  progress={plan.progress}
-                  color="#3498db"
-                  style={styles.progressBar}
-                />
+                <BaseText style={styles.progressText}>进度:</BaseText>
+                <BaseText style={styles.progressTextBold}>
+                  {plan.progress * 100}%
+                </BaseText>
+                <View style={styles.progressBarContainer}>
+                  <LinearGradient
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 0}}
+                    colors={['#059973', '#BAE3A8']}
+                    style={[
+                      styles.progressBarGradient,
+                      {width: `${plan.progress * 100}%`},
+                    ]}
+                  />
+                </View>
               </View>
               <View style={styles.planFooter}>
-                <Text style={styles.date}>日期：{plan.date}</Text>
+                <BaseText style={styles.date}>日期：{plan.date}</BaseText>
                 <View style={styles.participantsContainer}>
-                  <Text style={styles.participantCount}>
-                    {formatNumber('9999')}人
-                  </Text>
+                  <StackedAvatars count={9999} />
                 </View>
               </View>
             </View>
@@ -224,7 +278,7 @@ const UserReadingDetail = () => {
         </View>
         <View style={styles.userInfo}>
           <View style={styles.userInfoBox}>
-            <Text style={styles.userName}>{userInfo.name}</Text>
+            <BaseText style={styles.userName}>{userInfo.name}</BaseText>
             <View style={styles.tagContainer}>
               {userInfo.tags.map((tag, index) => (
                 <View
@@ -235,7 +289,7 @@ const UserReadingDetail = () => {
                       backgroundColor: tagColors[tag],
                     },
                   ]}>
-                  <Text
+                  <BaseText
                     style={[
                       styles.tagText,
                       {
@@ -243,17 +297,32 @@ const UserReadingDetail = () => {
                       },
                     ]}>
                     {tag}
-                  </Text>
+                  </BaseText>
                 </View>
               ))}
             </View>
           </View>
-          <Text style={styles.userDetails}>
-            UID: {userInfo.uid} | {userInfo.location} | {userInfo.distance}
-          </Text>
-          <Text style={styles.dateInfo}>
-            注册时间: {userInfo.registerDate} 加入日期: {userInfo.joinDate}
-          </Text>
+          <View style={styles.userDetails}>
+            <BaseText style={styles.userDetailItem}>
+              UID: {userInfo.uid}
+            </BaseText>
+            <BaseText style={styles.userDetailItem}>|</BaseText>
+            <BaseText style={styles.userDetailItem}>
+              {userInfo.location}
+            </BaseText>
+            <BaseText style={styles.userDetailItem}>|</BaseText>
+            <BaseText style={styles.userDetailItem}>
+              {userInfo.distance}
+            </BaseText>
+          </View>
+          <View style={styles.dateInfoWrapper}>
+            <BaseText style={styles.dateInfo}>
+              注册时间: {userInfo.registerDate}
+            </BaseText>
+            <BaseText style={styles.dateInfo}>
+              加入日期: {userInfo.joinDate}
+            </BaseText>
+          </View>
         </View>
       </View>
       <View style={styles.tabsContainer}>
@@ -271,25 +340,8 @@ const UserReadingDetail = () => {
 
 const StatBox = ({number, label}) => (
   <View style={styles.statBox}>
-    <Text
-      style={[
-        styles.statNumber,
-        {
-          fontSize: number.length > 8 ? 12 : 14,
-        },
-      ]}>
-      {number}
-    </Text>
-    <Text
-      style={[
-        styles.statLabel,
-        {
-          textAlign: 'center',
-          marginTop: 4,
-        },
-      ]}>
-      {label}
-    </Text>
+    <BaseText style={styles.statNumber}>{number}</BaseText>
+    <BaseText style={styles.statLabel}>{label}</BaseText>
   </View>
 );
 
@@ -302,6 +354,7 @@ const styles = transformStyles({
     width: '100%',
     alignItems: 'center',
     marginBottom: 14,
+    gap: 10,
   },
   tabsContainer: {
     // marginTop: 10,
@@ -335,7 +388,7 @@ const styles = transformStyles({
     width: '100%',
   },
   profileSection: {
-    backgroundColor: '#ECF0F1',
+    backgroundColor: '#F6F6F6',
     flexDirection: 'row',
     height: 167,
     position: 'relative',
@@ -347,7 +400,7 @@ const styles = transformStyles({
     // height: 100,
     borderRadius: 50,
     backgroundColor: '#FFFFFF',
-    padding: 5,
+    padding: 3,
     position: 'absolute',
     top: -65,
     left: 24,
@@ -364,7 +417,7 @@ const styles = transformStyles({
   userName: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1,
+    // flex: 1,
   },
   tagContainer: {
     flexDirection: 'row',
@@ -384,11 +437,21 @@ const styles = transformStyles({
     color: '#2E2E2E',
     fontSize: 12,
     marginBottom: 14,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  userDetailItem: {
+    color: '#2E2E2E',
+    fontSize: 12,
+  },
+  dateInfoWrapper: {
+    flexDirection: 'row',
+    gap: 8,
   },
   dateInfo: {
     color: '#2E2E2E',
     fontSize: 12,
-    marginBottom: 14,
+    // marginBottom: 14,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -398,18 +461,18 @@ const styles = transformStyles({
     // marginTop: 8,
   },
   statBox: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     width: 100,
     height: 56,
-    backgroundColor: '#3498DB',
-    borderRadius: 12,
+    backgroundColor: '#4793C2',
+    borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 2},
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
     elevation: 3,
   },
   statNumber: {
@@ -419,6 +482,7 @@ const styles = transformStyles({
     textAlign: 'center',
     flexWrap: 'wrap',
     lineHeight: 16,
+    // justifyContent: 'flex-start',
   },
   statLabel: {
     color: '#FFFFFF',
@@ -436,30 +500,36 @@ const styles = transformStyles({
     marginHorizontal: 16,
   },
   planCard: {
-    backgroundColor: '#FFFFFF',
-    margin: 16,
-    padding: 16,
+    // backgroundColor: '#FFFFFF',
+    // margin: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
     borderRadius: 8,
-    marginTop: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    // marginTop: 8,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 1},
+    // shadowOpacity: 0.05,
+    // shadowRadius: 2,
+    // elevation: 2,
   },
   planTitle: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 16,
   },
   progressContainer: {
-    marginVertical: 8,
+    // marginVertical: 8,
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
   },
   progressBar: {
+    // flex: 1,
+    width: '50%',
     height: 4,
     borderRadius: 2,
-    marginTop: 4,
+    // marginTop: 6,
   },
   planFooter: {
     flexDirection: 'row',
@@ -474,6 +544,7 @@ const styles = transformStyles({
   participantsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
   },
   participantCount: {
     fontSize: 12,
@@ -485,6 +556,31 @@ const styles = transformStyles({
     borderWidth: 1,
     borderColor: '#ECECEC',
     margin: 20,
+  },
+  progressText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  progressTextBold: {
+    fontSize: 12,
+    // color: '#059973',
+    fontWeight: 'bold',
+  },
+  progressBarContainer: {
+    width: '50%',
+    height: 4,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressBarGradient: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  remainingText: {
+    marginLeft: 4,
+    fontSize: 12,
+    color: '#666',
   },
 });
 

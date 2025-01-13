@@ -81,7 +81,6 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
             color="#FF4D4F"
             iconStyle="regular"
           />
-          <Text style={styles.deleteText}>删除</Text>
         </TouchableOpacity>
         <Animated.View
           style={[

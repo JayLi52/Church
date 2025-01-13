@@ -1,4 +1,4 @@
-import {useRef, useState, useMemo} from 'react';
+import {useRef, useState, useMemo, useCallback} from 'react';
 import {Animated, PanResponder} from 'react-native';
 
 interface UseSwipeToDeleteProps {
@@ -9,6 +9,22 @@ export const useSwipeToDelete = ({deleteWidth = 80}: UseSwipeToDeleteProps = {})
   const pan = useRef(new Animated.Value(0)).current;
   const [isOpen, setIsOpen] = useState(false);
 
+  const closeSwipe = useCallback(() => {
+    Animated.spring(pan, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+    setIsOpen(false);
+  }, [pan]);
+
+  const openSwipe = useCallback(() => {
+    Animated.spring(pan, {
+      toValue: -deleteWidth,
+      useNativeDriver: true,
+    }).start();
+    setIsOpen(true);
+  }, [pan, deleteWidth]);
+
   const panResponder = useMemo(() => {
     return PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
@@ -17,20 +33,22 @@ export const useSwipeToDelete = ({deleteWidth = 80}: UseSwipeToDeleteProps = {})
         return !disableDrag && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
       },
       onPanResponderGrant: () => {
-        const currentIsOpen = isOpen;
-        pan.setOffset(currentIsOpen ? -deleteWidth : 0);
+        pan.setOffset(isOpen ? -deleteWidth : 0);
       },
       onPanResponderMove: (_, gestureState) => {
         const x = gestureState.dx;
-        if (x >= -deleteWidth && x <= deleteWidth) {
+
+        if (isOpen && x >= 0 && Math.abs(x) <= deleteWidth) {
+          pan.setValue(x);
+        }
+        if (!isOpen && x <= 0 && Math.abs(x) <= deleteWidth) {
           pan.setValue(x);
         }
       },
       onPanResponderRelease: (_, gestureState) => {
-        const currentIsOpen = isOpen;
         pan.flattenOffset();
 
-        if (currentIsOpen) {
+        if (isOpen) {
           if (gestureState.dx > 40) {
             closeSwipe();
           } else {
@@ -45,28 +63,7 @@ export const useSwipeToDelete = ({deleteWidth = 80}: UseSwipeToDeleteProps = {})
         }
       },
     });
-  }, [isOpen, pan, deleteWidth]);
+  }, [isOpen, pan, deleteWidth, openSwipe, closeSwipe]);
 
-  const openSwipe = () => {
-    Animated.spring(pan, {
-      toValue: -deleteWidth,
-      useNativeDriver: true,
-    }).start();
-    setIsOpen(true);
-  };
-
-  const closeSwipe = () => {
-    Animated.spring(pan, {
-      toValue: 0,
-      useNativeDriver: true,
-    }).start();
-    setIsOpen(false);
-  };
-
-  return {
-    pan,
-    isOpen,
-    panResponder,
-    closeSwipe,
-  };
-}; 
+  return {pan, isOpen, panResponder, closeSwipe};
+};
