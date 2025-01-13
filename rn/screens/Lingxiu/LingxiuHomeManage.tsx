@@ -17,6 +17,8 @@ import {useSelector} from 'react-redux';
 import {getImageUrl} from '@utils/imgs';
 import {NavigationProp} from '@react-navigation/native';
 import {QuestionCard} from '@screens/Lingxiu/components/QuestionCard';
+import LinearGradient from 'react-native-linear-gradient';
+import BaseText from '@components/BaseText';
 
 type RootStackParamList = {
   OrganizationTask: {
@@ -115,18 +117,24 @@ const LingxiuHomeManage = () => {
               <View style={styles.planList}>
                 {plans.map(plan => (
                   <View key={plan.id} style={styles.planCard}>
-                    <Text style={styles.planTitle}>{plan.title}</Text>
-                    <View style={styles.progressBar}>
-                      <View
-                        style={[
-                          styles.progressFill,
-                          {width: `${plan.progress * 100}%`},
-                        ]}
-                      />
+                    <BaseText style={styles.planTitle}>{plan.title}</BaseText>
+                    <View style={styles.progressContainer}>
+                      <BaseText style={styles.progressText}>进度:</BaseText>
+                      <BaseText style={styles.progressTextBold}>
+                        {plan.progress * 100}%
+                      </BaseText>
+                      <View style={styles.progressBarContainer}>
+                        <LinearGradient
+                          start={{x: 0, y: 0}}
+                          end={{x: 1, y: 0}}
+                          colors={['#BAE3A8', '#059973']}
+                          style={[
+                            styles.progressBarGradient,
+                            {width: `${plan.progress * 100}%`},
+                          ]}
+                        />
+                      </View>
                     </View>
-                    <Text style={styles.progressText}>
-                      进度: {plan.progress * 100}%
-                    </Text>
                     <View style={styles.planFooter}>
                       <Text style={styles.planDate}>{plan.date}</Text>
                       <View style={styles.participantsBox}>
@@ -400,21 +408,32 @@ const styles = transformStyles({
     fontWeight: 'bold',
     marginBottom: 12,
   },
-  progressBar: {
+  progressBarContainer: {
+    width: '50%',
     height: 4,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#F5F5F5',
     borderRadius: 2,
     overflow: 'hidden',
   },
-  progressFill: {
+  progressBarGradient: {
     height: '100%',
-    backgroundColor: '#4CAF50',
     borderRadius: 2,
   },
   progressText: {
     fontSize: 12,
     color: '#666',
-    marginTop: 4,
+    // marginTop: 4,
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  progressTextBold: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    width: 40,
   },
   planFooter: {
     flexDirection: 'row',

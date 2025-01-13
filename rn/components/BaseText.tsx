@@ -49,6 +49,7 @@ function BaseText(props: BaseTextProps): React.JSX.Element {
 const styles = StyleSheet.create({
   text: {
     fontFamily: 'PingFang SC',
+    marginTop: -3,
   },
   collapseText: {
     color: '#FFB224',

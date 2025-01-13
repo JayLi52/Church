@@ -12,6 +12,7 @@ import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
 import {useSwipeToDelete} from '@hooks/useSwipeToDelete';
+import RadialGradient from 'react-native-radial-gradient';
 
 interface MemberCardProps {
   item: {
@@ -24,6 +25,7 @@ interface MemberCardProps {
     location: string;
     distance: string;
     date: string;
+    timezone: string;
   };
 }
 
@@ -65,6 +67,19 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
     小组长: '#0C4380',
   };
 
+  const getGradientColor = (timezone: string) => {
+    switch (timezone) {
+      case 'day':
+        return '#FF8303'; // 白天
+      case 'dawn':
+        return '#B8C3E5'; // 凌晨
+      case 'night':
+        return '#0025A1'; // 晚上
+      default:
+        return '#FF8303';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={{flex: 1, overflow: 'hidden', borderRadius: 8}}>
@@ -95,6 +110,14 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
               <Image source={{uri: item.avatar}} style={styles.avatar} />
             </View>
 
+            <RadialGradient
+              style={styles.gradient}
+              colors={[getGradientColor(item.timezone), '#FFFFFF']}
+              center={[styles.gradient.width / 2, 0]}
+              radius={styles.gradient.width / 2}>
+              {/* 你的内容 */}
+            </RadialGradient>
+
             <View style={styles.memberContent}>
               <View style={styles.memberInfo}>
                 <Text style={styles.memberName}>{item.name}</Text>
@@ -123,6 +146,15 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
 };
 
 const styles = transformStyles({
+  gradient: {
+    position: 'absolute',
+    top: 0,
+    right: -105,
+    width: 210,
+    height: 210,
+    // top: 0,
+    // right: 50,
+  },
   container: {
     marginVertical: 8,
     flexDirection: 'row',
@@ -134,6 +166,10 @@ const styles = transformStyles({
     overflow: 'hidden',
     zIndex: 1,
     position: 'relative',
+
+    borderWidth: 1,
+    borderColor: '#E7E7E7',
+    // borderRadius: 6,
   },
   cardContent: {
     flexDirection: 'row',

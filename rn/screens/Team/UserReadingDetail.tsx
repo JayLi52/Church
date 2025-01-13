@@ -1,10 +1,11 @@
 import {transformStyles} from '@utils/index';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, Image, ScrollView, ImageBackground} from 'react-native';
 import CustomTabs from '@components/Tabs';
 import BaseText from '@components/BaseText';
 import LinearGradient from 'react-native-linear-gradient';
 import {getImageUrl} from '@utils/imgs';
+import {useTabBarVisibility} from '@hooks/useTabBarVisibility';
 
 const formatNumber = (num: string) => {
   let n = parseInt(num);
@@ -229,7 +230,7 @@ const UserReadingDetail = () => {
                   <LinearGradient
                     start={{x: 0, y: 0}}
                     end={{x: 1, y: 0}}
-                    colors={['#059973', '#BAE3A8']}
+                    colors={['#BAE3A8', '#059973']}
                     style={[
                       styles.progressBarGradient,
                       {width: `${plan.progress * 100}%`},
@@ -260,7 +261,7 @@ const UserReadingDetail = () => {
                   <LinearGradient
                     start={{x: 0, y: 0}}
                     end={{x: 1, y: 0}}
-                    colors={['#059973', '#BAE3A8']}
+                    colors={['#BAE3A8', '#059973']}
                     style={[
                       styles.progressBarGradient,
                       {width: `${plan.progress * 100}%`},
@@ -288,6 +289,8 @@ const UserReadingDetail = () => {
     {key: 'topic', label: '话题', renderItem: () => <View />},
     {key: 'ministry', label: '事工', renderItem: () => <View />},
   ];
+
+  useTabBarVisibility({visible: false});
 
   return (
     <ScrollView style={styles.container}>
@@ -394,8 +397,8 @@ const styles = transformStyles({
   recordCard: {
     backgroundColor: '#FFFFFF',
     // margin: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
     // borderRadius: 8,
     // marginTop: 8,
     borderRadius: 4,
@@ -457,7 +460,7 @@ const styles = transformStyles({
     marginRight: 8,
   },
   answerTag: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 4,
     borderRadius: 12,
     marginRight: 8,
@@ -536,7 +539,7 @@ const styles = transformStyles({
   planCard: {
     // backgroundColor: '#FFFFFF',
     // margin: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 10,
     borderRadius: 8,
     // marginTop: 8,
@@ -633,7 +636,7 @@ const styles = transformStyles({
     justifyContent: 'flex-start',
     gap: 8,
     alignItems: 'center',
-    // marginBottom: 8,
+    marginBottom: 16,
   },
   recordTitle: {
     fontSize: 14,

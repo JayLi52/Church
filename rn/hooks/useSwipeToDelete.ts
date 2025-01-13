@@ -28,25 +28,20 @@ export const useSwipeToDelete = ({deleteWidth = 80}: UseSwipeToDeleteProps = {})
   const panResponder = useMemo(() => {
     return PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        const disableDrag =
-          (isOpen && gestureState.dx < 0) || (!isOpen && gestureState.dx > 0);
-        return !disableDrag && Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+        return Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
       },
       onPanResponderGrant: () => {
-        pan.setOffset(isOpen ? -deleteWidth : 0);
+        // pan.stopAnimation();
+        // pan.setOffset(pan.getValue());
+        // pan.setValue(0);
       },
-      onPanResponderMove: (_, gestureState) => {
-        const x = gestureState.dx;
-
-        if (isOpen && x >= 0 && Math.abs(x) <= deleteWidth) {
-          pan.setValue(x);
-        }
-        if (!isOpen && x <= 0 && Math.abs(x) <= deleteWidth) {
-          pan.setValue(x);
-        }
+      onPanResponderMove: (_, { dx }) => {
+        const baseValue = isOpen ? -deleteWidth : 0;
+        const newValue = Math.max(-deleteWidth, Math.min(0, baseValue + dx));
+        pan.setValue(newValue);
       },
       onPanResponderRelease: (_, gestureState) => {
-        pan.flattenOffset();
+        // pan.flattenOffset();
 
         if (isOpen) {
           if (gestureState.dx > 40) {

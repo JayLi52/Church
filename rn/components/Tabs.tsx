@@ -95,13 +95,13 @@ const styles = transformStyles({
     // fontSize: 18,
   },
   tabText: {
-    fontSize: 16,
-    color: '#888',
+    fontSize: 14,
+    color: '#7A7A7A',
   },
   activeText: {
-    color: '#000',
+    color: '#2E2E2E',
     // fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
     marginTop: -5,
   },
   activeIndicator: {

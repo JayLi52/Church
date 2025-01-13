@@ -1,24 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import ProfileHeader from './component/ProfileHeader';
+import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
 import {transformStyles} from '@utils/index';
 import Tabs from '@components/Tabs';
 import MemberCard from './component/MemberCard';
 import Header from '@components/CommonHeader';
-
-const HEADER_DATA = [
-  {title: '成立时长', value: '99年 100天'},
-  {title: '现有成员', value: '9999'},
-  {title: '事工数量', value: '9999'},
-];
+import {useTabBarVisibility} from '@hooks/useTabBarVisibility';
 
 const MEMBERS = [
   // {
@@ -61,6 +47,7 @@ const MEMBERS = [
     location: '四川成都',
     distance: '1532KM',
     date: '2024-08-30 04:42',
+    timezone: 'day',
     avatar:
       'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
     gradient: ['#FF9E80', '#FF6E40'], // 渐变背景色
@@ -71,9 +58,10 @@ const MEMBERS = [
     role: '平信徒',
     days: '9999天',
     joinDate: '2024-06-30 加入',
-    location: '四川成都',
-    distance: '1532KM',
+    location: '纽约',
+    distance: '12532KM',
     date: '2024-08-30 04:42',
+    timezone: 'dawn',
     avatar:
       'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
     gradient: ['#8AB4F8', '#1565C0'], // 渐变背景色
@@ -84,9 +72,10 @@ const MEMBERS = [
     role: '小组长',
     days: '9999天',
     joinDate: '2024-06-30 加入',
-    location: '四川成都',
-    distance: '1532KM',
+    location: '伦敦',
+    distance: '8532KM',
     date: '2024-08-30 04:42',
+    timezone: 'night',
     avatar:
       'http://gips2.baidu.com/it/u=1674525583,3037683813&fm=3028&app=3028&f=JPEG&fmt=auto?w=1024&h=1024',
     gradient: ['#536DFE', '#1E88E5'], // 渐变背景色
@@ -120,9 +109,11 @@ const handleAddMember = () => {
 };
 
 const OrganizationManager = () => {
+  useTabBarVisibility({visible: true});
+
   return (
     <View style={styles.container}>
-      <Header></Header>
+      <Header />
 
       {/* 统计卡片 */}
       <View style={styles.headerRow}>
@@ -149,59 +140,60 @@ const OrganizationManager = () => {
           value="9999"
         />
       </View>
-
-      <Tabs
-        tabs={[
-          {
-            key: '1',
-            label: '小组',
-            renderItem: () => (
-              <View style={styles.groupIntro}>
-                <Image
-                  source={{
-                    uri: 'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960',
-                  }}
-                  style={styles.groupImage}
-                />
-                <Text style={styles.groupName}>恩慈小组</Text>
-                <Text style={styles.groupDetails}>
-                  UID: 000000001 | 日期: 2024-01-10
-                </Text>
-                <Text style={styles.groupLeader}>组长: 姓名文本信息</Text>
-                <Text style={styles.groupIntroText}>
-                  简介:
-                  通过以圣经为基础的多样化培训课程，营造出具有神同在氛围的场域，帮助组员遇见耶稣、认识耶稣、经历耶稣。
-                </Text>
-              </View>
-            ),
-          },
-          {
-            key: '2',
-            label: '成员',
-            renderItem: () => (
-              <View style={styles.memberContainer}>
-                <FlatList
-                  style={{flex: 1}}
-                  contentContainerStyle={{paddingBottom: 80}}
-                  data={MEMBERS}
-                  renderItem={({item}) => <MemberCard item={item} />}
-                  keyExtractor={item => item.id}
-                />
-                {/* 浮动按钮 */}
-                <TouchableOpacity
-                  style={styles.floatingButton}
-                  onPress={handleAddMember}>
-                  <Text style={styles.floatingButtonIcon}>+</Text>
-                  <Text style={styles.floatingButtonText}>添加新成员</Text>
-                </TouchableOpacity>
-              </View>
-            ),
-          },
-        ]}
-        onTabChange={item => {
-          console.log(item);
-        }}
-      />
+      <View style={styles.tabContainer}>
+        <Tabs
+          tabs={[
+            {
+              key: '1',
+              label: '小组',
+              renderItem: () => (
+                <View style={styles.groupIntro}>
+                  <Image
+                    source={{
+                      uri: 'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960',
+                    }}
+                    style={styles.groupImage}
+                  />
+                  <Text style={styles.groupName}>恩慈小组</Text>
+                  <Text style={styles.groupDetails}>
+                    UID: 000000001 | 日期: 2024-01-10
+                  </Text>
+                  <Text style={styles.groupLeader}>组长: 姓名文本信息</Text>
+                  <Text style={styles.groupIntroText}>
+                    简介:
+                    通过以圣经为基础的多样化培训课程，营造出具有神同在氛围的场域，帮助组员遇见耶稣、认识耶稣、经历耶稣。
+                  </Text>
+                </View>
+              ),
+            },
+            {
+              key: '2',
+              label: '成员',
+              renderItem: () => (
+                <View style={styles.memberContainer}>
+                  <FlatList
+                    style={{flex: 1}}
+                    contentContainerStyle={{paddingBottom: 80}}
+                    data={MEMBERS}
+                    renderItem={({item}) => <MemberCard item={item} />}
+                    keyExtractor={item => item.id}
+                  />
+                  {/* 浮动按钮 */}
+                  <TouchableOpacity
+                    style={styles.floatingButton}
+                    onPress={handleAddMember}>
+                    <Text style={styles.floatingButtonIcon}>+</Text>
+                    <Text style={styles.floatingButtonText}>添加新成员</Text>
+                  </TouchableOpacity>
+                </View>
+              ),
+            },
+          ]}
+          onTabChange={item => {
+            console.log(item);
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -263,10 +255,15 @@ const styles = transformStyles({
 
   // 标签导航
   tabContainer: {
-    flexDirection: 'row',
+    flex: 1,
     backgroundColor: '#fff',
-    paddingVertical: 8,
-    alignItems: 'center',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    paddingHorizontal: 18,
+    // flexDirection: 'row',
+    // backgroundColor: '#fff',
+    // paddingVertical: 8,
+    // alignItems: 'center',
   },
   tabText: {fontSize: 14, color: '#888', flex: 1, textAlign: 'center'},
   activeTab: {color: '#ff7f50', fontWeight: 'bold'},
