@@ -15,8 +15,8 @@ import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {RootState} from '@store/store';
 import {useSelector} from 'react-redux';
 import {getImageUrl} from '@utils/imgs';
-import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {NavigationProp} from '@react-navigation/native';
+import {QuestionCard} from '@screens/Lingxiu/components/QuestionCard';
 
 type RootStackParamList = {
   OrganizationTask: {
@@ -302,63 +302,30 @@ const AnswerContent = () => {
     <View style={styles.questionList}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {questions.map(question => (
-          <TouchableOpacity
+          <QuestionCard
             key={question.id}
-            style={styles.questionCard}
-            onLongPress={() => handleLongPress(question.id)}
-            activeOpacity={0.7}>
-            <View style={styles.questionHeader}>
-              <Text style={styles.questionTitle}>{question.title}</Text>
-              <Text
-                style={[
-                  styles.statusTag,
-                  {color: question.status === '已结束' ? '#9E9E9E' : '#4CAF50'},
-                ]}>
-                {question.status}
-              </Text>
-            </View>
-            <View style={styles.questionFooter}>
-              <Text style={styles.dateText}>
-                开始日期：{question.date}
-                {'\n'}
-                结束日期：{question.endDate}
-              </Text>
-              <View style={styles.participantsBox}>
-                <View style={styles.avatarStack}>
-                  {question.participants.slice(0, 3).map((avatar, index) => (
-                    <Image
-                      key={index}
-                      source={{uri: avatar}}
-                      style={[styles.participantAvatar, {right: index * 15}]}
-                    />
-                  ))}
-                </View>
-                <Text style={styles.participantsCount}>
-                  {question.participantsCount}人
-                </Text>
-              </View>
-            </View>
-            {showDelete && selectedId === question.id && (
-              <TouchableOpacity
-                style={styles.deleteOverlay}
-                activeOpacity={1}
-                onPress={handleClose}>
-                <View style={styles.deleteButtonContainer}>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={handleDelete}>
-                    <FontAwesome
-                      name="trash-can"
-                      size={16}
-                      color="#FF6E40"
-                      iconStyle="regular"
-                    />
-                    <Text style={styles.deleteText}>删除</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            )}
-          </TouchableOpacity>
+            question={question}
+            onDelete={id => {
+              Alert.alert('提示', '确定要删除该问题吗？', [
+                {
+                  text: '取消',
+                  style: 'cancel',
+                },
+                {
+                  text: '确定',
+                  style: 'destructive',
+                  onPress: () => {
+                    // TODO: 处理删除逻辑
+                    console.log('删除问题:', id);
+                  },
+                },
+              ]);
+            }}
+            onPress={id => {
+              // TODO: 处理点击逻辑
+              console.log('点击问题:', id);
+            }}
+          />
         ))}
       </ScrollView>
 
