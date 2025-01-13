@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  Platform,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, ScrollView, Image, Pressable} from 'react-native';
 import BaseText from '@components/BaseText';
 import {commonStyles, transformStyles} from '@utils/index';
 import Header from '@components/CommonHeader';
@@ -15,6 +7,7 @@ import CustomTabs from '@components/Tabs';
 import {useNavigation} from '@react-navigation/native';
 import {getImageUrl} from '@utils/imgs';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
+import {RadialGradientBox} from '@components/RadialGradientBox';
 
 interface StatsItem {
   label: string;
@@ -56,20 +49,20 @@ function SpreadStatsScreen(): React.JSX.Element {
     <>
       <View style={styles.wrapper}>
         <Header />
-        <View style={styles.container}>
-          {/* 统计栏 */}
-          <View style={styles.statsBox}>
-            {[
-              {label: '总分享次数', value: '999'},
-              {label: '总点击次数', value: '999'},
-              {label: '新注册用户', value: '9999'},
-            ].map((item, index) => (
-              <View key={index} style={styles.statItem}>
-                <BaseText style={styles.statLabel}>{item.label}</BaseText>
-                <BaseText style={styles.statNumber}>{item.value}</BaseText>
-              </View>
-            ))}
-          </View>
+        {/* 统计栏 */}
+        <View style={styles.statsBox}>
+          {[
+            {label: '总分享次数', value: '999'},
+            {label: '总点击次数', value: '999'},
+            {label: '新注册用户', value: '9999'},
+          ].map((item, index) => (
+            <View key={index} style={styles.statItem}>
+              <BaseText style={styles.statLabel}>{item.label}</BaseText>
+              <BaseText style={styles.statNumber}>{item.value}</BaseText>
+            </View>
+          ))}
+        </View>
+        <View style={styles.tabsContainer}>
           <CustomTabs tabs={tabs} onTabChange={key => console.log(key)} />
         </View>
       </View>
@@ -175,10 +168,14 @@ const MemberList = () => {
   return (
     <ScrollView style={styles.memberListContainer}>
       {members.map(member => (
-        <TouchableOpacity
+        <Pressable
           key={member.id}
           style={styles.memberCard}
           onPress={() => handleMemberPress(member.id)}>
+          <RadialGradientBox
+            startColor="#FF8303"
+            style={styles.radialGradient}
+          />
           <View style={styles.memberCardContent}>
             <Image source={{uri: member.avatar}} style={styles.avatar} />
             <View style={styles.memberInfo}>
@@ -202,7 +199,7 @@ const MemberList = () => {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       ))}
     </ScrollView>
   );
@@ -393,9 +390,11 @@ const styles = transformStyles({
     // paddingTop: 26,
   },
   tabsContainer: {
-    // backgroundColor: '#fff',
+    backgroundColor: '#fff',
+    flex: 1,
     borderTopLeftRadius: 26,
     borderTopRightRadius: 26,
+    paddingHorizontal: 18,
   },
   statsBox: {
     flexDirection: 'row',
@@ -460,19 +459,29 @@ const styles = transformStyles({
   },
   memberListContainer: {
     flex: 1,
-    backgroundColor: '#F6F6F6',
+    // backgroundColor: '#F6F6F6',
   },
   memberCard: {
     backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 12,
+    borderRadius: 6,
     padding: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderColor: '#FFE8BE',
+    borderWidth: 1,
+    overflow: 'hidden',
+    // elevation: 2,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 2},
+    // shadowOpacity: 0.1,
+    // shadowRadius: 4,
+  },
+  radialGradient: {
+    position: 'absolute',
+    top: 0,
+    right: -100,
+    width: 200,
+    height: 200,
   },
   memberCardContent: {
     flexDirection: 'row',

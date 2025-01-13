@@ -12,7 +12,7 @@ import {commonStyles, transformStyles} from '@utils/index';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {useNavigation} from '@react-navigation/native';
 import {useSwipeToDelete} from '@hooks/useSwipeToDelete';
-import RadialGradient from 'react-native-radial-gradient';
+import {RadialGradientBox} from '@components/RadialGradientBox';
 
 interface MemberCardProps {
   item: {
@@ -110,13 +110,10 @@ const MemberCard: React.FC<MemberCardProps> = ({item}) => {
               <Image source={{uri: item.avatar}} style={styles.avatar} />
             </View>
 
-            <RadialGradient
+            <RadialGradientBox
+              startColor={getGradientColor(item.timezone)}
               style={styles.gradient}
-              colors={[getGradientColor(item.timezone), '#FFFFFF']}
-              center={[styles.gradient.width / 2, 0]}
-              radius={styles.gradient.width / 2}>
-              {/* 你的内容 */}
-            </RadialGradient>
+            />
 
             <View style={styles.memberContent}>
               <View style={styles.memberInfo}>
