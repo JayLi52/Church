@@ -1,11 +1,13 @@
-import React from 'react';
-import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {View, Image, TouchableOpacity, Platform, Share} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import BaseText from '@components/BaseText';
 import FontAwesome from '@react-native-vector-icons/fontawesome6';
 import {Modal} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {transformStyles} from '@utils/index';
+import {commonStyles, transformStyles} from '@utils/index';
+import RNFS from 'react-native-fs';
+import ViewShot from 'react-native-view-shot';
 
 type ShareType =
   | 'quiz' // 答题分享
@@ -32,11 +34,15 @@ type ShareCardProps = {
     memberCount?: number;
     score?: number;
     commentCount?: number;
+    avatar: string;
+    username: string;
+    location: string;
   };
   visible: boolean;
   onDismiss: () => void;
   selected?: boolean;
   onToggleSelect?: () => void;
+  cardContentText?: string;
 };
 
 const CommonShareCard: React.FC<ShareCardProps> = ({
@@ -44,125 +50,133 @@ const CommonShareCard: React.FC<ShareCardProps> = ({
   title,
   description,
   imageUrl,
-  onShare,
   metadata,
   visible,
   onDismiss,
   selected,
   onToggleSelect,
+  cardContentText,
 }) => {
   const navigation = useNavigation();
+  const viewShotRef = useRef();
 
-  const renderIcon = () => {
-    const iconProps = {
-      size: 20,
-      color: '#fff',
-      iconStyle: 'solid' as const,
-    };
+  useEffect(() => {
+    if (visible) {
+      handleShare();
+    }
+  }, [visible]);
 
-    switch (type) {
-      case 'quiz':
-        return <FontAwesome name="circle-check" {...iconProps} />;
-      case 'bookCompletion':
-        return <FontAwesome name="book-open" {...iconProps} />;
-      case 'bibleComment':
-      case 'comment':
-        return <FontAwesome name="message" {...iconProps} />;
-      case 'verse':
-        return <FontAwesome name="bookmark" {...iconProps} />;
-      case 'profile':
-        return <FontAwesome name="user" {...iconProps} />;
-      case 'group':
-        return <FontAwesome name="user-group" {...iconProps} />;
-      default:
-        return <FontAwesome name="share-nodes" {...iconProps} />;
+  const handleShare = async () => {
+    try {
+      // const uri = await viewShotRef.current?.capture();
+      // const filePath = `${RNFS.CachesDirectoryPath}/share_card.png`;
+      // await RNFS.copyFile(uri, filePath);
+      // await Share.share({
+      //   url: Platform.OS === 'ios' ? `file://${filePath}` : filePath,
+      // });
+    } catch (error) {
+      console.error('分享失败:', error);
     }
   };
 
-  const renderMetadata = () => {
-    if (!metadata) return null;
-
+  const renderUserInfo = () => {
     return (
-      <View style={styles.metadataContainer}>
-        {metadata.author && (
-          <BaseText style={styles.metadataText}>
-            作者: {metadata.author}
-          </BaseText>
-        )}
-        {metadata.date && (
-          <BaseText style={styles.metadataText}>日期: {metadata.date}</BaseText>
-        )}
-        {metadata.progress !== undefined && (
-          <View style={styles.progressBar}>
-            <View style={[styles.progress, {width: `${metadata.progress}%`}]} />
-          </View>
-        )}
-        {metadata.verseReference && (
-          <BaseText style={styles.metadataText}>
-            {metadata.verseReference}
-          </BaseText>
-        )}
+      <View style={styles.userInfoContainer}>
+        <View style={styles.userBasicInfo}>
+          <Image source={{uri: metadata?.avatar}} style={styles.avatar} />
+          <BaseText style={styles.username}>{metadata?.username}</BaseText>
+        </View>
+        <View style={styles.locationInfo}>
+          <FontAwesome
+            style={commonStyles.icon}
+            name="location-dot"
+            size={14}
+            color="#666"
+            iconStyle="solid"
+          />
+          <BaseText style={styles.locationText}>{metadata?.location}</BaseText>
+        </View>
       </View>
     );
   };
 
-  const handleCardPress = () => {
-    if (onToggleSelect) {
-      onToggleSelect();
-    } else {
-      onDismiss();
-      // @ts-ignore - 暂时忽略类型检查
-      navigation.navigate('BookIntro');
-    }
-  };
+  const renderDivider = () => (
+    <View style={styles.dividerContainer}>
+      <View style={styles.dot} />
+      <View style={styles.line} />
+      <View style={styles.dot} />
+    </View>
+  );
+
+  const renderAppInfo = () => (
+    <View style={styles.appInfoContainer}>
+      <View style={styles.appTextInfo}>
+        <BaseText style={styles.appName}>Spiritualife</BaseText>
+        <BaseText style={styles.appDesc}>帮助你的灵命成长的助手</BaseText>
+        <BaseText style={styles.scanText}>扫码加入</BaseText>
+      </View>
+      <Image
+        source={require('@assets/images/common/qrcode.png')}
+        style={styles.qrCode}
+      />
+    </View>
+  );
+
+  const renderDescription = () => (
+    <View style={styles.contentContainer}>
+      <BaseText style={styles.description}>{description}</BaseText>
+    </View>
+  );
 
   return (
     <Modal
       visible={visible}
       onDismiss={onDismiss}
       contentContainerStyle={styles.modalContainer}>
-      <View style={[styles.card, selected && styles.selectedCard]}>
-        <TouchableOpacity style={styles.closeButton} onPress={onDismiss}>
-          <FontAwesome name="xmark" size={20} color="#666" iconStyle="solid" />
-        </TouchableOpacity>
-
-        {imageUrl && (
-          <View style={styles.imageContainer}>
-            <Image source={{uri: imageUrl}} style={styles.image} />
-            <LinearGradient
-              colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.3)']}
-              style={styles.imageGradient}
+      <ViewShot ref={viewShotRef} options={{format: 'png', quality: 1}}>
+        <View style={styles.card}>
+          <TouchableOpacity style={styles.closeButton} onPress={onDismiss}>
+            <FontAwesome
+              name="xmark"
+              size={25}
+              color="#666"
+              iconStyle="solid"
             />
-          </View>
-        )}
-
-        <TouchableOpacity
-          style={styles.contentContainer}
-          onPress={handleCardPress}>
-          <BaseText style={styles.title}>{title}</BaseText>
-          <BaseText style={styles.description}>{description}</BaseText>
-          {renderMetadata()}
-        </TouchableOpacity>
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={[styles.shareButton, styles[`${type}Button`]]}
-            onPress={onShare}>
-            {renderIcon()}
-            <BaseText style={styles.shareText}>分享</BaseText>
           </TouchableOpacity>
+
+          <View style={styles.cardContent}>
+            {imageUrl && (
+              <View style={styles.imageContainer}>
+                <Image source={{uri: imageUrl}} style={styles.image} />
+                <LinearGradient
+                  colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.7)']}
+                  style={styles.imageGradient}
+                />
+              </View>
+            )}
+            <BaseText style={styles.cardContentText}>
+              {cardContentText?.split('\\n').join('\n')}
+            </BaseText>
+          </View>
+          {renderDescription()}
+          {renderUserInfo()}
+          {renderDivider()}
+          {renderAppInfo()}
         </View>
-      </View>
+      </ViewShot>
     </Modal>
   );
 };
 
 const styles = transformStyles({
   modalContainer: {
-    margin: 20,
+    // margin: 20,
   },
   card: {
     backgroundColor: '#fff',
+    width: 360,
+    height: 574,
+    marginHorizontal: 15,
     borderRadius: 24,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -172,18 +186,42 @@ const styles = transformStyles({
     elevation: 5,
   },
   closeButton: {
-    position: 'absolute',
-    right: 16,
-    top: 16,
-    zIndex: 1,
+    position: 'relative',
+    right: 10,
+    top: 5,
+    // zIndex: 1,
+    height: 50,
     backgroundColor: 'rgba(255,255,255,0.9)',
     padding: 8,
     borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  cardContent: {
+    backgroundColor: '#fff',
+    width: 320,
+    height: 265,
+    marginHorizontal: 20,
+    padding: 16,
   },
   imageContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 200,
+    position: 'absolute',
+    // top: 48,
+    width: 320,
+    height: 265,
+    // marginHorizontal: 20,
+    zIndex: 0,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    borderBottomLeftRadius: 14,
+    borderBottomRightRadius: 90,
+    overflow: 'hidden',
+  },
+  cardContentText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    lineHeight: 24,
   },
   image: {
     width: '100%',
@@ -192,24 +230,28 @@ const styles = transformStyles({
   },
   imageGradient: {
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
-    height: 100,
+    bottom: 0,
   },
   contentContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    position: 'relative',
+    zIndex: 1,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
+    // color: '#fff',
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    // color: '#fff',
     lineHeight: 20,
-    marginBottom: 16,
+    // marginBottom: 16,
   },
   footer: {
     padding: 20,
@@ -225,7 +267,7 @@ const styles = transformStyles({
     width: '100%',
   },
   shareText: {
-    color: '#fff',
+    // color: '#fff',
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '600',
@@ -235,7 +277,7 @@ const styles = transformStyles({
   },
   metadataText: {
     fontSize: 13,
-    color: '#666',
+    // color: '#fff',
     marginBottom: 4,
   },
   progressBar: {
@@ -276,6 +318,81 @@ const styles = transformStyles({
   },
   bookButton: {
     backgroundColor: '#FF9A27',
+  },
+  userInfoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  userBasicInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  username: {
+    fontSize: 14,
+    color: '#333',
+  },
+  locationInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  locationText: {
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 4,
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginVertical: 8,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#3B8E58',
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#3B8E58',
+    marginHorizontal: 8,
+  },
+  appInfoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    alignItems: 'center',
+  },
+  appTextInfo: {
+    flex: 1,
+  },
+  appName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  appDesc: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  scanText: {
+    fontSize: 12,
+    color: '#999',
+  },
+  qrCode: {
+    width: 80,
+    height: 80,
+    marginLeft: 16,
   },
 });
 

@@ -202,7 +202,6 @@ export const useMainTabList = (): TabItem[] => {
         renderComponent: UserReadingDetail,
         options: { headerShown: false },
       },
-      
       {
         name: 'OrganizationCalendar',
         renderComponent: CalendarScreen,

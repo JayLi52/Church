@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   ScrollView,
@@ -13,6 +13,7 @@ import {commonStyles, transformStyles} from '@utils/index';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {RootState} from '@store/store';
+import CustomModal, {CustomModalRef} from '@components/CustomModal';
 
 export const CommentDetail = () => {
   const navigation = useNavigation();
@@ -22,7 +23,6 @@ export const CommentDetail = () => {
     id: string;
     name: string;
   } | null>(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedReply, setSelectedReply] = useState<string | null>(null);
   const comment = useSelector(
     (state: RootState) =>
@@ -116,10 +116,22 @@ export const CommentDetail = () => {
       },
   );
 
+  const modalRef = useRef<CustomModalRef>(null);
+  const replyModalRef = useRef<CustomModalRef>(null);
+
   const handleLongPress = () => {
     if (comment.type === 'mine') {
-      setShowDeleteModal(true);
+      modalRef.current?.open();
     }
+  };
+
+  const handleMorePress = () => {
+    modalRef.current?.open();
+  };
+
+  const handleReplyMorePress = (replyId: string) => {
+    setSelectedReply(replyId);
+    replyModalRef.current?.open();
   };
 
   // 添加权限判断函数
@@ -173,7 +185,7 @@ export const CommentDetail = () => {
             {comment.type === 'mine' && (
               <TouchableOpacity
                 style={styles.moreButton}
-                onPress={() => setShowDeleteModal(true)}>
+                onPress={handleMorePress}>
                 <FontAwesome
                   name="ellipsis"
                   size={16}
@@ -199,44 +211,6 @@ export const CommentDetail = () => {
             </View>
           </View>
         </Pressable>
-        {showDeleteModal && (
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setShowDeleteModal(false)}>
-            <View style={styles.modalContent}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => {
-                  console.log('分享评论:', comment.id);
-                  setShowDeleteModal(false);
-                }}>
-                <FontAwesome
-                  name="share"
-                  size={16}
-                  color="#FFB224"
-                  iconStyle="solid"
-                />
-                <BaseText style={styles.shareText}>分享</BaseText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.deleteButton]}
-                onPress={() => {
-                  console.log('删除评论:', comment.id);
-                  setShowDeleteModal(false);
-                  navigation.goBack();
-                }}>
-                <FontAwesome
-                  name="trash"
-                  size={16}
-                  color="#FF4D4F"
-                  iconStyle="solid"
-                />
-                <BaseText style={styles.deleteText}>删除</BaseText>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* 全部回复标题 - 固定 */}
@@ -280,9 +254,7 @@ export const CommentDetail = () => {
                   </BaseText>
                   <TouchableOpacity
                     style={styles.moreButton}
-                    onPress={() => {
-                      setSelectedReply(reply.id);
-                    }}>
+                    onPress={() => handleReplyMorePress(reply.id)}>
                     <FontAwesome
                       name="ellipsis"
                       size={16}
@@ -294,46 +266,6 @@ export const CommentDetail = () => {
                 <BaseText style={styles.replyText}>{reply.content}</BaseText>
                 <BaseText style={styles.replyDate}>{reply.date}</BaseText>
               </View>
-              {selectedReply === reply.id && (
-                <TouchableOpacity
-                  style={styles.modalOverlay}
-                  activeOpacity={1}
-                  onPress={() => setSelectedReply(null)}>
-                  <View style={styles.modalContent}>
-                    <TouchableOpacity
-                      style={styles.actionButton}
-                      onPress={() => {
-                        console.log('分享回复:', reply.id);
-                        setSelectedReply(null);
-                      }}>
-                      <FontAwesome
-                        name="share"
-                        size={16}
-                        color="#FFB224"
-                        iconStyle="solid"
-                      />
-                      <BaseText style={styles.shareText}>分享</BaseText>
-                    </TouchableOpacity>
-                    {canDeleteReply(comment.type) && (
-                      <TouchableOpacity
-                        style={[styles.actionButton, styles.deleteButton]}
-                        onPress={() => {
-                          console.log('删除回复:', reply.id);
-                          setSelectedReply(null);
-                          // TODO: 调用删除回复的 API
-                        }}>
-                        <FontAwesome
-                          name="trash"
-                          size={16}
-                          color="#FF4D4F"
-                          iconStyle="solid"
-                        />
-                        <BaseText style={styles.deleteText}>删除</BaseText>
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                </TouchableOpacity>
-              )}
             </Pressable>
           ))}
         </View>
@@ -395,6 +327,113 @@ export const CommentDetail = () => {
           </View>
         </View>
       </View>
+
+      <CustomModal
+        ref={modalRef}
+        slideDirection="bottom"
+        modalContentWrapStyle={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalActions}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                console.log('删除评论:', comment.id);
+                modalRef.current?.close();
+                navigation.goBack();
+              }}>
+              <View style={styles.iconCircle}>
+                <FontAwesome
+                  name="trash"
+                  size={16}
+                  color="#000000"
+                  iconStyle="solid"
+                />
+              </View>
+              <BaseText style={styles.modalButtonText}>删除</BaseText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                console.log('分享评论:', comment.id);
+                modalRef.current?.close();
+              }}>
+              <View style={styles.iconCircle}>
+                <FontAwesome
+                  name="share"
+                  size={16}
+                  color="#000000"
+                  iconStyle="solid"
+                />
+              </View>
+              <BaseText style={styles.modalButtonText}>分享</BaseText>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => modalRef.current?.close()}>
+            <BaseText style={styles.cancelText}>取消</BaseText>
+          </TouchableOpacity>
+        </View>
+      </CustomModal>
+
+      <CustomModal
+        ref={replyModalRef}
+        slideDirection="bottom"
+        modalContentWrapStyle={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalActions}>
+            {canDeleteReply(comment.type) && (
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  console.log('删除回复:', selectedReply);
+                  replyModalRef.current?.close();
+                }}>
+                <View style={styles.iconCircle}>
+                  <FontAwesome
+                    name="trash"
+                    size={16}
+                    color="#000000"
+                    iconStyle="solid"
+                  />
+                </View>
+                <BaseText style={styles.modalButtonText}>删除</BaseText>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                console.log('分享回复:', selectedReply);
+                replyModalRef.current?.close();
+              }}>
+              <View style={styles.iconCircle}>
+                <FontAwesome
+                  name="share"
+                  size={16}
+                  color="#000000"
+                  iconStyle="solid"
+                />
+              </View>
+              <BaseText style={styles.modalButtonText}>分享</BaseText>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => replyModalRef.current?.close()}>
+            <BaseText style={styles.cancelText}>取消</BaseText>
+          </TouchableOpacity>
+        </View>
+      </CustomModal>
     </View>
   );
 };
@@ -620,42 +659,43 @@ const styles = transformStyles({
     color: '#FFB224',
     marginLeft: 4,
   },
-  modalOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalContent: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
+    width: '100%',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  modalActions: {
     flexDirection: 'row',
+    padding: 24,
     gap: 24,
   },
-  actionButton: {
+  modalButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
   },
-  deleteButton: {
-    backgroundColor: '#FFF1F0',
+  iconCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#EEEEEE',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
   },
-  shareText: {
+  modalButtonText: {
     fontSize: 12,
-    color: '#FFB224',
-    marginTop: 8,
+    color: '#000000',
   },
-  deleteText: {
-    fontSize: 12,
-    color: '#FF4D4F',
-    marginTop: 8,
+  cancelButton: {
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+    padding: 16,
+    alignItems: 'center',
+  },
+  cancelText: {
+    fontSize: 16,
+    color: '#000000',
   },
   repliesContainer: {
     flex: 1,

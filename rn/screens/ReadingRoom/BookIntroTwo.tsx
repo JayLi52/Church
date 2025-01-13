@@ -14,7 +14,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import {hideStatusBar, setTranslucent} from '@store/statusBarSlice';
 import {useDispatch} from 'react-redux';
 import {hideTabBar} from '@store/tabSlice';
-import ShareCard, {ShareCardProps} from '../../components/CommonShareCard';
+import CommonShareCard, {
+  ShareCardProps,
+} from '../../components/CommonShareCard';
 import {getImageUrl} from '@utils/imgs';
 
 function BookIntroScreen(): React.JSX.Element {
@@ -138,6 +140,8 @@ function BookIntroScreen(): React.JSX.Element {
                 author: '马太',
                 date: '2024-01-20',
               },
+              cardContentText:
+                '亚兰生亚米拿达。亚米拿达生拿顺。拿顺生撒\n— 马太福音 1:2-2',
             };
 
             setModalVisible(true);
@@ -153,7 +157,7 @@ function BookIntroScreen(): React.JSX.Element {
         </TouchableOpacity>
       </View>
 
-      <ShareCard
+      <CommonShareCard
         type="book"
         title="马太福音"
         description="反映四福音书均记载了耶稣在世的事迹，马太福音是用了一个见证为出发点记录主上所作的事..."
@@ -163,10 +167,12 @@ function BookIntroScreen(): React.JSX.Element {
           console.log('分享');
         }}
         metadata={{
-          author: '马太',
-          date: '2024-01-20',
+          username: '马太',
+          location: '北京',
+          avatar: getImageUrl(),
         }}
         imageUrl={getImageUrl()}
+        cardContentText="亚兰生亚米拿达。亚米拿达生拿顺。拿顺生撒— 马太福音 1:2-2"
       />
     </>
   );

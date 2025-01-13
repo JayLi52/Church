@@ -1,6 +1,6 @@
 import React from 'react';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+// import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabNavigator, {StackNavigator} from '@components/Navigator';
 import {useSelector} from 'react-redux';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -11,7 +11,7 @@ import {
   useMineTabList,
 } from './config/navigationConfig';
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 const customTheme = {
   ...DefaultTheme,
   colors: {

@@ -119,6 +119,7 @@ function BookIntroScreen(): React.JSX.Element {
         }}
         visible={showShareCard}
         onDismiss={() => setShowShareCard(false)}
+        cardContentText="亚兰生亚米拿达。亚米拿达生拿顺。拿顺生撒\n— 马太福音 1:2-2"
       />
     </>
   );
