@@ -1,20 +1,18 @@
 import {transformStyles} from '@utils/index';
 import React from 'react';
-import {View, Text, Image, ScrollView, ImageBackground} from 'react-native';
+import {View, Image, ScrollView, ImageBackground} from 'react-native';
 import CustomTabs from '@components/Tabs';
 import BaseText from '@components/BaseText';
 import LinearGradient from 'react-native-linear-gradient';
 import {getImageUrl} from '@utils/imgs';
 
-const AVATAR_SIZE = 20;
-const AVATAR_OVERLAP = 8; // 头像重叠的距离
-
-const formatNumber = (num: number) => {
-  if (num >= 9999) {
+const formatNumber = (num: string) => {
+  let n = parseInt(num);
+  if (n >= 9999) {
     return '999+';
   }
-  if (num >= 1000) {
-    return `${Math.floor(num / 1000)}k`;
+  if (n >= 1000) {
+    return `${Math.floor(n / 1000)}k`;
   }
   return num;
 };
@@ -27,22 +25,12 @@ const StackedAvatars = ({count}: {count: number}) => {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
       {[...Array(displayCount)].map((_, index) => (
-        <View
-          key={index}
-          style={{
-            marginLeft: index === 0 ? 0 : -AVATAR_OVERLAP,
-            borderRadius: AVATAR_SIZE / 2,
-            zIndex: displayCount - index, // 确保左边的头像在上层
-          }}>
+        <View key={index} style={styles.avatarContainer}>
           <Image
             source={{
               uri: getImageUrl(),
             }}
-            style={{
-              width: AVATAR_SIZE,
-              height: AVATAR_SIZE,
-              borderRadius: AVATAR_SIZE / 2,
-            }}
+            style={styles.avatar}
           />
         </View>
       ))}
@@ -94,6 +82,41 @@ const UserReadingDetail = () => {
       status: 'waiting',
       date: '2024-08-11 至 2024-08-21',
     },
+    {
+      id: '4',
+      title: '30天阅读新约',
+      tag: '已答',
+      status: 'completed',
+      date: '2024-09-01 至 2024-09-30',
+    },
+    {
+      id: '5',
+      title: '30天阅读新约',
+      tag: '自行回答',
+      status: 'customAnswer',
+      date: '2024-09-01 至 2024-09-30',
+    },
+    {
+      id: '6',
+      title: '7天祷告计划',
+      tag: '未答',
+      status: 'pending',
+      date: '2024-10-01 至 2024-10-07',
+    },
+    {
+      id: '7',
+      title: '7天祷告计划',
+      tag: '待答',
+      status: 'waiting',
+      date: '2024-10-01 至 2024-10-07',
+    },
+    {
+      id: '8',
+      title: '一年读经计划',
+      tag: '已答',
+      status: 'completed',
+      date: '2024-01-01 至 2024-12-31',
+    },
   ];
 
   const userInfo = {
@@ -119,14 +142,30 @@ const UserReadingDetail = () => {
     },
   };
 
-  const tagColors = {
-    completed: '#4CAF50', // 已答 - 绿色
-    pending: '#FF9800', // 未答 - 橙色
-    waiting: '#9E9E9E', // 待答 - 灰色
-    同工: '#508BBC', // 蓝色
+  const tagColors: Record<string, any> = {
+    completed: {
+      bg: '#DFF0E5',
+      font: '#3B8E58',
+    }, // 已答 - 绿色
+    pending: {
+      bg: '#ECECEC',
+      font: '#9E9E9E',
+    }, // 未答 - 橙色
+    waiting: {
+      bg: '#FFD7D7',
+      font: '#FF6464',
+    }, // 待答 - 灰色
+    customAnswer: {
+      bg: '#D9EAFF', // 蓝色
+      font: '#6B92D8',
+    }, // 自行回答
+  };
+
+  const roleColors: Record<string, string> = {
     姊妹: '#DABA80', // 粉色
     平信徒: '#1B6CC7', // 深蓝
     小组长: '#0C4380', // 深蓝偏紫
+    同工: '#508BBC', // 蓝色
   };
 
   const renderAnswerContent = () => (
@@ -140,32 +179,26 @@ const UserReadingDetail = () => {
       <View style={styles.plansContainer}>
         {records.map(record => (
           <View key={record.id} style={styles.recordCard}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}>
-              <Text style={{textAlign: 'left', marginRight: 10}}>
-                {record.title}
-              </Text>
+            <View style={styles.recordHeader}>
+              <BaseText style={styles.recordTitle}>{record.title}</BaseText>
               <View
                 style={[
-                  styles.tagContainer,
+                  styles.answerTag,
                   {
-                    backgroundColor: tagColors[record.status],
-                    paddingHorizontal: 12,
-                    paddingVertical: 4,
-                    borderRadius: 12,
+                    backgroundColor: tagColors[record.status].bg,
                   },
                 ]}>
-                <Text style={[styles.tagText, {color: '#FFFFFF'}]}>
+                <BaseText
+                  style={[
+                    styles.tagText,
+                    {color: tagColors[record.status].font},
+                  ]}>
                   {record.tag}
-                </Text>
+                </BaseText>
               </View>
             </View>
             <View style={styles.planFooter}>
-              <Text style={styles.date}>创建日期：{record.date}</Text>
+              <BaseText style={styles.date}>创建日期：{record.date}</BaseText>
             </View>
           </View>
         ))}
@@ -182,7 +215,7 @@ const UserReadingDetail = () => {
       </View>
 
       <View style={styles.plansContainer}>
-        <Text style={styles.sectionTitle}>小组学经计划</Text>
+        <BaseText style={styles.sectionTitle}>小组学经计划</BaseText>
         <View style={styles.planList}>
           {teamPlans.map(plan => (
             <View key={plan.id} style={styles.planCard}>
@@ -213,7 +246,7 @@ const UserReadingDetail = () => {
             </View>
           ))}
         </View>
-        <Text style={styles.sectionTitle}>个人学经计划</Text>
+        <BaseText style={styles.sectionTitle}>个人学经计划</BaseText>
         <View style={styles.planList}>
           {userPlans.map(plan => (
             <View key={plan.id} style={styles.planCard}>
@@ -286,18 +319,10 @@ const UserReadingDetail = () => {
                   style={[
                     styles.tag,
                     {
-                      backgroundColor: tagColors[tag],
+                      backgroundColor: roleColors[tag],
                     },
                   ]}>
-                  <BaseText
-                    style={[
-                      styles.tagText,
-                      {
-                        color: '#FFFFFF',
-                      },
-                    ]}>
-                    {tag}
-                  </BaseText>
+                  <BaseText style={styles.tagText}>{tag}</BaseText>
                 </View>
               ))}
             </View>
@@ -338,7 +363,7 @@ const UserReadingDetail = () => {
   );
 };
 
-const StatBox = ({number, label}) => (
+const StatBox = ({number, label}: {number: string; label: string}) => (
   <View style={styles.statBox}>
     <BaseText style={styles.statNumber}>{number}</BaseText>
     <BaseText style={styles.statLabel}>{label}</BaseText>
@@ -371,16 +396,16 @@ const styles = transformStyles({
     // margin: 16,
     padding: 16,
     borderRadius: 8,
-    marginTop: 8,
+    // marginTop: 8,
     // borderRadius: 4,
     borderWidth: 1,
     borderColor: '#ECECEC',
     margin: 20,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 1},
+    // shadowOpacity: 0.05,
+    // shadowRadius: 2,
+    // elevation: 2,
   },
   header: {
     height: 108,
@@ -429,9 +454,16 @@ const styles = transformStyles({
     borderRadius: 12,
     marginRight: 8,
   },
+  answerTag: {
+    paddingHorizontal: 20,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 8,
+  },
   tagText: {
     fontSize: 12,
     fontWeight: '500',
+    color: '#FFFFFF',
   },
   userDetails: {
     color: '#2E2E2E',
@@ -577,10 +609,31 @@ const styles = transformStyles({
     height: '100%',
     borderRadius: 2,
   },
+  avatarContainer: {
+    marginLeft: -5,
+    borderRadius: 10,
+    zIndex: 1, // 确保左边的头像在上层
+    backgroundColor: '#FFFFFF',
+    padding: 2,
+  },
+  avatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
   remainingText: {
     marginLeft: 4,
     fontSize: 12,
     color: '#666',
+  },
+  recordHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  recordTitle: {
+    fontSize: 16,
   },
 });
 
